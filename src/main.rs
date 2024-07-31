@@ -4,6 +4,8 @@ mod build;
 mod deploy;
 mod serve;
 mod args;
+mod toml_config;
+mod publish;
 
 use clap::Parser;
 
@@ -14,28 +16,41 @@ pub(crate) use self::{
     dev::*,
     build::*,
     serve::*,
-    deploy::*
+    deploy::*,
+    toml_config::*,
+    publish::*
 };
+pub(crate) type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
 
-
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args = Args::parse();
-    match args.subcommand {
-        ArgSub::Init(InitArgs{name}) => {
-            generate_template(&name);
+#[tokio::main]
+async fn main() -> Result<()> {
+    let cli = Cli::parse();
+    match cli.subcommand {
+        ArgSub::Init {name, mode} => {
+            generate_template(&mode, &name)
         },
-        ArgSub::Serve(ServerArgs{host, port}) => {
-            serve(&host, port)
+        ArgSub::Add {name: _} => {
+
         },
-        ArgSub::Deploy(ServerArgs{host, port}) => {
-            deploy(&host, port)
+        ArgSub::Remove {name: _} => {
+            
+        },
+        ArgSub::Serve {host: _, port: _} => {
+            //serve(&host, port)
+        },
+        ArgSub::Deploy {host: _, port: _} => {
+            //deploy(&host, port)
         },
         ArgSub::Dev => {
-            dev()
+            //dev()
         },
         ArgSub::Build => {
-            build()
+            //build()
+        },
+        ArgSub::Publish => {
+            let res = publish().await;
+            println!("publis result: {res:#?}");
         }
     };
 

@@ -1,98 +1,87 @@
-use clap::{
-    error::{Error, ErrorKind}, 
-    ArgMatches, Args as _, Command, FromArgMatches, Parser, Subcommand
-};
+use clap::{Parser, Subcommand, ValueEnum};
 
-#[derive(Parser, Debug)]
-pub(crate) struct InitArgs {
-    /// Your project name
-    #[arg(short, long)]
-    pub(crate) name: String,
-}
-
-#[derive(Parser, Debug)]
-pub(crate) struct ServerArgs {
-    #[arg(long, default_value="0.0.0.0")]
-    pub(crate) host: String,
-    #[arg(long, default_value="3000")]
-    pub(crate) port: u16
-}
-
-#[derive(Debug)]
+#[derive(Debug, Subcommand)]
 pub(crate) enum ArgSub {
-    /// Initiate your project name
-    Init(InitArgs),
+    /// Initiate your project, ex: binuid init --mode=mode --name=name
+    #[command(arg_required_else_help = true)]
+    Init {
+        /// Project mode
+        #[arg(
+            short,
+            long,
+            require_equals = true,
+            value_name = "MODE",
+            num_args = 0..=1,
+            default_value_t = Mode::Bin,
+            default_missing_value = "bin",
+            value_enum
+        )]
+        mode: Mode,
+        /// Project name
+        #[arg(required = true, short, long)]
+        name: String
+    },
+    /// Add new library to your project
+    #[command(arg_required_else_help = true)]
+    Add {
+        /// Library name to add
+        #[arg(required = true, short, long)]
+        name: String
+    },
+    /// Remove a library from your project
+    #[command(arg_required_else_help = true)]
+    Remove {
+        /// Library name to remove
+        #[arg(required = true, short, long)]
+        name: String
+    },
     /// Serve your project for develop
-    Serve(ServerArgs),
+    Serve {
+        #[arg(short, long)]
+        #[arg(long, default_value="0.0.0.0")]
+        host: String,
+        #[arg(short, long)]
+        #[arg(long, default_value="3000")]
+        port: u16
+    },
     /// Run production server
-    Deploy(ServerArgs),
-    /// Build for develop
+    Deploy {
+        #[arg(short, long)]
+        #[arg(long, default_value="0.0.0.0")]
+        host: String,
+        #[arg(short, long)]
+        #[arg(long, default_value="3000")]
+        port: u16
+    },
+    /// Run for develop
     Dev,
     /// Build for production
-    Build
+    Build,
+    /// Publish your project for others to use it
+    Publish
 }
 
-impl FromArgMatches for ArgSub {
-    fn from_arg_matches(matches: &ArgMatches) -> Result<Self, Error> {
-        match matches.subcommand() {
-            Some(("init", args)) => Ok(Self::Init(InitArgs::from_arg_matches(args)?)),
-            Some(("serve", args)) => Ok(Self::Serve(ServerArgs::from_arg_matches(args)?)),
-            Some(("deploy", args)) => Ok(Self::Deploy(ServerArgs::from_arg_matches(args)?)),
-            Some(("dev", _)) => Ok(Self::Dev),
-            Some(("build", _)) => Ok(Self::Build),
-            Some((_, _)) => Err(Error::raw(
-                ErrorKind::InvalidSubcommand,
-                "Valid subcommands are `init` and `serve` `deploy` `dev` `build`",
-            )),
-            None => Err(Error::raw(
-                ErrorKind::MissingSubcommand,
-                "Valid subcommands are `init` and `serve` `deploy` `dev` `build`",
-            )),
-        }
-    }
-    fn update_from_arg_matches(&mut self, matches: &ArgMatches) -> Result<(), Error> {
-        match matches.subcommand() {
-            Some(("init", args)) => *self = Self::Init(InitArgs::from_arg_matches(args)?),
-            Some(("serve", args)) => *self = Self::Serve(ServerArgs::from_arg_matches(args)?),
-            Some(("deploy", args)) => *self = Self::Deploy(ServerArgs::from_arg_matches(args)?),
-            Some(("dev", _)) => *self = Self::Dev,
-            Some(("build", _)) => *self = Self::Build,
-            Some((_, _)) => {
-                return Err(Error::raw(
-                    ErrorKind::InvalidSubcommand,
-                    "Valid subcommands are `init` and `serve`",
-                ))
-            }
-            None => (),
-        };
-        Ok(())
+
+#[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq)]
+pub(crate) enum Mode {
+    Bin,
+    Lib,
+    Ws,
+}
+
+impl std::fmt::Display for Mode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.to_possible_value()
+            .expect("no values are skipped")
+            .get_name()
+            .fmt(f)
     }
 }
 
-impl Subcommand for ArgSub {
-    fn augment_subcommands(cmd: Command) -> Command {
-        cmd.subcommand(InitArgs::augment_args(Command::new("init")))
-            .subcommand(ServerArgs::augment_args(Command::new("serve")))
-            .subcommand(ServerArgs::augment_args(Command::new("deploy")))
-            .subcommand(Command::new("dev"))
-            .subcommand(Command::new("build"))
-            .subcommand_required(true)
-    }
-    fn augment_subcommands_for_update(cmd: Command) -> Command {
-        cmd.subcommand(InitArgs::augment_args(Command::new("init")))
-            .subcommand(ServerArgs::augment_args(Command::new("serve")))
-            .subcommand(ServerArgs::augment_args(Command::new("deploy")))
-            .subcommand(Command::new("dev"))
-            .subcommand(Command::new("build"))
-            .subcommand_required(true)
-    }
-    fn has_subcommand(name: &str) -> bool {
-        matches!(name, "init" | "serve" | "deploy" | "dev" | "build")
-    }
-}
-
-#[derive(Parser, Debug)]
-pub(crate) struct Args {
+#[derive(Debug, Parser)]
+#[command(name = "binuid")]
+#[command(about = "binuid command line interface", long_about = None)]
+pub(crate) struct Cli {
     #[command(subcommand)]
     pub(crate) subcommand: ArgSub,
 }
