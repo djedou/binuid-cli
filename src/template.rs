@@ -5,7 +5,6 @@ use crate::{read_binuid_config, write_binuid_config, Workspace};
 use std::mem::swap;
 
 
-
 pub(crate) fn generate_template(mode: &Mode, name: &str) {
     match Command::new("cargo")
         .args(["install", "cargo-generate"])
@@ -37,6 +36,28 @@ pub(crate) fn generate_template(mode: &Mode, name: &str) {
         Ok(_) => {},
         Err(err) => {
             println!("Err: {:#?}", err);
+        }
+    }
+
+    match Command::new("cargo")
+        .args(["install", "watchexec-cli"])
+        .stdout(Stdio::inherit())
+        .status() 
+    {
+        Ok(_) => {},
+        Err(err) => {
+            println!("Err: {:#?}", err);
+        }
+    }
+
+    match Command::new("cargo")
+        .args(["install", "trunk"])
+        .stdout(Stdio::inherit())
+        .status()  
+    {
+        Ok(_) => {},
+        Err(output) => {
+            println!("Err: {:#?}", output);
         }
     }
     

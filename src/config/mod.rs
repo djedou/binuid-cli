@@ -1,10 +1,29 @@
-use serde::{Deserialize, Serialize};
-use toml::{Table, de::Error, from_str, to_string_pretty};
-use std::{fs, env};
-use crate::Mode;
+mod builders;
+mod dependencies;
+mod files;
+mod zip_files;
+
+pub(crate) use builders::*;
+pub(crate) use dependencies::*;
+pub(crate) use files::*;
+pub(crate) use zip_files::*;
+
+use binuid_shared_wasm::{
+    serde::{self, Deserialize, Serialize},
+    toml::{Table, de::Error, from_str, to_string_pretty}
+};
+use std::{
+    fs, env,
+    path::{Path, PathBuf},
+    fs::File
+};
 use std::io::{Read, Write};
+/*
+use binuid_shared::zip;
+*/
 
 #[derive(Debug, Deserialize, Serialize, Default)]
+#[serde(crate = "self::serde")]
 pub(crate) struct BinuidConfig {
     pub(crate) package: Option<Package>,
     pub(crate) library: Option<Package>,
@@ -14,6 +33,7 @@ pub(crate) struct BinuidConfig {
 }
 
 #[derive(Debug, Deserialize, Serialize, Default)]
+#[serde(crate = "self::serde")]
 pub(crate) struct Package {
     pub(crate) name: String,
     pub(crate) version: Option<String>,
@@ -21,10 +41,19 @@ pub(crate) struct Package {
 }
 
 #[derive(Debug, Deserialize, Serialize, Default)]
+#[serde(crate = "self::serde")]
 pub(crate) struct Workspace {
     pub(crate) name: String,
     pub(crate) authors: Vec<String>,
     pub(crate) members: Vec<String>
+}
+
+#[derive(Debug, Deserialize, Serialize, Default)]
+#[serde(crate = "self::serde")]
+pub(crate) struct Dependency {
+    pub(crate) name: String,
+    pub(crate) version: Option<String>,
+    pub(crate) path: Option<String>
 }
 
 pub(crate) fn read_binuid_config(name: &str) -> Result<BinuidConfig, Error> {

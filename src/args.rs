@@ -1,4 +1,4 @@
-use clap::{Parser, Subcommand, ValueEnum};
+use binuid_shared::clap::{self, Parser, Subcommand, ValueEnum};
 
 #[derive(Debug, Subcommand)]
 pub(crate) enum ArgSub {

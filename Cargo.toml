@@ -5,11 +5,17 @@ edition = "2021"
 
 
 [dependencies]
-clap = {version = "4.5", features = ["derive", "color"]  }
-toml = {version = "0.8", features = ["preserve_order"]}
-serde = {version = "1.0", features = ["derive"]}
-tokio = {version = "1.26", features = ["macros", "rt-multi-thread", "rt", "net"]}
-hyper = {version = "1.4", features = ["server", "client", "http1", "http2"]}
-serde_json = "1.0"
-http-body-util = "0.1"
-hyper-util = { version = "0.1", features = ["server-auto", "tokio"]}
+binuid-shared = {version = "0.1.0", path = "../binuid-shared"}
+binuid-shared-wasm = {version = "0.1.0", path = "../binuid-shared-wasm"}
+#prost-types = "0.12"
+#prost = "0.12"
+#tonic = {version = "0.10", default-features = false, features = ["prost", "codegen", "tls", "tls-roots", "tls-webpki-roots"]} #0.8 features = ["prost", "codegen", "tls", "tls-roots", "tls-webpki-roots"]
+#tonic = {version = "0.8", default-features = false, features = ["prost", "codegen", "tls", "tls-roots", "tls-webpki-roots"]} #0.8 features = []
+#tonic-web = { version = "0.10" } #0.4
+#tonic-web = { version = "0.4" } #0.4
+
+
+
+[build-dependencies]
+tonic-build = { version = "0.10", default-features = false, features = ["prost",]} #0.8
+#tonic-build = { version = "0.8", default-features = false, features = ["prost",]} #0.8
