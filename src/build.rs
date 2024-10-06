@@ -17,7 +17,7 @@ pub(crate) fn build() -> Result<()> {
                 Some(dependencies) => {
                     let deps = read_dependencies_from_table(&dependencies);
                     let deps_cmds = deps.into_iter().map(|dep| {
-                        vec!["--extern".to_owned(), format!("--extern {}={}", dep.name, get_dep_path(&dep.name, dep.version.as_deref(), dep.path.as_deref()))]
+                        vec!["--extern".to_owned(), format!("{}={}", dep.name, get_dep_path(&dep.name, dep.version.as_deref(), dep.path.as_deref()))]
                     })
                     .flatten()
                     .collect::<Vec<String>>();

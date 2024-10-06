@@ -35,10 +35,10 @@ pub(crate) fn get_dep_path(name: &str, version: Option<&str>, path: Option<&str>
             format!("{p}/lib{name}_v_{}.rlib", ver.replace(".", "_"))
         },
         (None, Some(ver)) => {
-            format!("./deps/lib{name}_v_{}.rlib", ver.replace(".", "_"))
+            format!("deps/lib{name}_v_{}.rlib", ver.replace(".", "_"))
         },
         (None, None) => {
-            format!("./deps/lib{name}_v_0_0_0.rlib")
+            format!("deps/lib{name}_v_0_0_0.rlib")
         },
         _ => String::with_capacity(0)
     }
