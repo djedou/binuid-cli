@@ -6,20 +6,21 @@ use std::{
     fs::File,
     io::Read
 };
-use crate::{ 
-    get_duid_bin_build,
-    Result
-};
+use crate::{get_duid_bin_build, get_duid_bin_lib_build, Result};
 
 pub struct Compiler {
+    pub name: String, 
+    pub version: String,
     pub files: Vec<PathBuf>,
     pub lib_dependencies: Vec<String>,
     pub zip_dependencies: Vec<String>
 }
 
 impl Compiler {
-    pub fn new(files: &[PathBuf], lib_deps: &[String], zip_deps: &[String]) -> Compiler {
+    pub fn new(name: &str, version: &str, files: &[PathBuf], lib_deps: &[String], zip_deps: &[String]) -> Compiler {
         Compiler {
+            name: name.to_string(),
+            version: version.to_string(),
             files: files.to_owned(),
             lib_dependencies: lib_deps.to_owned(),
             zip_dependencies: zip_deps.to_owned()
@@ -29,6 +30,7 @@ impl Compiler {
 
     pub fn compile(&self) -> Result<()> {
         info!("compiling...");
+        self.compile_lib_bin()?;
         let mut errors_count = 0; 
         for file in &self.files {
             match (
@@ -59,6 +61,12 @@ impl Compiler {
         let ast = syn::parse_file(&content)?;
         println!("ast: {:#?}", ast.items.len());
 
+        Ok(())
+    }
+
+    pub fn compile_lib_bin(&self) -> Result<()> {
+        let agrs = get_duid_bin_lib_build(&self.name, &self.version, &self.lib_dependencies);
+        Command::new("rustc").args(&agrs).stdout(Stdio::inherit()).status()?;
         Ok(())
     }
 }

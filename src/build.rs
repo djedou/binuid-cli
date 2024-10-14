@@ -67,7 +67,7 @@ pub(crate) fn build() -> Result<()> {
             }
             Ok(())
         },
-        (_, Some(_binary), _) => {
+        (_, Some(binary), _) => {
             //info!("{:#?}", binary);
             match config.dependencies {
                 Some(dependencies) => {
@@ -95,15 +95,28 @@ pub(crate) fn build() -> Result<()> {
                     current_dir_deps.push("deps");
                     let mut current_dir_pkg = current_dir.clone();
                     current_dir_pkg.push("pkg");
+                    let mut current_dir_dist = current_dir.clone();
+                    current_dir_dist.push("dist");
+                    let mut current_dir_app_lib = current_dir.clone();
+                    current_dir_app_lib.push("app");
+                    current_dir_app_lib.push("lib");
                     let skips = vec![
                         format!("{}", current_dir_doc.display()),
                         format!("{}", current_dir_git.display()),
                         format!("{}", current_dir_deps.display()),
-                        format!("{}", current_dir_pkg.display())
+                        format!("{}", current_dir_pkg.display()),
+                        format!("{}", current_dir_app_lib.display()),
+                        format!("{}", current_dir_dist.display())
                     ];
                     let mut files = vec![];
                     gather_files(Some(skips.as_slice()), current_dir.as_path(), &mut files);
-                    let compiler = Compiler::new(&files, &deps_cmds, &deps_files);
+                    let version = match &binary.version {
+                        Some(ver) => ver.replace(".", "_"),
+                        None => "0_0_0".to_string()
+                    };
+                    let name = binary.name.replace("-", "_");
+                    deps_cmds.extend_from_slice(&["--extern".to_owned(), format!("{}=dist/lib{name}_v_{}.rlib", name, version)]);
+                    let compiler = Compiler::new(&name, &version, &files, &deps_cmds, &deps_files);
                     let _ = compiler.compile()?;
                 },
                 None => {}

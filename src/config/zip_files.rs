@@ -7,8 +7,13 @@ use std::{
 use binuid_shared::zip;
 
 pub(crate) fn save_zip(root: &str, filename: &str, files: &[PathBuf]) -> zip::result::ZipResult<()> {
+    let Ok(mut current_dir) = env::current_dir() else {
+        return Ok(());
+    };
+    current_dir.push("target");
+    current_dir.push(filename);
     let path = Path::new(filename);
-    let file = File::create(path).unwrap();
+    let file = File::create(current_dir.as_path()).unwrap();
     let mut zip = zip::ZipWriter::new(file);
     let options = zip::write::SimpleFileOptions::default()
         .compression_method(zip::CompressionMethod::Stored)
@@ -42,6 +47,7 @@ pub(crate) fn extract_lib_from_zip(name: &str, version: &str) {
     let path = Path::new(&current_dir);
     let file = File::open(path).unwrap();
     let mut zip = zip::ZipArchive::new(file).unwrap();
+    println!("lib_name: {lib_name:#?}");
     let mut lib_entry = zip.by_name(&format!("lib{}.rlib", lib_name)).unwrap();
     let _ = lib_entry.read_to_end(&mut buf);
     let dest_path = Path::new(&dest);
