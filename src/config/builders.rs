@@ -5,12 +5,15 @@ pub(crate) fn get_duid_lib_build(name: &str, version: &str, deps: &[String]) -> 
     let Ok(mut current_dir) = env::current_dir() else {
         return vec![];
     };
+    let mut output_directory = current_dir.clone();
+    output_directory.push("dist");
     current_dir.push("lib");
     current_dir.push(format!("{new_name}.rs"));
     let mut args = vec![
         "-O".to_string(),
         "--crate-type=lib".to_string(),
         format!("--crate-name={new_name}_v_{version}"),
+        format!("--out-dir={}", output_directory.display()),
         "--edition=2021".to_string(),
         "--emit=link,llvm-ir".to_string()
     ];

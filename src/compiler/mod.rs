@@ -1,15 +1,11 @@
-mod file;
-
 use std::path::PathBuf;
 use std::{env, process::{Command, Stdio}};
 use binuid_shared_wasm::console::{info, error};
-use binuid_shared::syn::{self, visit::Visit};
 use std::{
     fs::File,
     io::Read
 };
 use crate::{get_duid_bin_build, get_duid_bin_lib_build, Result};
-use file::BinuidFile;
 
 pub struct Compiler {
     pub name: String, 
@@ -64,9 +60,7 @@ impl Compiler {
         let mut file = File::open(path)?;
         let mut content = String::new();
         file.read_to_string(&mut content)?;
-        let ast = syn::parse_file(&content)?;
-        let mut build_file = BinuidFile::new();
-        build_file.load(&ast);*/
+        */
 
         Ok(())
     }

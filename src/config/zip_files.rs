@@ -48,7 +48,7 @@ pub(crate) fn extract_lib_from_zip(name: &str, version: &str) {
     let file = File::open(path).unwrap();
     let mut zip = zip::ZipArchive::new(file).unwrap();
     println!("lib_name: {lib_name:#?}");
-    let mut lib_entry = zip.by_name(&format!("lib{}.rlib", lib_name)).unwrap();
+    let mut lib_entry = zip.by_name(&format!("dist/lib{}.rlib", lib_name)).unwrap();
     let _ = lib_entry.read_to_end(&mut buf);
     let dest_path = Path::new(&dest);
     let mut dest_file = File::create(dest_path).unwrap();
