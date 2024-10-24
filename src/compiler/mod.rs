@@ -1,4 +1,6 @@
-use std::path::PathBuf;
+mod llvm_compiler;
+
+use std::path::{Path, PathBuf};
 use std::{env, process::{Command, Stdio}};
 use binuid_shared_wasm::console::{info, error};
 use std::{
@@ -6,6 +8,8 @@ use std::{
     io::Read
 };
 use crate::{get_duid_bin_build, get_duid_bin_lib_build, Result};
+use llvm_compiler::LlvmCompiler;
+
 
 pub struct Compiler {
     pub name: String, 
@@ -52,7 +56,7 @@ impl Compiler {
         Ok(())
     }
 
-    pub fn compile_file(&self, path: &PathBuf, _libs_ids: &[(String, String)]) -> Result<()> {
+    fn compile_file(&self, path: &PathBuf, _libs_ids: &[(String, String)]) -> Result<()> {
         let agrs = get_duid_bin_build(path.to_str(), &self.lib_dependencies);
         Command::new("rustc").args(&agrs).stdout(Stdio::inherit()).status()?;
         
@@ -65,13 +69,20 @@ impl Compiler {
         Ok(())
     }
 
-    pub fn compile_lib_bin(&self) -> Result<()> {
+    fn compile_lib_bin(&self) -> Result<()> {
         let agrs = get_duid_bin_lib_build(&self.name, &self.version, &self.lib_dependencies);
         Command::new("rustc").args(&agrs).stdout(Stdio::inherit()).status()?;
+        let Ok(mut current_dir) = env::current_dir() else {
+            return Ok(());
+        };
+        current_dir.push("dist");
+        current_dir.push(format!("{}_v_{}.ll", self.name, self.version));
+        self.compile_llvm(current_dir.as_path(), true);
+        
         Ok(())
     }
 
-    pub fn get_libs_paths(&self) -> Vec<(String, String)> {
+    fn get_libs_paths(&self) -> Vec<(String, String)> {
         let mut names = vec![];
         self.lib_dependencies.iter().for_each(|d| {
             match d.contains("=") {
@@ -84,5 +95,19 @@ impl Compiler {
         });
 
         names
+    }
+
+    fn compile_llvm(&self, path: &Path, is_lib: bool) {
+        let mut llvm_compiler = LlvmCompiler::new();
+        llvm_compiler.read(&path);
+        match is_lib {
+            true => {
+                let name = format!("{}_v_{}", self.name, self.version);
+                llvm_compiler.compile(Some(&name));
+            },
+            false => {
+                llvm_compiler.compile(None);
+            }
+        }
     }
 }
