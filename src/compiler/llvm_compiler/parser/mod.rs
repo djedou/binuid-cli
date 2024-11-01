@@ -12,7 +12,7 @@ pub fn parse_ll(source: &str) -> LlvmAst {
     let mut ast = LlvmAst::new();
     match LLParser::parse(Rule::Module, source) {
         Ok(pairs) => {
-            //println!("pairs: {:#?}", pairs);
+            println!("pairs: {:#?}", pairs);
             /*for pair in pairs {
                 match pair.as_rule() {
                     Rule::Item => {

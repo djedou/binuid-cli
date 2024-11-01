@@ -23,37 +23,26 @@ Comment = { Semi ~ (!NEWLINE ~ ANY)* ~ NEWLINE }
 Whitespace = _{"\x00" | " " | "\t" | "\r" | "\n"}
 Name = @{Letter ~ (Letter | DecimalDigit)* }
 EscapeName = @{EscapeLetter ~ (EscapeLetter | DecimalDigit)*}
-QuotedName = {QuotedString}
+QuotedName = @{QuotedString}
 Id = {Decimals}
-GlobalIdent = @{ 
+GlobalIdent = { 
     GlobalName
 	| GglobalId
 }
-GlobalName = @{At ~ (Name | QuotedName)}
-GglobalId = @{At ~ Id}
-LocalIdent = @{ 
+GlobalName = {At ~ (Name | QuotedName)}
+GglobalId = {At ~ Id}
+LocalIdent = { 
     LocalName
 	| LocalId
 }
-LocalName = @{ Percent ~ (Name | QuotedName)}
-LocalId = @{ Percent ~ Id}
-LabelIdent = @{ 
+LocalName = { Percent ~ (Name | QuotedName)}
+LocalId = { Percent ~ Id}
+LabelIdent = { 
     (Letter | DecimalDigit)+ ~ Colon
 	| QuotedString ~ Colon
 }
-AttrGroupId = @{Pound ~ Id}
-ComdatName = @{Dollar ~ (Name | QuotedName)}
-MetadataName = @{Not ~ EscapeName}
-MetadataId = @{ Not ~ Id}
-DwarfTag = @{DwTag ~ (AsciiLetter | DecimalDigit | Underscore)*}
-DwarfAttEncoding = @{ DwAtE ~ (AsciiLetter | DecimalDigit | Underscore)*}
-DiFlag = @{ Dlag ~ (AsciiLetter | DecimalDigit | Underscore)*}
-DwarfLang = @{ DwLang ~ (AsciiLetter | DecimalDigit | Underscore)*}
-DwarfCc = @{ DwCc ~ (AsciiLetter | DecimalDigit | Underscore)*}
-ChecksumKind = @{ CsK ~ (AsciiLetter | DecimalDigit | Underscore)*}
-DwarfVirtuality = @{ DwVirtuality ~ (AsciiLetter | DecimalDigit | Underscore)*}
-DwarfMacinfo = @{ DwMacinfo ~ (AsciiLetter | DecimalDigit | Underscore)*}
-DwarfOp = @{ DwOp ~ (AsciiLetter | DecimalDigit | Underscore)*}
+AttrGroupId = {Pound ~ Id}
+ComdatName = {Dollar ~ (Name | QuotedName)}
 IntLit = @{DecimalLit}
 DecimalLit = {Sign? ~ Decimals}
 Decimals = @{DecimalDigit+}
@@ -69,463 +58,17 @@ Sign = {
 	| Minus
 }
 SciLit = { FracLit ~ ("e" | "E") ~ Sign? ~ Decimals}
-HexFPConstant = {"0x" ~ HexDigit+}
-HexFP80Constant = {"0xK" ~ HexDigit+}
-HexFP128Constant = {"0xL" ~ HexDigit+}
-HexPPC128Constant = {"0xM" ~ HexDigit+}
-HexHalfConstant = {"0xH" ~ HexDigit+}
-
-FloatHexLit = {
-    HexFPConstant 
-    | HexFP80Constant
+FloatHexLitType = {
+    HexFP80Constant
     | HexFP128Constant
     | HexPPC128Constant
     | HexHalfConstant
+    | HexFPConstant
 }
+FloatHexLit = { FloatHexLitType ~ HexDigit+}
 StringLit = @{QuotedString}
 QuotedString = { "\"" ~ (!"\"" ~ ANY)* ~ "\""}
-IntType = @{"i" ~ Decimals}
-// ### [ Syntax part ] #########################################################
-TopLevelEntity = { 
-    SourceFilename
-	| TargetDefinition
-	| ModuleAsm
-	| TypeDef
-	| ComdatDef
-	| GlobalDecl
-	| GlobalDef
-	| IndirectSymbolDef
-	| FunctionDecl
-	| FunctionDef
-	| AttrGroupDef
-	| NamedMetadataDef
-	| MetadataDef
-	| UseListOrder
-	| UseListOrderBB
-}
-SourceFilename = { SrcFile ~ Whitespace? ~ Eq ~ Whitespace? ~ StringLit}
-TargetDatalayout = {Target ~ Whitespace? ~ Datalayout ~ Whitespace? ~ Eq ~ Whitespace? ~ StringLit}
-TargetTriple = {Target ~ Whitespace? ~ Triple ~ Whitespace? ~ Eq ~ Whitespace? ~ StringLit}
-TargetDefinition = { 
-    TargetDatalayout
-	| TargetTriple
-}
-ModuleAsm = { ModuleKey ~ Whitespace? ~ Asm ~ Whitespace? ~ StringLit}
-TypeOpaque = {LocalIdent ~ Whitespace? ~ Eq ~ Whitespace? ~ Ty ~ Whitespace? ~ OpaqueType}
-TypeType = {LocalIdent ~ Whitespace? ~ Eq ~ Whitespace? ~ Ty ~ Whitespace? ~ Type}
-TypeDef = { 
-    TypeOpaque
-	| TypeType
-}
-ComdatDef = { ComdatName ~ Whitespace? ~ Eq ~ Whitespace? ~ Comdat ~ Whitespace? ~ SelectionKind}
-SelectionKind = { 
-    Any
-	| ExactMatch
-	| Largest
-	| Noduplicates
-	| Samesize
-}
-GlobalDecl = { GlobalIdent ~ Whitespace? ~ Eq ~ Whitespace? ~ ExternLinkage ~ Whitespace? ~ PreemptionSpecifier? ~ Whitespace? ~ Visibility? ~ Whitespace? ~ DLLStorageClass? ~ Whitespace? ~ ThreadLocal? ~ Whitespace? ~ UnnamedAddr? ~ Whitespace? ~ AddrSpace? ~ Whitespace? ~ ExternallyInitialized? ~ Whitespace? ~ Immutable ~ Whitespace? ~ Type ~ Whitespace? ~ GlobalAttrs? ~ Whitespace? ~ FuncAttrs?}
-GlobalDef = { GlobalIdent ~ Whitespace? ~ Eq ~ Whitespace? ~ Linkage? ~ Whitespace? ~ PreemptionSpecifier? ~ Whitespace? ~ Visibility? ~ Whitespace? ~ DLLStorageClass? ~ Whitespace? ~ ThreadLocal? ~ Whitespace? ~ UnnamedAddr? ~ Whitespace? ~ AddrSpace? ~ Whitespace? ~ ExternallyInitialized? ~ Whitespace? ~ Immutable ~ Whitespace? ~ Type ~ Whitespace? ~ Constant ~ Whitespace? ~ GlobalAttrs? ~ Whitespace? ~ FuncAttrs?}
-Immutable = { 
-    Const
-	| Glob
-}
-GlobalAttrs = {Comma ~ Whitespace? ~ GlobalAttr ~ Whitespace? ~ (Comma ~ Whitespace? ~ GlobalAttr)*}
-GlobalAttr = { 
-    Section
-	| Comdat
-	| Alignment
-	//   ::= !dbg !57
-	| MetadataAttachment
-}
-
-IndirectSymbolDefExtern = { 
-    GlobalIdent ~ Whitespace? ~ Eq ~ Whitespace? ~ ExternLinkage ~ Whitespace? ~ PreemptionSpecifier? ~ Whitespace? ~ Visibility? ~ Whitespace? ~ DLLStorageClass? ~ Whitespace? ~ ThreadLocal? ~ Whitespace? ~ UnnamedAddr? ~ Whitespace? ~ Alias ~ Whitespace? ~ LhsType ~ Whitespace? ~ Comma ~ Whitespace? ~ ExprItem
-}
-
-IndirectSymbolDefOpt = { 
-	GlobalIdent ~ Whitespace? ~ Eq ~ Whitespace? ~ Linkage? ~ Whitespace? ~ PreemptionSpecifier? ~ Whitespace? ~ Visibility? ~ Whitespace? ~ DLLStorageClass? ~ Whitespace? ~ ThreadLocal? ~ Whitespace? ~ UnnamedAddr? ~ Whitespace? ~ Alias ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ ExprItem
-}
-
-IndirectSymbolDef = { 
-    IndirectSymbolDefExtern
-	| IndirectSymbolDefOpt
-}
-Alias = { 
-    Als
-	| Ifunc
-}
-FunctionDecl = { Declare ~ Whitespace? ~ MetadataAttachments? ~ Whitespace? ~ ExternLinkage? ~ Whitespace? ~ FunctionHeader}
-FunctionDef = { Define ~ Whitespace? ~ Linkage? ~ Whitespace? ~ FunctionHeader ~ Whitespace? ~ MetadataAttachments? ~ Whitespace? ~ FunctionBody}
-FunctionHeader = { PreemptionSpecifier? ~ Whitespace? ~ Visibility? ~ Whitespace? ~ DLLStorageClass? ~ Whitespace? ~ CallingConv? ~ Whitespace? ~ ReturnAttrs? ~ Whitespace? ~ Type ~ Whitespace? ~ GlobalIdent ~ Whitespace? ~ "(" ~ Whitespace? ~ Params? ~ Whitespace? ~ ")" ~ Whitespace? ~ UnnamedAddr? ~ Whitespace? ~ FuncAttrs? ~ Whitespace? ~ Section? ~ Whitespace? ~ Comdat? ~ Whitespace? ~ OptGC? ~ Whitespace? ~ OptPrefix? ~ Whitespace? ~ OptPrologue? ~ Whitespace? ~ OptPersonality?}
-OptGC = { Gc ~ Whitespace? ~ StringLit}
-OptPrefix = {Prefix ~ Whitespace? ~ Type ~ Whitespace? ~ Constant}
-OptPrologue = {Prologue ~ Whitespace? ~ Type ~ Whitespace? ~ Constant}
-OptPersonality = {Personality ~ Whitespace? ~ Type ~ Whitespace? ~ Constant}
-FunctionBody = { "{" ~ Whitespace* ~ BasicBlockList ~ Whitespace* ~ UseListOrders? ~ Whitespace* ~ "}"}
-AttrGroupDef = { Attributes ~ Whitespace? ~ AttrGroupId ~ Whitespace? ~ Eq ~ Whitespace? ~ "{" ~ Whitespace? ~ FuncAttrs? ~ Whitespace? ~ "}"}
-NamedMetadataDef = { MetadataName ~ Whitespace? ~ Eq ~ Whitespace? ~ Not ~ Whitespace? ~ "{" ~ Whitespace? ~ MetadataNodes? ~ Whitespace? ~ "}"}
-MetadataNodes = {MetadataNode~ Whitespace? ~ (Comma~ Whitespace? ~ MetadataNode)*}
-MetadataNode = { 
-    MetadataId
-	//| DIExpression
-}
-MetadataDefTuple = { 
-    MetadataId ~ Whitespace? ~ Eq ~ Whitespace? ~ Distinct? ~ Whitespace? ~ MDTuple
-}
-MetadataDefNode = { 
-    MetadataId ~ Whitespace? ~ Eq ~ Whitespace? ~ Distinct? //~ Whitespace? ~ SpecializedMDNode
-}
-MetadataDef = { 
-    MetadataDefTuple
-	| MetadataDefNode
-}
-UseListOrders = {UseListOrder ~ Whitespace? ~ (Whitespace? ~ UseListOrder)*}
-UseListOrder = { UseLO ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ "{" ~ Whitespace? ~ Indices? ~ Whitespace? ~ "}"}
-UseListOrderBB = { UseLODB ~ Whitespace? ~ GlobalIdent ~ Whitespace? ~ Comma ~ Whitespace? ~ LocalIdent ~ Whitespace? ~ Comma ~ Whitespace? ~ "{" ~ Whitespace? ~ Indices? ~ Whitespace? ~ "}"}
-Type = { 
-    VoidType
-	| FuncType
-	| FirstClassType
-}
-NoFuncType = { 
-    VoidType
-	//| FuncType
-	| FirstClassType
-}
-FirstClassType = { 
-    ConcreteType
-	| MetadataType
-}
-
-ConcreteType = { 
-    IntType
-	// Type ::= 'float' | 'void' (etc)
-	| FloatType
-	// Type ::= Type '*'
-	// Type ::= Type 'addrspace' '(' uint32 ')' '*'
-	| PointerPtrType
-	// Type ::= '<' ... '>'
-	| VectorType
-	| LabelType
-	// Type ::= '[' ... ']'
-	| ArrayType
-	// Type ::= StructType
-	| StructType
-	// Type ::= %foo
-	// Type ::= %4
-	| NamedType
-	| MMXType
-	| TokenType
-    | VoidType
-}
-FuncType = { NoFuncType ~ Whitespace? ~ "(" ~ Whitespace? ~ Params ~ Whitespace? ~ ")"}
-
-// --- [ Floating-point Types ] ------------------------------------------------
-FloatType = { 
-    Half
-	| Float
-	| Double
-	| X86Dp80
-	| Fp128
-	| PpcFp128
-}
-PointerPtrType = { "ptr"}
-PointerType = { Type ~ Whitespace? ~ AddrSpace? ~ Whitespace? ~ "*"}
-AddrSpace = { AddrSp ~ Whitespace? ~ "(" ~ Whitespace? ~ IntLit ~ Whitespace? ~ ")"}
-VectorType = { "<" ~ Whitespace? ~ IntLit ~ Whitespace? ~ "x" ~ Whitespace? ~ Type ~ Whitespace? ~ ">"}
-ArrayType = { "[" ~ Whitespace? ~ IntLit ~ Whitespace? ~ "x" ~ Whitespace? ~ Type ~ Whitespace? ~ "]"}
-StructType = { 
-	"<" ~ Whitespace? ~ "{" ~ Whitespace? ~ TypeList ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"
-	| "<" ~ Whitespace? ~ "{" ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"
-	| "{" ~ Whitespace? ~ TypeList ~ Whitespace? ~ "}"
-    | "{" ~ Whitespace? ~ "}"
-}
-TypeList = {Type ~ Whitespace? ~ (Comma ~ Whitespace? ~ Type)*}
-NamedType = { LocalIdent}
-Value = { 
-    Constant
-	// %42
-	// %foo
-	| LocalIdent
-	| InlineAsm
-    | Poison
-}
-InlineAsm = { Asm ~ Whitespace? ~ SideEffect? ~ Whitespace? ~ AlignStack? ~ Whitespace? ~ IntelDialect? ~ Whitespace? ~ StringLit ~ Whitespace? ~ Comma ~ Whitespace? ~ StringLit}
-Constant = { 
-    BoolConst
-	| IntConst
-	| FloatConst
-	| NullConst
-	| NoneConst
-	| StructConst
-	| ArrayConst
-	| CharArrayConst
-	| VectorConst
-	| ZeroInitializerConst
-	// @42
-	// @foo
-	| GlobalIdent
-	| UndefConst
-	| BlockAddressConst
-	| ConstantExpr
-}
-BoolConst = { BoolLit}
-BoolLit = { 
-    "true"
-	| "false"
-}
-IntConst = { IntLit}
-FloatConst = { FloatLit}
-StructConst = { 
-    "<" ~ Whitespace? ~ "{" ~ Whitespace? ~ TypeConsts ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"
-	| "<" ~ Whitespace? ~ "{" ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"
-	| "{" ~ Whitespace? ~ TypeConsts ~ Whitespace? ~ "}"
-    | "{" ~ Whitespace? ~ "}"
-}
-ArrayConst = { "[" ~ Whitespace? ~ TypeConsts? ~ Whitespace? ~ "]"}
-CharArrayConst = { "c" ~ Whitespace? ~ StringLit}
-VectorConst = { "<" ~ Whitespace? ~ TypeConsts? ~ Whitespace? ~ ">"}
-BlockAddressConst = { BlockAddress ~ Whitespace? ~ "(" ~ Whitespace? ~ GlobalIdent ~ Whitespace? ~ Comma ~ Whitespace? ~ LocalIdent ~ Whitespace? ~ ")"}
-ConstantExpr = {
-	// Binary expressions
-    AddExpr
-	| FAddExpr
-	| SubExpr
-	| FSubExpr
-	| MulExpr
-	| FMulExpr
-	| UDivExpr
-	| SDivExpr
-	| FDivExpr
-	| URemExpr
-	| SRemExpr
-	| FRemExpr
-	// Bitwise expressions
-	| ShlExpr
-	| LShrExpr
-	| AShrExpr
-	| AndExpr
-	| OrExpr
-	| XorExpr
-	// Vector expressions
-	| ExtractElementExpr
-	| InsertElementExpr
-	| ShuffleVectorExpr
-	// Aggregate expressions
-	| ExtractValueExpr
-	| InsertValueExpr
-	// Memory expressions
-	| GetElementPtrExpr
-	// Conversion expressions
-	| TruncExpr
-	| ZExtExpr
-	| SExtExpr
-	| FPTruncExpr
-	| FPExtExpr
-	| FPToUIExpr
-	| FPToSIExpr
-	| UIToFPExpr
-	| SIToFPExpr
-	| PtrToIntExpr
-	| IntToPtrExpr
-	| BitCastExpr
-	| AddrSpaceCastExpr
-	// Other expressions
-	| ICmpExpr
-	| FCmpExpr
-	| SelectExpr
-}
-ExprItem = {Type ~ Whitespace? ~ Constant}
-LhsExpr = {ExprItem}
-RhsExpr = {ExprItem}
-AddExpr = { "add" ~ Whitespace? ~ OverflowFlags? ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-FAddExpr = { "fadd" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-SubExpr = { "sub" ~ Whitespace? ~ OverflowFlags? ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-FSubExpr = { "fsub" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-MulExpr = { "mul" ~ Whitespace? ~ OverflowFlags? ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-FMulExpr = { "fmul" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-UDivExpr = { "udiv" ~ Whitespace? ~ Exact? ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-SDivExpr = { "sdiv" ~ Whitespace? ~ Exact? ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-FDivExpr = { "fdiv" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-URemExpr = { "urem" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-SRemExpr = { "srem" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-FRemExpr = { "frem" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-ShlExpr = { "shl" ~ Whitespace? ~ OverflowFlags? ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-LShrExpr = { "lshr" ~ Whitespace? ~ Exact? ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-AShrExpr = { "ashr" ~ Whitespace? ~ Exact? ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-AndExpr = { "and" ~ Whitespace? ~"(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~")"}
-OrExpr = { "or" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-XorExpr = { "xor" ~ Whitespace? ~"(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~")"}
-ExtractElementExpr = { "extractelement" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-InsertElementExpr = { "insertelement" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ ExprItem ~ Whitespace? ~ ")"}
-ShuffleVectorExpr = { "shufflevector" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ ExprItem ~ Whitespace? ~ ")"}
-ExtractValueExpr = { "extractvalue" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Indices? ~ Whitespace? ~ ")"}
-InsertValueExpr = { "insertvalue" ~ Whitespace? ~"(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ Indices? ~ Whitespace? ~")"}
-GetElementPtrExpr = { "getelementptr" ~ Whitespace? ~ InBounds? ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ GEPConstIndices? ~ Whitespace? ~ ")"}
-GEPConstIndices = {GEPConstIndex ~ Whitespace? ~ (Comma ~ Whitespace? ~ GEPConstIndex)*}
-GEPConstIndex = { Inrange? ~ Whitespace? ~ ExprItem}
-TruncExpr = { "trunc" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ ")"}
-ZExtExpr = { "zext" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ ")"}
-SExtExpr = { "sext" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ ")"}
-FPTruncExpr = { "fptrunc" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ ")"}
-FPExtExpr = { "fpext" ~ Whitespace? ~"(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~"to" ~ Whitespace? ~Type ~ Whitespace? ~")"}
-FPToUIExpr = { "fptoui" ~ Whitespace? ~"(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~"to" ~ Whitespace? ~Type ~ Whitespace? ~")"}
-FPToSIExpr = { "fptosi" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ ")"}
-UIToFPExpr = { "uitofp" ~ Whitespace? ~"(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~"to" ~ Whitespace? ~Type ~ Whitespace? ~")"}
-SIToFPExpr = { "sitofp" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ ")"}
-PtrToIntExpr = { "ptrtoint" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ ")"}
-IntToPtrExpr = { "inttoptr" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ ")"}
-BitCastExpr = { "bitcast" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ ")"}
-AddrSpaceCastExpr = { "addrspacecast" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ ")"}
-ICmpExpr = { "icmp" ~ Whitespace? ~ IPred ~ Whitespace? ~"(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~")"}
-FCmpExpr = { "fcmp" ~ Whitespace? ~ FPred ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
-SelectExpr = { "select" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ ExprItem ~ Whitespace? ~ ")"}
-BasicBlockList = {BasicBlock ~ (Whitespace | BasicBlock)*}
-BasicBlock = { LabelIdent ~ (Whitespace | Comment)* ~ Instructions? ~ Whitespace* ~ Terminator?}
-Instructions = {InstructionItem ~ (Whitespace* ~ InstructionItem)*}
-InstructionItem = {Comment? ~ Whitespace* ~ Instruction ~ Whitespace* ~ Comment?}
-Instruction = {
-	// Instructions? not producing values.
-    StoreInst
-	| FenceInst
-	| CmpXchgInst
-	| AtomicRMWInst
-	// Instructions? producing values.
-	| LocalIdent ~ Whitespace? ~ Eq ~ Whitespace? ~ ValueInstruction
-	| ValueInstruction
-}
-
-ValueInstruction = {
-	// Binary instructions
-    AddInst
-	| FAddInst
-	| SubInst
-	| FSubInst
-	| MulInst
-	| FMulInst
-	| UDivInst
-	| SDivInst
-	| FDivInst
-	| URemInst
-	| SRemInst
-	| FRemInst
-	// Bitwise instructions?
-	| ShlInst
-	| LShrInst
-	| AShrInst
-	| AndInst
-	| OrInst
-	| XorInst
-	// Vector instructions?
-	| ExtractElementInst
-	| InsertElementInst
-	| ShuffleVectorInst
-	// Aggregate instructions?
-	| ExtractValueInst
-	| InsertValueInst
-	// Memory instructions?
-	| AllocaInst
-	| LoadInst
-	| GetElementPtrInst
-	// Conversion instructions?
-	| ZExtInst
-	| SExtInst
-	| FPTruncInst
-	| FPExtInst
-	| FPToUIInst
-	| FPToSIInst
-	| TruncInst
-	| UIToFPInst
-	| SIToFPInst
-	| PtrToIntInst
-	| IntToPtrInst
-	| BitCastInst
-	| AddrSpaceCastInst
-	// Other instructions?
-	| ICmpInst
-	| FCmpInst
-	| PhiInst
-	| SelectInst
-	| CallInst
-	| VAArgInst
-	| LandingPadInst
-	| CatchPadInst
-	| CleanupPadInst
-    | Terminator
-}
-AddInst = { "add" ~ Whitespace? ~ OverflowFlags? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-FAddInst = { "fadd" ~ Whitespace? ~ FastMathFlags? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-SubInst = { "sub" ~ Whitespace? ~ OverflowFlags? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-FSubInst = { "fsub" ~ Whitespace? ~ FastMathFlags? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-MulInst = { "mul" ~ Whitespace? ~ OverflowFlags? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-FMulInst = { "fmul" ~ Whitespace? ~ FastMathFlags? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-UDivInst = { "udiv" ~ Whitespace? ~ Exact? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-SDivInst = { "sdiv" ~ Whitespace? ~ Exact? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-FDivInst = { "fdiv" ~ Whitespace? ~ FastMathFlags? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-URemInst = { "urem" ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-SRemInst = { "srem" ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-FRemInst = { "frem" ~ Whitespace? ~ FastMathFlags? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-ShlInst = { "shl" ~ Whitespace? ~ OverflowFlags? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-LShrInst = { "lshr" ~ Whitespace? ~ Exact? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-AShrInst = { "ashr" ~ Whitespace? ~ Exact? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-AndInst = { "and" ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-OrInst = { "or" ~ Whitespace? ~ Disjoint? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-XorInst = { "xor" ~ Whitespace? ~ Disjoint? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-ExtractElementInst = { "extractelement" ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst ~ Whitespace? ~ MetadataAttachments?}
-InsertElementInst = { "insertelement" ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ InstItem ~ Whitespace? ~ MetadataAttachments?}
-ShuffleVectorInst = { "shufflevector" ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ InstItem ~ Whitespace? ~ MetadataAttachments?}
-ExtractValueInst = { "extractvalue" ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Indices? ~ Whitespace? ~ MetadataAttachments?}
-InsertValueInst = { "insertvalue" ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Indices? ~ Whitespace? ~ MetadataAttachments?}
-
-AllocaInst1 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ Comma ~ Whitespace? ~ AddrSpace ~ Whitespace? ~ MetadataAttachments?}
-AllocaInst2 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ AddrSpace ~ Whitespace? ~ MetadataAttachments?}
-AllocaInst3 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ MetadataAttachments?}
-AllocaInst4 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ Comma ~ Whitespace? ~ AddrSpace ~ Whitespace? ~ MetadataAttachments?}
-AllocaInst5 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst ~ Whitespace? ~ MetadataAttachments?}
-AllocaInst6 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ MetadataAttachments?}
-AllocaInst7 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ AddrSpace ~ Whitespace? ~ MetadataAttachments?}
-AllocaInst8 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-AllocaInst = { 
-    AllocaInst1
-	| AllocaInst2
-	| AllocaInst3
-	| AllocaInst4
-	| AllocaInst5
-	| AllocaInst6
-	| AllocaInst7
-	| AllocaInst8
-}
-
-LoadInst1 = {"load" ~ Whitespace? ~ "atomic" ~ Whitespace? ~ OptVolatile? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ MetadataAttachments?}
-LoadInst2 = {"load" ~ Whitespace? ~ "atomic" ~ Whitespace? ~ OptVolatile? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ MetadataAttachments?}
-LoadInst3 = {"load" ~ Whitespace? ~ OptVolatile? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
-LoadInst4 = {"load" ~ Whitespace? ~ OptVolatile? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst ~ Whitespace? ~ MetadataAttachments?}
-LoadInst = {
-	// Load.
-	| LoadInst1
-	// Atomic load.
-	| LoadInst2
-	| LoadInst3
-    | LoadInst4
-}
-InstItem = {Type ~ Whitespace? ~ Value}
-LhsInst = {InstItem}
-RhsInst = {InstItem}
-StoreInst1 = {"store" ~ Whitespace? ~ "atomic" ~ Whitespace? ~ OptVolatile? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
-StoreInst2 = {"store" ~ Whitespace? ~ "atomic" ~ Whitespace? ~ OptVolatile? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
-StoreInst3 = {"store" ~ Whitespace? ~ OptVolatile? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
-StoreInst4 = {"store" ~ Whitespace? ~ OptVolatile? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
-StoreInst = { 
-    StoreInst1
-	| StoreInst2
-	| StoreInst3
-	| StoreInst4
-}
-FenceInst = { "fence" /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ MetadataAttachments?}
-CmpXchgInst = { "cmpxchg" ~ Whitespace? ~ Weak? ~ Whitespace? ~ OptVolatile? ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ InstItem /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ MetadataAttachments?}
-AtomicRMWInst = { "atomicrmw" ~ Whitespace? ~ OptVolatile? ~ Whitespace? ~ BinOp ~ Whitespace? ~ LhsInst ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsInst /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ MetadataAttachments?}
+IntType = {"i" ~ Decimals}
 BinOp = { 
     Add
     | And
@@ -539,780 +82,186 @@ BinOp = {
     | Xchg
     | Xor
 }
-
-GetElementPtrInst1 = {"getelementptr" ~ Whitespace? ~ InBounds? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ CommaSepTypeValueList ~ Whitespace? ~ MetadataAttachments?}
-GetElementPtrInst2 = {"getelementptr" ~ Whitespace? ~ InBounds? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-GetElementPtrInst = { 
-    GetElementPtrInst1
-	| GetElementPtrInst2
-}
-
-TruncInst = { "trunc" ~ Whitespace? ~ OverflowFlags? ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-ZExtInst = { "zext" ~ Whitespace? ~ Nneg? ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-SExtInst = { "sext" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-FPTruncInst = { "fptrunc" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-FPExtInst = { "fpext" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-FPToUIInst = { "fptoui" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-FPToSIInst = { "fptosi" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-UIToFPInst = { "uitofp" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-SIToFPInst = { "sitofp" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-PtrToIntInst = { "ptrtoint" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-IntToPtrInst = { "inttoptr" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-BitCastInst = { "bitcast" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-AddrSpaceCastInst = { "addrspacecast" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-ICmpInst = { "icmp" ~ Whitespace? ~ IPred ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-FCmpInst = { "fcmp" ~ Whitespace? ~ FastMathFlags? ~ Whitespace? ~ FPred ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-PhiInst = { "phi" ~ Whitespace? ~ Type ~ Whitespace? ~ IncList ~ Whitespace? ~ MetadataAttachments?}
-IncList = { Inc ~ Whitespace? ~ (Comma ~ Whitespace? ~ Inc)*}
-Inc = { "[" ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ LocalIdent ~ Whitespace? ~ "]"}
-SelectInst = { "select" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-CallInst = { OptTail? ~ Whitespace? ~ "call" ~ (Whitespace ~ FastMathFlags ~ Whitespace)? ~ Whitespace? ~ CallingConv? ~ Whitespace? ~ ReturnAttrs? ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "(" ~ Whitespace? ~ Args? ~ Whitespace? ~ ")" ~ Whitespace? ~ Comma? ~ Whitespace? ~ FuncAttrs? ~ Whitespace? ~ Comma? ~ Whitespace? ~ OperandBundles? ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
-OptTail = {
-    Musttail
-	| Notail
-	| Tail
-}
-VAArgInst = { "va_arg" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
-LandingPadInst = { "landingpad" ~ Whitespace? ~ Type ~ Whitespace? ~ OptCleanup? ~ Whitespace? ~ Clauses ~ Whitespace? ~ MetadataAttachments?}
-Clauses = { Clause ~ (Whitespace? ~ Clause)* }
-clauseCatch = {"catch" ~ Whitespace? ~ Type ~ Whitespace? ~ Value}
-ClauseFilter = {"filter" ~ Whitespace? ~ Type ~ Whitespace? ~ ArrayConst}
-Clause = { 
-    clauseCatch
-	| ClauseFilter
-}
-CatchPadInst = { "catchpad" ~ Whitespace? ~ "within" ~ Whitespace? ~ LocalIdent ~ Whitespace? ~ "[" ~ Whitespace? ~ ExceptionArgs? ~ Whitespace? ~ "]" ~ Whitespace? ~ MetadataAttachments?}
-CleanupPadInst = { "cleanuppad" ~ Whitespace? ~ "within" ~ Whitespace? ~ ExceptionScope ~ Whitespace? ~ "[" ~ Whitespace? ~ ExceptionArgs? ~ Whitespace? ~ "]" ~ Whitespace? ~ MetadataAttachments?}
-Terminator = { 
-    RetTerm
-	| BrTerm
-	| CondBrTerm
-	| SwitchTerm
-	| IndirectBrTerm
-	| InvokeTerm
-	| ResumeTerm
-	| CatchSwitchTerm
-	| CatchRetTerm
-	| CleanupRetTerm
-	| UnreachableTerm
-}
-RetTerm = {"ret"  ~ Whitespace? ~ ConcreteType  ~ Whitespace? ~ Value?  ~ Whitespace? ~ MetadataAttachments?}
-// Unconditional branch.
-BrTerm = { "br"  ~ Whitespace? ~ LabelType  ~ Whitespace? ~ LocalIdent  ~ Whitespace? ~ MetadataAttachments?}
-// Conditional branch.
-CondBrTerm = { "br"  ~ Whitespace? ~ IntType  ~ Whitespace? ~ Value  ~ Whitespace? ~ Comma  ~ Whitespace? ~ LabelType  ~ Whitespace? ~ LocalIdent  ~ Whitespace? ~ Comma  ~ Whitespace? ~ LabelType  ~ Whitespace? ~ LocalIdent ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
-SwitchTerm = { "switch"  ~ Whitespace? ~ Type  ~ Whitespace? ~ Value  ~ Whitespace? ~ Comma  ~ Whitespace? ~ LabelType  ~ Whitespace? ~ LocalIdent  ~ Whitespace? ~ "[" ~ Whitespace* ~ Cases?  ~ Whitespace* ~ "]" ~ Whitespace? ~ MetadataAttachments?}
-Cases = {Case ~ Whitespace* ~ (Whitespace* ~ Case)*}
-Case = { Type ~ Whitespace? ~ IntConst ~ Whitespace? ~ Comma ~ Whitespace? ~ LabelType ~ Whitespace? ~ LocalIdent}
-IndirectBrTerm = { "indirectbr" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ "[" ~ Whitespace* ~ LabelList ~ Whitespace* ~ "]" ~ Whitespace? ~ MetadataAttachments?}
-LabelList = {Label ~ Whitespace? ~ (Comma ~ Whitespace? ~ Label)*}
-Label = { LabelType ~ Whitespace? ~ LocalIdent}
-InvokeTerm = { "invoke" ~ Whitespace? ~ CallingConv? ~ Whitespace? ~ ReturnAttrs? ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "(" ~ Whitespace? ~ Args? ~ Whitespace? ~ ")" ~ Whitespace? ~ FuncAttrs? ~ Whitespace? ~ OperandBundles? ~ Whitespace* ~ "to" ~ Whitespace? ~ LabelType ~ Whitespace? ~ LocalIdent ~ Whitespace? ~ "unwind" ~ Whitespace? ~ LabelType ~ Whitespace? ~ LocalIdent ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
-ResumeTerm = { "resume" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
-CatchSwitchTerm = { "catchswitch" ~ Whitespace? ~ "within" ~ Whitespace? ~ ExceptionScope ~ Whitespace? ~ "[" ~ Whitespace* ~ LabelList ~ Whitespace* ~ "]" ~ Whitespace? ~ "unwind" ~ Whitespace? ~ UnwindTarget ~ Whitespace? ~ MetadataAttachments?}
-CatchRetTerm = { "catchret" ~ Whitespace? ~ "from" ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ LabelType ~ Whitespace? ~ LocalIdent ~ Whitespace? ~ MetadataAttachments?}
-CleanupRetTerm = { "cleanupret" ~ Whitespace? ~ "from" ~ Whitespace? ~ Value ~ Whitespace? ~ "unwind" ~ Whitespace? ~ UnwindTarget ~ Whitespace? ~ MetadataAttachments?}
-UnreachableTerm = { "unreachable" ~ Whitespace? ~ MetadataAttachments?}
-
-LocalLabel = {LabelType ~ Whitespace? ~ LocalIdent}
-ToCaller = {"to" ~ Whitespace? ~ "caller"}
-UnwindTarget = { 
-    ToCaller
-	| LocalLabel
-}
+MDString = { "!" ~ Whitespace? ~ StringLit}
+MetadataId = { Not ~ Id}
+MetadataName = {Not ~ EscapeName}
+TypeValue = {Type ~ Whitespace? ~ Value}
+LhsValue = {Value}
+RhsValue = {Value}
+LhsType = {Type}
+RhsType = {Type}
+TypeValues = {TypeValue ~ (Whitespace? ~ TypeValue)*}
 MDTuple = { "!" ~ Whitespace? ~ MDFields}
 MDFields = { 
 	"{" ~ Whitespace? ~ MDFieldList ~ Whitespace? ~ "}"
     | "{" ~ Whitespace? ~ "}"
 }
 MDFieldList = {MDField ~ Whitespace? ~ (Comma ~ Whitespace? ~ MDField)*}
-
 MDField = {
-	// Null is a special case since it is typeless.
     NullConst
 	| Metadata
 }
-
 Metadata = { 
-    Type ~ Whitespace? ~ Value
+    TypeValue
 	| MDString
-	// !{ ... }
 	| MDTuple
-	// !7
 	| MetadataId
-	//| SpecializedMDNode
 }
-MDString = { "!" ~ Whitespace? ~ StringLit}
 MetadataAttachment = { MetadataName ~ Whitespace? ~ MDNode?}
-//CommaSepMetadataAttachment = { MetadataName ~ (Comma ~ Whitespace? ~ MDNode)}
 MDNode = {
-	// !{ ... } = { 
     MDTuple
-	// !42
 	| MetadataId
-	//| SpecializedMDNode
-    //| MDString
+    | MDString
+}
+MetadataNode = { 
+    MetadataId
+	//| DIExpression
 }
 MetadataAttachments = { 
     MetadataAttachment ~ (Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachment)*
 }
-/*
-SpecializedMDNode = {
-    DICompileUnit
-	| DIFile
-	| DIBasicType
-	| DISubroutineType
-	| DIDerivedType
-	| DICompositeType
-	| DISubrange
-	| DIEnumerator
-	| DITemplateTypeParameter
-	| DITemplateValueParameter
-	| DIModule // not in spec as of 2018-02-21
-	| DINamespace
-	| DIGlobalVariable
-	| DISubprogram
-	| DILexicalBlock
-	| DILexicalBlockFile
-	| DILocation
-	| DILocalVariable
-	| DIExpression
-	| DIGlobalVariableExpression // not in spec as of 2018-02-21
-	| DIObjCProperty
-	| DIImportedEntity
-	| DIMacro
-	| DIMacroFile
-	| GenericDINode // not in spec as of 2018-02-21
+LhsTypeValue = {TypeValue}
+RhsTypeValue = {TypeValue}
+Tail = {
+    Musttail
+	| Notail
+	| TailKey
 }
-
-DICompileUnit = { "!DICompileUnit" ~ Whitespace? ~ "(" ~ Whitespace? ~ DICompileUnitFields? ~ Whitespace? ~ ")"}
-DICompileUnitFields = {
-	DICompileUnitField ~ Whitespace? ~ (Comma ~ Whitespace? ~ DICompileUnitField)*
+Auth = {
+    Readwrite
+    | Writeonly
+    | Readonly
+    | Read
+    | Write
 }
-
-DICompileUnitField = { 
-    "language:" DwarfLang
-	| FileField
-	| "producer:" StringLit
-	| IsOptimizedField
-	| "flags:" StringLit
-	| "runtimeVersion:" IntLit
-	| "splitDebugFilename:" StringLit
-	| "emissionKind:" EmissionKind
-	| "enums:" MDField
-	| "retainedTypes:" MDField
-	| "globals:" MDField
-	| "imports:" MDField
-	| "macros:" MDField
-	| "dwoId:" IntLit
-	| "splitDebugInlining:" BoolLit
-	| "debugInfoForProfiling:" BoolLit
-	| "gnuPubnames:" BoolLit
-;
-
-DIFile = { "!DIFile" "(" DIFileFields ")"
-;
-
-DIFileFields = { empty
-	| DIFileFieldList
-;
-
-DIFileFieldList = { DIFileField
-	| DIFileFieldList Comma DIFileField
-;
-
-DIFileField = { "filename:" StringLit
-	| "directory:" StringLit
-	| "checksumkind:" ChecksumKind
-	| "checksum:" StringLit
-;
-
-DIBasicType = { "!DIBasicType" "(" DIBasicTypeFields ")"
-;
-
-DIBasicTypeFields = { empty
-	| DIBasicTypeFieldList
-;
-
-DIBasicTypeFieldList = { DIBasicTypeField
-	| DIBasicTypeFieldList Comma DIBasicTypeField
-;
-
-DIBasicTypeField = { TagField
-	| NameField
-	| SizeField
-	| AlignField
-	| "encoding:" DwarfAttEncoding
-;
-
-DISubroutineType = { "!DISubroutineType" "(" DISubroutineTypeFields ")"
-;
-
-DISubroutineTypeFields = { empty
-	| DISubroutineTypeFieldList
-;
-
-DISubroutineTypeFieldList = { DISubroutineTypeField
-	| DISubroutineTypeFieldList Comma DISubroutineTypeField
-;
-
-DISubroutineTypeField = { FlagsField
-	| "cc:" DwarfCC
-	| "types:" MDField
-;
-
-DIDerivedType = { "!DIDerivedType" "(" DIDerivedTypeFields ")"
-;
-
-DIDerivedTypeFields = { empty
-	| DIDerivedTypeFieldList
-;
-
-DIDerivedTypeFieldList = { DIDerivedTypeField
-	| DIDerivedTypeFieldList Comma DIDerivedTypeField
-;
-
-DIDerivedTypeField = { TagField
-	| NameField
-	| ScopeField
-	| FileField
-	| LineField
-	| BaseTypeField
-	| SizeField
-	| AlignField
-	| OffsetField
-	| FlagsField
-	| "extraData:" MDField
-	| "dwarfAddressSpace:" IntLit
-;
-
-DICompositeType = { "!DICompositeType" "(" DICompositeTypeFields ")"
-;
-
-DICompositeTypeFields = { empty
-	| DICompositeTypeFieldList
-;
-
-DICompositeTypeFieldList = { DICompositeTypeField
-	| DICompositeTypeFieldList Comma DICompositeTypeField
-;
-
-DICompositeTypeField = { TagField
-	| NameField
-	| ScopeField
-	| FileField
-	| LineField
-	| BaseTypeField
-	| SizeField
-	| AlignField
-	| OffsetField
-	| FlagsField
-	| "elements:" MDField
-	| "runtimeLang:" DwarfLang
-	| "vtableHolder:" MDField
-	| TemplateParamsField
-	| "identifier:" StringLit
-	| "discriminator:" MDField
-;
-
-DISubrange = { "!DISubrange" "(" DISubrangeFields ")"
-;
-
-DISubrangeFields = { empty
-	| DISubrangeFieldList
-;
-
-DISubrangeFieldList = { DISubrangeField
-	| DISubrangeFieldList Comma DISubrangeField
-;
-
-DISubrangeField = { "count:" IntOrMDField
-	| "lowerBound:" IntLit
-;
-
-DIEnumerator = { "!DIEnumerator" "(" DIEnumeratorFields ")"
-;
-
-DIEnumeratorFields = { empty
-	| DIEnumeratorFieldList
-;
-
-DIEnumeratorFieldList = { DIEnumeratorField
-	| DIEnumeratorFieldList Comma DIEnumeratorField
-;
-
-DIEnumeratorField = { NameField
-	| "value:" IntLit
-	| "isUnsigned:" BoolLit
-;
-
-DITemplateTypeParameter = { "!DITemplateTypeParameter" "(" DITemplateTypeParameterFields ")"
-;
-
-DITemplateTypeParameterFields = { empty
-	| DITemplateTypeParameterFieldList
-;
-
-DITemplateTypeParameterFieldList = { DITemplateTypeParameterField
-	| DITemplateTypeParameterFieldList Comma DITemplateTypeParameterField
-;
-
-DITemplateTypeParameterField = { NameField
-	| TypeField
-;
-
-DITemplateValueParameter = { "!DITemplateValueParameter" "(" DITemplateValueParameterFields ")"
-;
-
-DITemplateValueParameterFields = { empty
-	| DITemplateValueParameterFieldList
-;
-
-DITemplateValueParameterFieldList = { DITemplateValueParameterField
-	| DITemplateValueParameterFieldList Comma DITemplateValueParameterField
-;
-
-DITemplateValueParameterField = { TagField
-	| NameField
-	| TypeField
-	| "value:" MDField
-;
-
-DIModule = { "!DIModule" "(" DIModuleFields ")"
-;
-
-DIModuleFields = { empty
-	| DIModuleFieldList
-;
-
-DIModuleFieldList = { DIModuleField
-	| DIModuleFieldList Comma DIModuleField
-;
-
-DIModuleField = { ScopeField
-	| NameField
-	| "configMacros:" StringLit
-	| "includePath:" StringLit
-	| "isysroot:" StringLit
-;
-
-DINamespace = { "!DINamespace" "(" DINamespaceFields ")"
-;
-
-DINamespaceFields = { empty
-	| DINamespaceFieldList
-;
-
-DINamespaceFieldList = { DINamespaceField
-	| DINamespaceFieldList Comma DINamespaceField
-;
-
-DINamespaceField = { ScopeField
-	| NameField
-	| "exportSymbols:" BoolLit
-;
-
-DIGlobalVariable = { "!DIGlobalVariable" "(" DIGlobalVariableFields ")"
-;
-
-DIGlobalVariableFields = { empty
-	| DIGlobalVariableFieldList
-;
-
-DIGlobalVariableFieldList = { DIGlobalVariableField
-	| DIGlobalVariableFieldList Comma DIGlobalVariableField
-;
-
-DIGlobalVariableField = { NameField
-	| ScopeField
-	| LinkageNameField
-	| FileField
-	| LineField
-	| TypeField
-	| IsLocalField
-	| IsDefinitionField
-	| DeclarationField
-	| AlignField
-;
-
-DISubprogram = { "!DISubprogram" "(" DISubprogramFields ")"
-;
-
-DISubprogramFields = { empty
-	| DISubprogramFieldList
-;
-
-DISubprogramFieldList = { DISubprogramField
-	| DISubprogramFieldList Comma DISubprogramField
-;
-
-DISubprogramField = { NameField
-	| ScopeField
-	| LinkageNameField
-	| FileField
-	| LineField
-	| TypeField
-	| IsLocalField
-	| IsDefinitionField
-	| "scopeLine:" IntLit
-	| "containingType:" MDField
-	| "virtuality:" DwarfVirtuality
-	| "virtualIndex:" IntLit
-	| "thisAdjustment:" IntLit
-	| FlagsField
-	| IsOptimizedField
-	| "unit:" MDField
-	| TemplateParamsField
-	| DeclarationField
-	| "variables:" MDField
-	| "thrownTypes:" MDField
-;
-
-DILexicalBlock = { "!DILexicalBlock" "(" DILexicalBlockFields ")"
-;
-
-DILexicalBlockFields = { empty
-	| DILexicalBlockFieldList
-;
-
-DILexicalBlockFieldList = { DILexicalBlockField
-	| DILexicalBlockFieldList Comma DILexicalBlockField
-;
-
-DILexicalBlockField = { ScopeField
-	| FileField
-	| LineField
-	| ColumnField
-;
-
-DILexicalBlockFile = { "!DILexicalBlockFile" "(" DILexicalBlockFileFields ")"
-;
-
-DILexicalBlockFileFields = { empty
-	| DILexicalBlockFileFieldList
-;
-
-DILexicalBlockFileFieldList = { DILexicalBlockFileField
-	| DILexicalBlockFileFieldList Comma DILexicalBlockFileField
-;
-
-DILexicalBlockFileField = { ScopeField
-	| FileField
-	| "discriminator:" IntLit
-;
-
-DILocation = { "!DILocation" "(" DILocationFields ")"
-;
-
-DILocationFields = { empty
-	| DILocationFieldList
-;
-
-DILocationFieldList = { DILocationField
-	| DILocationFieldList Comma DILocationField
-;
-
-DILocationField = { LineField
-	| ColumnField
-	| ScopeField
-	| "inlinedAt:" MDField
-;
-
-DILocalVariable = { "!DILocalVariable" "(" DILocalVariableFields ")"
-;
-
-DILocalVariableFields = { empty
-	| DILocalVariableFieldList
-;
-
-DILocalVariableFieldList = { DILocalVariableField
-	| DILocalVariableFieldList Comma DILocalVariableField
-;
-
-DILocalVariableField = { NameField
-	| "arg:" IntLit
-	| ScopeField
-	| FileField
-	| LineField
-	| TypeField
-	| FlagsField
-	| AlignField
-;
-
-DIExpression = { "!DIExpression" "(" DIExpressionFields ")"
-;
-
-DIExpressionFields = { empty
-	| DIExpressionFieldList
-;
-
-DIExpressionFieldList = { DIExpressionField
-	| DIExpressionFieldList Comma DIExpressionField
-;
-
-DIExpressionField = { IntLit
-	| DwarfOp
-;
-
-DIGlobalVariableExpression = { "!DIGlobalVariableExpression" "(" DIGlobalVariableExpressionFields ")"
-;
-
-DIGlobalVariableExpressionFields = { empty
-	| DIGlobalVariableExpressionFieldList
-;
-
-DIGlobalVariableExpressionFieldList = { DIGlobalVariableExpressionField
-	| DIGlobalVariableExpressionFieldList Comma DIGlobalVariableExpressionField
-;
-
-DIGlobalVariableExpressionField = { "var:" MDField
-	| "expr:" MDField
-;
-
-DIObjCProperty = { "!DIObjCProperty" "(" DIObjCPropertyFields ")"
-;
-
-DIObjCPropertyFields = { empty
-	| DIObjCPropertyFieldList
-;
-
-DIObjCPropertyFieldList = { DIObjCPropertyField
-	| DIObjCPropertyFieldList Comma DIObjCPropertyField
-;
-
-DIObjCPropertyField = { NameField
-	| FileField
-	| LineField
-	| "setter:" StringLit
-	| "getter:" StringLit
-	| "attributes:" IntLit
-	| TypeField
-;
-
-DIImportedEntity = { "!DIImportedEntity" "(" DIImportedEntityFields ")"
-;
-
-DIImportedEntityFields = { empty
-	| DIImportedEntityFieldList
-;
-
-DIImportedEntityFieldList = { DIImportedEntityField
-	| DIImportedEntityFieldList Comma DIImportedEntityField
-;
-
-DIImportedEntityField = { TagField
-	| ScopeField
-	| "entity:" MDField
-	| FileField
-	| LineField
-	| NameField
-;
-
-DIMacro = { "!DIMacro" "(" DIMacroFields ")"
-;
-
-DIMacroFields = { empty
-	| DIMacroFieldList
-;
-
-DIMacroFieldList = { DIMacroField
-	| DIMacroFieldList Comma DIMacroField
-;
-
-DIMacroField = { TypeMacinfoField
-	| LineField
-	| NameField
-	| "value:" StringLit
-;
-
-DIMacroFile = { "!DIMacroFile" "(" DIMacroFileFields ")"
-;
-
-DIMacroFileFields = { empty
-	| DIMacroFileFieldList
-;
-
-DIMacroFileFieldList = { DIMacroFileField
-	| DIMacroFileFieldList Comma DIMacroFileField
-;
-
-DIMacroFileField = { TypeMacinfoField
-	| LineField
-	| FileField
-	| "nodes:" MDField
-;
-
-GenericDINode = { "!GenericDINode" "(" GenericDINodeFields ")"
-;
-
-GenericDINodeFields = { empty
-	| GenericDINodeFieldList
-;
-
-GenericDINodeFieldList = { GenericDINodeField
-	| GenericDINodeFieldList Comma GenericDINodeField
-;
-
-GenericDINodeField = { TagField
-	| "header:" StringLit
-	| "operands:" MDFields
-;
-
-FileField = { "file:" MDField
-;
-
-IsOptimizedField = { "isOptimized:" BoolLit
-;
-
-TagField = { "tag:" DwarfTag
-;
-
-NameField = { "name:" StringLit
-;
-
-SizeField = { "size:" IntLit
-;
-
-AlignField = { "align:" IntLit
-;
-
-FlagsField = { "flags:" DIFlagList
-;
-
-LineField = { "line:" IntLit
-;
-
-ScopeField = { "scope:" MDField
-;
-
-BaseTypeField = { "baseType:" MDField
-;
-
-OffsetField = { "offset:" IntLit
-;
-
-TemplateParamsField = { "templateParams:" MDField
-;
-
-IntOrMDField = { IntLit
-	| MDField
-;
-
-TypeField = { "type:" MDField
-;
-
-LinkageNameField = { "linkageName:" StringLit
-;
-
-IsLocalField = { "isLocal:" BoolLit
-;
-
-IsDefinitionField = { "isDefinition:" BoolLit
-;
-
-DeclarationField = { "declaration:" MDField
-;
-
-ColumnField = { "column:" IntLit
-;
-
-TypeMacinfoField = { "type:" DwarfMacinfo
-;
-
-ChecksumKind
-	// CSK_foo = { checksum_kind
-;
-
-DIFlagList = { DIFlag
-	| DIFlagList "|" DIFlag
-;
-
-DIFlag = { IntLit
-	// DIFlagFoo
-	| di_flag
-;
-
-
-DwarfAttEncoding = { IntLit
-	// DW_ATE_foo
-	| dwarf_att_encoding
-;
-
-
-DwarfCC = { IntLit
-	// DW_CC_foo
-	| dwarf_cc
-;
-
-
-DwarfLang = { IntLit
-	// DW_LANG_foo
-	| dwarf_lang
-;
-
-
-DwarfMacinfo = { IntLit
-	// DW_MACINFO_foo
-	| dwarf_macinfo
-;
-
-DwarfOp
-	// DW_OP_foo = { dwarf_op
-;
-
-
-DwarfTag = { IntLit
-	// DW_TAG_foo
-	| dwarf_tag
-;
-
-
-DwarfVirtuality = { IntLit
-	// DW_VIRTUALITY_foo
-	| dwarf_virtuality
-;
-
-EmissionKind = { IntLit
-	| "FullDebug"
-	| "LineTablesOnly"
-	| "NoDebug"
-;
-*/
-
-
-TypeValues = {
-    TypeValue ~ (Whitespace? ~ TypeValue)*
+FPred = { 
+    False
+	| True
+    | Oeq
+    | Oge
+    | Ogt
+    | Ole
+    | Olt
+    | One
+    | Ord
+    | Ueq
+    | Uge
+    | Ugt
+    | Ule
+    | Ult
+    | Une
+    | Uno
 }
-CommaSepTypeValueList = {
-    TypeValue ~ Whitespace? ~ (Comma ~ Whitespace? ~ TypeValue)*
+FastMathFlag = { 
+    Afn
+    | Arcp
+    | Contract
+    | Fast
+    | Ninf
+    | Nnan
+    | Nsz
+    | Reassoc
 }
-TypeValue = { Type ~ Whitespace? ~ Value}
-TypeConsts = {
-    TypeConst ~ (Comma ~ Whitespace? ~ TypeConst)*
+FastMathFlags = {FastMathFlag ~ Whitespace? ~ (Whitespace? ~ FastMathFlag)*}
+IPred = { 
+    Eq
+	| Ne
+	| Sge
+	| Sgt
+	| Sle
+	| Slt
+	| Uge
+	| Ugt
+	| Ule
+	| Ult
 }
-TypeConst = { Type ~ Whitespace? ~ Constant}
+Linkage = { 
+    Appending
+	| AvailableExternally
+	| Common
+	| Internal
+	| Linkonce
+	| linkonceOdr
+	| Private
+	| Weak
+	| WeakOdr
+}
+ExternLinkage = { 
+    ExternWeak
+	| External
+}
+OverflowFlags = {OverflowFlag ~ (Whitespace? ~ OverflowFlag)*}
+OverflowFlag = { 
+    Nsw
+	| Nuw
+}
+ParamAttrs = { ParamAttr ~ (Whitespace? ~ ParamAttr)*}
+ParamAttr = { 
+    Alignment
+	| Dereferenceable
+	| StringLit
+	| Byval
+	| Inalloca
+	| Inreg
+	| Nest
+	| Noalias
+	| Nocapture
+	| Nonnull
+	| Readnone
+	| Readonly
+	| Returned
+	| Signext
+	| Sret
+	| Swifterror
+	| Swiftself
+	| Writeonly
+	| Zeroext
+    | Noundef
+    | DeadOnUnwind
+    | Writable
+    | Immarg
+    | Allocalign
+    | Allocptr
+    | Range
+}
+Range = {RangeKey ~ Whitespace? ~ "(" ~ Whitespace? ~ Type ~ Whitespace? ~ IntLit ~ Whitespace? ~ Comma ~ Whitespace? ~ IntConst ~ Whitespace? ~")" }
+Sret = {SretKey ~ "(" ~ Whitespace? ~ Type ~ Whitespace? ~ ")" | SretKey}
 Alignment = { "align" ~ Whitespace? ~ IntLit}
-
-// ref: parseAllocSizeArguments
-AllocSize1 = {"allocsize" ~ Whitespace? ~ "(" ~ Whitespace? ~ IntLit ~ Whitespace? ~ ")"}
-AllocSize2 = {"allocsize" ~ Whitespace? ~ "(" ~ Whitespace? ~ IntLit ~ Whitespace? ~ Comma ~ Whitespace? ~ IntLit ~ Whitespace? ~ ")"}
-AllocSize = { 
-    AllocSize1
-	| AllocSize2
+DereferenceableItem = { 
+	DereferenceableNullable
+    | DereferenceableNonNullable
 }
-
-Args = { 
-	| ArgList ~ Whitespace? ~ Comma? ~ Whitespace? ~ DotDotDot?
-	| DotDotDot
+Dereferenceable = {DereferenceableItem ~ Whitespace? ~ "(" ~ Whitespace? ~ IntLit ~ Whitespace? ~ ")"}
+ExceptionScope = { 
+    NoneConst
+	| LocalIdent
 }
-
-ArgList = {Arg ~ (Comma ~ Whitespace? ~ Arg)*}
-
-Arg = { 
-    ConcreteType ~ Whitespace? ~ ParamAttrs? ~ Whitespace? ~ Value
-	| MetadataType ~ Whitespace? ~ Metadata
+Indices = {Index ~ Whitespace? ~ (Comma ~ Whitespace? ~ Index)*}
+Index = { IntLit}
+Section = { "section" ~ Whitespace? ~ StringLit}
+TLSModel = { 
+    InitialExec
+	| LocalDynamic
+	| LocalExec
 }
-
+UnnamedAddr = { 
+    LocalUnnamedAddr
+	| NoLocalUnnamedAddr
+}
+Visibility = { 
+    Default
+	| Hidden
+	| Protected
+}
+Alias = { 
+    Als
+	| Ifunc
+}
+LocalLabel = {LabelType ~ Whitespace? ~ LocalIdent}
+UnwindTarget = { 
+    ToCaller
+	| LocalLabel
+}
 AtomicOrdering = { 
     AcqRel
     | Acquire
@@ -1321,6 +270,7 @@ AtomicOrdering = {
     | SeqCst
     | Unordered
 }
+
 CallingConv = { 
     AmdgpuCs
     | AmdgpuEs
@@ -1363,70 +313,6 @@ CallingConv = {
     | Ccc
 	| Cc ~ Whitespace? ~ IntLit
 }
-
-/*
-OptComdat = { empty
-	| Comdat
-;
-*/
-Comdat = { 
-	Com ~ Whitespace? ~ "(" ~ Whitespace? ~ ComdatName ~ Whitespace? ")"
-    | Com
-}
-
-DereferenceableNullable = {"dereferenceable_or_null" ~ Whitespace? ~ "(" ~ Whitespace? ~ IntLit ~ Whitespace? ~ ")"}
-DereferenceableNonNullable = {"dereferenceable" ~ Whitespace? ~ "(" ~ Whitespace? ~ IntLit ~ Whitespace? ~ ")"}
-Dereferenceable = { 
-	DereferenceableNullable
-    | DereferenceableNonNullable
-}
-DLLStorageClass = { 
-    Dllexport
-	| Dllimport
-}
-ExceptionArgs = {
-	ExceptionArg ~ Whitespace? ~ (Comma ~ Whitespace? ~ ExceptionArg)*
-}
-ExceptionArg = { 
-    ConcreteType ~ Whitespace? ~ Value
-	| MetadataType ~ Whitespace? ~ Metadata
-}
-ExceptionScope = { 
-    NoneConst
-	| LocalIdent
-}
-FastMathFlags = {FastMathFlag ~ Whitespace? ~ (Whitespace? ~ FastMathFlag)*}
-
-FastMathFlag = { 
-    Afn
-    | Arcp
-    | Contract
-    | Fast
-    | Ninf
-    | Nnan
-    | Nsz
-    | Reassoc
-}
-FPred = { 
-    False
-	| True
-    | Oeq
-    | Oge
-    | Ogt
-    | Ole
-    | Olt
-    | One
-    | Ord
-    | Ueq
-    | Uge
-    | Ugt
-    | Ule
-    | Ult
-    | Une
-    | Uno
-}
-
-FuncAttrs = {FuncAttr ~ (Whitespace? ~ FuncAttr)*}
 FuncAttr = {
 	// not used in attribute groups.
     AttrGroupId
@@ -1484,81 +370,484 @@ FuncAttr = {
     | Mocallback
     | Allockind
 }
-Indices = {Index ~ Whitespace? ~ (Comma ~ Whitespace? ~ Index)*}
-Index = { IntLit}
-IPred = { 
-    Eq
-	| Ne
-	| Sge
-	| Sgt
-	| Sle
-	| Slt
-	| Uge
-	| Ugt
-	| Ule
-	| Ult
+Immutable = { 
+    Const
+	| Glob
 }
-Linkage = { 
-    Appending
-	| AvailableExternally
-	| Common
-	| Internal
-	| Linkonce
-	| linkonceOdr
-	| Private
-	| Weak
-	| WeakOdr
+OptGC = { Gc ~ Whitespace? ~ StringLit}
+MetadataDef = {MetadataId ~ Whitespace? ~ Eq ~ Whitespace? ~ Distinct? ~ Whitespace? ~ MDTuple?}
+FloatType = { 
+    Half
+	| Float
+	| Double
+	| X86Dp80
+	| Fp128
+	| PpcFp128
 }
-ExternLinkage = { 
-    ExternWeak
-	| External
+TypeKind = {OpaqueType | Type}
+TypeDef = {LocalIdent ~ Whitespace? ~ Eq ~ Whitespace? ~ Ty ~ Whitespace? ~ TypeKind}
+SelectionKind = { 
+    Any
+	| ExactMatch
+	| Largest
+	| Noduplicates
+	| Samesize
 }
+TypeConsts = {
+    TypeConst ~ (Comma ~ Whitespace? ~ TypeConst)*
+}
+TypeConst = { Type ~ Whitespace? ~ Constant}
+Constant = { 
+    BoolConst
+	| IntConst
+	| FloatConst
+	| NullConst
+	| NoneConst
+	| StructConst
+	| ArrayConst
+	| CharArrayConst
+	| VectorConst
+	| ZeroInitializerConst
+	| GlobalIdent
+	| UndefConst
+	| BlockAddressConst
+	| ConstantExpr
+}
+BoolConst = { 
+    "true"
+	| "false"
+}
+IntConst = {IntLit}
+FloatConst = {FloatLit}
+StructConst = { 
+    "<" ~ Whitespace? ~ "{" ~ Whitespace? ~ TypeConsts ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"
+	| "<" ~ Whitespace? ~ "{" ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"
+	| "{" ~ Whitespace? ~ TypeConsts ~ Whitespace? ~ "}"
+    | "{" ~ Whitespace? ~ "}"
+}
+ArrayConst = { "[" ~ Whitespace? ~ TypeConsts? ~ Whitespace? ~ "]"}
+CharArrayConst = { "c" ~ Whitespace? ~ StringLit}
+VectorConst = { "<" ~ Whitespace? ~ TypeConsts? ~ Whitespace? ~ ">"}
+BlockAddressConst = { BlockAddress ~ Whitespace? ~ "(" ~ Whitespace? ~ GlobalIdent ~ Whitespace? ~ Comma ~ Whitespace? ~ LocalIdent ~ Whitespace? ~ ")"}
+ConstantExpr = {
+	// Binary expressions
+    BinaryExpr
+	// Bitwise expressions
+	| BitwiseExpr
+	// Vector expressions
+	| VectorExpr
+    // Aggregate expressions
+	| AggregateExpr
+	// Memory expressions
+	| MemoryExpr
+	// Conversion expressions
+	| ConversionExpr
+	// Other expressions
+	| OtherExp
+}
+
+LhsExpr = {TypeConst}
+RhsExpr = {TypeConst}
+OpFlag = {
+    OverflowFlags
+    | Exact
+    | Disjoint
+}
+BinaryOp = {
+    Add
+    | FAdd
+    | Sub
+    | FSub
+    | Mul
+    | FMul
+    | UDiv
+    | SDiv
+    | FDiv
+    | URem
+    | SRem
+    | FRem
+}
+BinaryExpr = { BinaryOp ~ Whitespace? ~ OpFlag? ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
+BitwiseOp = {
+    Shl
+    | LShr
+    | AShr
+    | And
+    | Or
+    | Xor
+}
+BitwiseExpr = {BitwiseOp ~ Whitespace? ~ OpFlag? ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ ")"}
+VectorOp = {
+    ExtractElement
+    | InsertElement
+    | ShuffleVector
+}
+VectorExpr = {VectorOp ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ Comma? ~ Whitespace? ~ TypeConst? ~ Whitespace? ~ ")"}
+AggregateOp = {ExtractValue | InsertValue}
+AggregateExpr = {AggregateOp ~ Whitespace? ~"(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma? ~ Whitespace? ~ RhsExpr? ~ Whitespace? ~ Indices? ~ Whitespace? ~")"}
+MemoryOp = {GetElementPtr}
+MemoryExpr = { MemoryOp ~ Whitespace? ~ InBounds? ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ GEPConstIndices? ~ Whitespace? ~ ")"}
+GEPConstIndices = {GEPConstIndex ~ Whitespace? ~ (Comma ~ Whitespace? ~ GEPConstIndex)*}
+GEPConstIndex = { Inrange? ~ Whitespace? ~ TypeConst}
+ConversionOp = {
+    Trunc
+    | ZExt
+    | SExt
+    | FPTrunc
+    | FPExt
+    | FPToUI
+    | FPToSI
+    | UIToFP
+    | SIToFP
+    | PtrToInt
+    | IntToPtr
+    | BitCast
+    | AddrSpaceCast
+}
+ConversionExpr = {ConversionOp ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ "to" ~ Whitespace? ~ Type ~ Whitespace? ~ ")"}
+PredFlag = {
+    IPred
+    | FPred
+}
+
+OtherOp = {
+    ICmp
+    | FCmp
+    | Select
+}
+OtherExp = {OtherOp ~ Whitespace? ~ PredFlag? ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsExpr ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsExpr ~ Whitespace? ~ Comma? ~ Whitespace? ~ TypeConst? ~ Whitespace? ~ ")"}
+
+///////
+Type = { 
+    VoidType
+	| FuncType
+	| FirstClassType
+}
+NoFuncType = { 
+    VoidType
+	//| FuncType
+	| FirstClassType
+}
+FirstClassType = { 
+    ConcreteType
+	| MetadataType
+}
+
+ConcreteType = { 
+    IntType
+	// Type ::= 'float' | 'void' (etc)
+	| FloatType
+	// Type ::= Type '*'
+	// Type ::= Type 'addrspace' '(' uint32 ')' '*'
+	| PointerPtrType
+	// Type ::= '<' ... '>'
+	| VectorType
+	| LabelType
+	// Type ::= '[' ... ']'
+	| ArrayType
+	// Type ::= StructType
+	| StructType
+	// Type ::= %foo
+	// Type ::= %4
+	| NamedType
+	| MMXType
+	| TokenType
+    | VoidType
+}
+FuncType = { NoFuncType ~ Whitespace? ~ "(" ~ Whitespace? ~ Params ~ Whitespace? ~ ")"}
+
+// --- [ Floating-point Types ] ------------------------------------------------
+PointerPtrType = { "ptr"}
+PointerType = { Type ~ Whitespace? ~ AddrSpace? ~ Whitespace? ~ "*"}
+AddrSpace = { AddrSp ~ Whitespace? ~ "(" ~ Whitespace? ~ IntLit ~ Whitespace? ~ ")"}
+VectorType = { "<" ~ Whitespace? ~ IntLit ~ Whitespace? ~ "x" ~ Whitespace? ~ Type ~ Whitespace? ~ ">"}
+ArrayType = { "[" ~ Whitespace? ~ IntLit ~ Whitespace? ~ "x" ~ Whitespace? ~ Type ~ Whitespace? ~ "]"}
+StructType = { 
+	"<" ~ Whitespace? ~ "{" ~ Whitespace? ~ TypeList ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"
+	| "<" ~ Whitespace? ~ "{" ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"
+	| "{" ~ Whitespace? ~ TypeList ~ Whitespace? ~ "}"
+    | "{" ~ Whitespace? ~ "}"
+}
+TypeList = {Type ~ Whitespace? ~ (Comma ~ Whitespace? ~ Type)*}
+NamedType = { LocalIdent}
+InlineAsm = { Asm ~ Whitespace? ~ SideEffect? ~ Whitespace? ~ AlignStack? ~ Whitespace? ~ IntelDialect? ~ Whitespace? ~ StringLit ~ Whitespace? ~ Comma ~ Whitespace? ~ StringLit}
+Value = { 
+    Constant
+	| LocalIdent
+	| InlineAsm
+    | Poison
+}
+FuncAttrs = {FuncAttr ~ (Whitespace? ~ FuncAttr)*}
+DLLStorageClass = { 
+    Dllexport
+	| Dllimport
+}
+
+
+
+
+Instructions = {InstructionItem ~ (Whitespace* ~ InstructionItem)*}
+InstructionItem = {Comment? ~ Whitespace* ~ Instruction ~ Whitespace* ~ Comment?}
+Instruction = {
+	// Instructions? not producing values.
+    StoreInst
+	| FenceInst
+	| CmpXchgInst
+	| AtomicRMWInst
+	// Instructions? producing values.
+	| LocalIdent ~ Whitespace? ~ Eq ~ Whitespace? ~ ValueInstruction
+	| ValueInstruction
+}
+ValueInstruction = {
+	// Binary instructions
+    BinaryInst
+	// Bitwise instructions?
+	| BitwiseInst
+	// Vector instructions?
+	| VectorInst
+    // Aggregate instructions?
+	| AggregateInst
+	// Memory instructions?
+	| MemoryInst
+	// Conversion instructions?
+	| ConversionInst
+	// Other instructions?
+	| ICmpInst
+	| FCmpInst
+	| PhiInst
+	| SelectInst
+	| CallInst
+	| VAArgInst
+	| LandingPadInst
+	| CatchPadInst
+	| CleanupPadInst
+    | Terminator
+}
+
+StoreInst1 = {"store" ~ Whitespace? ~ "atomic" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
+StoreInst2 = {"store" ~ Whitespace? ~ "atomic" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
+StoreInst3 = {"store" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
+StoreInst4 = {"store" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
+StoreInst = { 
+    StoreInst1
+	| StoreInst2
+	| StoreInst3
+	| StoreInst4
+}
+FenceInst = { "fence" ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ MetadataAttachments?}
+CmpXchgInst = { "cmpxchg" ~ Whitespace? ~ Weak? ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ TypeValue /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ MetadataAttachments?}
+AtomicRMWInst = { "atomicrmw" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ BinOp ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ MetadataAttachments?}
+BinaryInst = { BinaryOp ~ Whitespace? ~ OpFlag? ~ Whitespace? ~ Type ~ Whitespace? ~ LhsValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsValue ~ Whitespace? ~ MetadataAttachments?}
+BitwiseInst = { BitwiseOp ~ Whitespace? ~ OpFlag? ~ Whitespace? ~ Type ~ Whitespace? ~ LhsValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsValue ~ Whitespace? ~ MetadataAttachments?}
+VectorInst = { VectorOp ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma? ~ Whitespace? ~ TypeValue? ~ Whitespace? ~ MetadataAttachments?}
+AggregateInst = {AggregateOp ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma? ~ Whitespace? ~ RhsTypeValue? ~ Whitespace? ~ Comma? ~ Whitespace? ~ Indices? ~ Whitespace? ~ MetadataAttachments?}
+
+AllocaInst1 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ Comma ~ Whitespace? ~ AddrSpace ~ Whitespace? ~ MetadataAttachments?}
+AllocaInst2 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ AddrSpace ~ Whitespace? ~ MetadataAttachments?}
+AllocaInst3 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ MetadataAttachments?}
+AllocaInst4 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ Comma ~ Whitespace? ~ AddrSpace ~ Whitespace? ~ MetadataAttachments?}
+AllocaInst5 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ MetadataAttachments?}
+AllocaInst6 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ MetadataAttachments?}
+AllocaInst7 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ AddrSpace ~ Whitespace? ~ MetadataAttachments?}
+AllocaInst8 = {"alloca" ~ Whitespace? ~ InAlloca? ~ Whitespace? ~ SwiftError? ~ Whitespace? ~ Type ~ Whitespace? ~ MetadataAttachments?}
+AllocaInst = { 
+    AllocaInst1
+	| AllocaInst2
+	| AllocaInst3
+	| AllocaInst4
+	| AllocaInst5
+	| AllocaInst6
+	| AllocaInst7
+	| AllocaInst8
+}
+
+LoadInst1 = {"load" ~ Whitespace? ~ "atomic" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ MetadataAttachments?}
+LoadInst2 = {"load" ~ Whitespace? ~ "atomic" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ MetadataAttachments?}
+LoadInst3 = {"load" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
+LoadInst4 = {"load" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ MetadataAttachments?}
+LoadInst = {
+	// Load.
+	| LoadInst1
+	// Atomic load.
+	| LoadInst2
+	| LoadInst3
+    | LoadInst4
+}
+
+GetElementPtrInst = {MemoryOp ~ Whitespace? ~ InBounds? ~ Whitespace? ~ LhsType ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsType ~ Whitespace? ~ Value ~ Whitespace? ~ Comma? ~ Whitespace? ~ CommaSepTypeValueList? ~ Whitespace? ~ MetadataAttachments?}
+MemoryInst = {
+    AllocaInst
+    | LoadInst
+    | GetElementPtrInst
+}
+ConversionInstFlag = {
+    OverflowFlags
+    | Nneg
+}
+ConversionInst = {ConversionOp ~ Whitespace? ~ ConversionInstFlag? ~ Whitespace? ~ LhsType ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ RhsType ~ Whitespace? ~ MetadataAttachments?}
+
+ICmpInst = { "icmp" ~ Whitespace? ~ IPred ~ Whitespace? ~ Type ~ Whitespace? ~ LhsValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsValue ~ Whitespace? ~ MetadataAttachments?}
+FCmpInst = { "fcmp" ~ Whitespace? ~ FastMathFlags? ~ Whitespace? ~ FPred ~ Whitespace? ~ Type ~ Whitespace? ~ LhsValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsValue ~ Whitespace? ~ MetadataAttachments?}
+PhiInst = { "phi" ~ Whitespace? ~ Type ~ Whitespace? ~ IncList ~ Whitespace? ~ MetadataAttachments?}
+SelectInst = { "select" ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ TypeValue ~ Whitespace? ~ MetadataAttachments?}
+CallInst = { Tail? ~ Whitespace? ~ "call" ~ (Whitespace ~ FastMathFlags ~ Whitespace)? ~ Whitespace? ~ CallingConv? ~ Whitespace? ~ ReturnAttrs? ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "(" ~ Whitespace? ~ Args? ~ Whitespace? ~ ")" ~ Whitespace? ~ Comma? ~ Whitespace? ~ FuncAttrs? ~ Whitespace? ~ Comma? ~ Whitespace? ~ OperandBundles? ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
+VAArgInst = { "va_arg" ~ Whitespace? ~ LhsType ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsType ~ Whitespace? ~ MetadataAttachments?}
+LandingPadInst = { "landingpad" ~ Whitespace? ~ Type ~ Whitespace? ~ OptCleanup? ~ Whitespace? ~ Clauses ~ Whitespace? ~ MetadataAttachments?}
+CatchPadInst = { "catchpad" ~ Whitespace? ~ "within" ~ Whitespace? ~ LocalIdent ~ Whitespace? ~ "[" ~ Whitespace? ~ ExceptionArgs? ~ Whitespace? ~ "]" ~ Whitespace? ~ MetadataAttachments?}
+CleanupPadInst = { "cleanuppad" ~ Whitespace? ~ "within" ~ Whitespace? ~ ExceptionScope ~ Whitespace? ~ "[" ~ Whitespace? ~ ExceptionArgs? ~ Whitespace? ~ "]" ~ Whitespace? ~ MetadataAttachments?}
+
+
+SourceFilename = { SrcFile ~ Whitespace? ~ Eq ~ Whitespace? ~ StringLit}
+TargetKind = {
+    Datalayout
+    | Triple
+}
+TargetDefinition = {Target ~ Whitespace? ~ TargetKind ~ Whitespace? ~ Eq ~ Whitespace? ~ StringLit}
+ModuleAsm = { ModuleKey ~ Whitespace? ~ Asm ~ Whitespace? ~ StringLit}
+ComdatDef = { ComdatName ~ Whitespace? ~ Eq ~ Whitespace? ~ Comdat ~ Whitespace? ~ SelectionKind}
+
+GlobalDecl = { GlobalIdent ~ Whitespace? ~ Eq ~ Whitespace? ~ ExternLinkage ~ Whitespace? ~ PreemptionSpecifier? ~ Whitespace? ~ Visibility? ~ Whitespace? ~ DLLStorageClass? ~ Whitespace? ~ ThreadLocal? ~ Whitespace? ~ UnnamedAddr? ~ Whitespace? ~ AddrSpace? ~ Whitespace? ~ ExternallyInitialized? ~ Whitespace? ~ Immutable ~ Whitespace? ~ Type ~ Whitespace? ~ GlobalAttrs? ~ Whitespace? ~ FuncAttrs?}
+GlobalDef = { GlobalIdent ~ Whitespace? ~ Eq ~ Whitespace? ~ Linkage? ~ Whitespace? ~ PreemptionSpecifier? ~ Whitespace? ~ Visibility? ~ Whitespace? ~ DLLStorageClass? ~ Whitespace? ~ ThreadLocal? ~ Whitespace? ~ UnnamedAddr? ~ Whitespace? ~ AddrSpace? ~ Whitespace? ~ ExternallyInitialized? ~ Whitespace? ~ Immutable ~ Whitespace? ~ Type ~ Whitespace? ~ Constant ~ Whitespace? ~ GlobalAttrs? ~ Whitespace? ~ FuncAttrs?}
+
+GlobalAttrs = {Comma ~ Whitespace? ~ GlobalAttr ~ Whitespace? ~ (Comma ~ Whitespace? ~ GlobalAttr)*}
+GlobalAttr = { 
+    Section
+	| Comdat
+	| Alignment
+	//   ::= !dbg !57
+	| MetadataAttachment
+}
+LinkageKind = { 
+    ExternLinkage
+    | Linkage
+}
+IndirectSymbolDef = { GlobalIdent ~ Whitespace? ~ Eq ~ Whitespace? ~ LinkageKind? ~ Whitespace? ~ PreemptionSpecifier? ~ Whitespace? ~ Visibility? ~ Whitespace? ~ DLLStorageClass? ~ Whitespace? ~ ThreadLocal? ~ Whitespace? ~ UnnamedAddr? ~ Whitespace? ~ Alias ~ Whitespace? ~ Type ~ Whitespace? ~ Comma ~ Whitespace? ~ TypeConst}
+FunctionDecl = { Declare ~ Whitespace? ~ MetadataAttachments? ~ Whitespace? ~ ExternLinkage? ~ Whitespace? ~ FunctionHeader}
+FunctionDef = { Define ~ Whitespace? ~ Linkage? ~ Whitespace? ~ FunctionHeader ~ Whitespace? ~ MetadataAttachments? ~ Whitespace? ~ FunctionBody}
+FunctionHeader = { PreemptionSpecifier? ~ Whitespace? ~ Visibility? ~ Whitespace? ~ DLLStorageClass? ~ Whitespace? ~ CallingConv? ~ Whitespace? ~ ReturnAttrs? ~ Whitespace? ~ Type ~ Whitespace? ~ GlobalIdent ~ Whitespace? ~ "(" ~ Whitespace? ~ Params? ~ Whitespace? ~ ")" ~ Whitespace? ~ UnnamedAddr? ~ Whitespace? ~ FuncAttrs? ~ Whitespace? ~ Section? ~ Whitespace? ~ Comdat? ~ Whitespace? ~ OptGC? ~ Whitespace? ~ OptPrefix? ~ Whitespace? ~ OptPrologue? ~ Whitespace? ~ OptPersonality?}
+
+OptPrefix = {Prefix ~ Whitespace? ~ TypeConst}
+OptPrologue = {Prologue ~ Whitespace? ~ TypeConst}
+OptPersonality = {Personality ~ Whitespace? ~ TypeConst}
+
+FunctionBody = { "{" ~ Whitespace* ~ BasicBlockList ~ Whitespace* ~ UseListOrders? ~ Whitespace* ~ "}"}
+AttrGroupDef = { Attributes ~ Whitespace? ~ AttrGroupId ~ Whitespace? ~ Eq ~ Whitespace? ~ "{" ~ Whitespace? ~ FuncAttrs? ~ Whitespace? ~ "}"}
+NamedMetadataDef = { MetadataName ~ Whitespace? ~ Eq ~ Whitespace? ~ Not ~ Whitespace? ~ "{" ~ Whitespace? ~ MetadataNodes? ~ Whitespace? ~ "}"}
+MetadataNodes = {MetadataNode~ Whitespace? ~ (Comma~ Whitespace? ~ MetadataNode)*}
+
+
+UseListOrders = {UseListOrder ~ Whitespace? ~ (Whitespace? ~ UseListOrder)*}
+UseListOrder = { UseLO ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ "{" ~ Whitespace? ~ Indices? ~ Whitespace? ~ "}"}
+UseListOrderBB = { UseLODB ~ Whitespace? ~ GlobalIdent ~ Whitespace? ~ Comma ~ Whitespace? ~ LocalIdent ~ Whitespace? ~ Comma ~ Whitespace? ~ "{" ~ Whitespace? ~ Indices? ~ Whitespace? ~ "}"}
+
+
+BasicBlockList = {BasicBlock ~ (Whitespace | BasicBlock)*}
+BasicBlock = { LabelIdent ~ (Whitespace | Comment)* ~ Instructions? ~ Whitespace* ~ Terminator?}
+
+// here
+IncList = { Inc ~ Whitespace? ~ (Comma ~ Whitespace? ~ Inc)*}
+Inc = { "[" ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ LocalIdent ~ Whitespace? ~ "]"}
+
+Clauses = { Clause ~ (Whitespace? ~ Clause)* }
+clauseCatch = {"catch" ~ Whitespace? ~ Type ~ Whitespace? ~ Value}
+ClauseFilter = {"filter" ~ Whitespace? ~ Type ~ Whitespace? ~ ArrayConst}
+Clause = { 
+    clauseCatch
+	| ClauseFilter
+}
+Allockind = {AllockindKey ~ Whitespace? ~ "(" ~ Whitespace? ~ StringLit ~ Whitespace? ~")" }
+MemoryArg = {LabelIdent ~ Whitespace? ~ Auth}
+MemoryArgs = {MemoryArg ~ Whitespace? ~ (Comma ~ Whitespace? ~ MemoryArg)*}
+MemoryArgItem = {
+    | MemoryArgs
+    | NoneConst
+}
+Memory = {Mem ~ "(" ~ Whitespace? ~ MemoryArgItem? ~ Whitespace? ~ ")"}
+Terminator = { 
+    RetTerm
+	| BrTerm
+	| CondBrTerm
+	| SwitchTerm
+	| IndirectBrTerm
+	| InvokeTerm
+	| ResumeTerm
+	| CatchSwitchTerm
+	| CatchRetTerm
+	| CleanupRetTerm
+	| UnreachableTerm
+}
+RetTerm = {"ret"  ~ Whitespace? ~ ConcreteType  ~ Whitespace? ~ Value?  ~ Whitespace? ~ MetadataAttachments?}
+// Unconditional branch.
+BrTerm = { "br"  ~ Whitespace? ~ LabelType  ~ Whitespace? ~ LocalIdent  ~ Whitespace? ~ MetadataAttachments?}
+// Conditional branch.
+LhsLocalIdent = {LocalIdent}
+RhsLocalIdent = {LocalIdent}
+CondBrTerm = { "br"  ~ Whitespace? ~ IntType  ~ Whitespace? ~ Value  ~ Whitespace? ~ Comma  ~ Whitespace? ~ LabelType  ~ Whitespace? ~ LhsLocalIdent  ~ Whitespace? ~ Comma  ~ Whitespace? ~ LabelType  ~ Whitespace? ~ RhsLocalIdent ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
+SwitchTerm = { "switch"  ~ Whitespace? ~ Type  ~ Whitespace? ~ Value  ~ Whitespace? ~ Comma  ~ Whitespace? ~ LabelType  ~ Whitespace? ~ LocalIdent  ~ Whitespace? ~ "[" ~ Whitespace* ~ Cases?  ~ Whitespace* ~ "]" ~ Whitespace? ~ MetadataAttachments?}
+Cases = {Case ~ Whitespace* ~ (Whitespace* ~ Case)*}
+Case = { Type ~ Whitespace? ~ IntConst ~ Whitespace? ~ Comma ~ Whitespace? ~ LabelType ~ Whitespace? ~ LocalIdent}
+IndirectBrTerm = { "indirectbr" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ "[" ~ Whitespace* ~ LabelList ~ Whitespace* ~ "]" ~ Whitespace? ~ MetadataAttachments?}
+LabelList = {Label ~ Whitespace? ~ (Comma ~ Whitespace? ~ Label)*}
+Label = { LabelType ~ Whitespace? ~ LocalIdent}
+InvokeTerm = { "invoke" ~ Whitespace? ~ CallingConv? ~ Whitespace? ~ ReturnAttrs? ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "(" ~ Whitespace? ~ Args? ~ Whitespace? ~ ")" ~ Whitespace? ~ FuncAttrs? ~ Whitespace? ~ OperandBundles? ~ Whitespace* ~ "to" ~ Whitespace? ~ LabelType ~ Whitespace? ~ LhsLocalIdent ~ Whitespace? ~ "unwind" ~ Whitespace? ~ LabelType ~ Whitespace? ~ RhsLocalIdent ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
+ResumeTerm = { "resume" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
+CatchSwitchTerm = { "catchswitch" ~ Whitespace? ~ "within" ~ Whitespace? ~ ExceptionScope ~ Whitespace? ~ "[" ~ Whitespace* ~ LabelList ~ Whitespace* ~ "]" ~ Whitespace? ~ "unwind" ~ Whitespace? ~ UnwindTarget ~ Whitespace? ~ MetadataAttachments?}
+CatchRetTerm = { "catchret" ~ Whitespace? ~ "from" ~ Whitespace? ~ Value ~ Whitespace? ~ "to" ~ Whitespace? ~ LabelType ~ Whitespace? ~ LocalIdent ~ Whitespace? ~ MetadataAttachments?}
+CleanupRetTerm = { "cleanupret" ~ Whitespace? ~ "from" ~ Whitespace? ~ Value ~ Whitespace? ~ "unwind" ~ Whitespace? ~ UnwindTarget ~ Whitespace? ~ MetadataAttachments?}
+UnreachableTerm = { "unreachable" ~ Whitespace? ~ MetadataAttachments?}
+
+CommaSepTypeValueList = {
+    TypeValue ~ Whitespace? ~ (Comma ~ Whitespace? ~ TypeValue)*
+}
+
+// ref: parseAllocSizeArguments
+AllocSize1 = {"allocsize" ~ Whitespace? ~ "(" ~ Whitespace? ~ IntLit ~ Whitespace? ~ ")"}
+AllocSize2 = {"allocsize" ~ Whitespace? ~ "(" ~ Whitespace? ~ IntLit ~ Whitespace? ~ Comma ~ Whitespace? ~ IntLit ~ Whitespace? ~ ")"}
+AllocSize = { 
+    AllocSize1
+	| AllocSize2
+}
+
+Args = { 
+	| ArgList ~ Whitespace? ~ Comma? ~ Whitespace? ~ DotDotDot?
+	| DotDotDot
+}
+
+ArgList = {Arg ~ (Comma ~ Whitespace? ~ Arg)*}
+
+ArgConcret = {ConcreteType ~ Whitespace? ~ ParamAttrs? ~ Whitespace? ~ Value}
+ArgMetadata = {MetadataType ~ Whitespace? ~ Metadata}
+Arg = { 
+    ArgConcret
+	| ArgMetadata
+}
+
+Comdat = { 
+	Com ~ Whitespace? ~ "(" ~ Whitespace? ~ ComdatName ~ Whitespace? ~ ")"
+    | Com
+}
+
+
+ExceptionArgs = {
+	ExceptionArg ~ Whitespace? ~ (Comma ~ Whitespace? ~ ExceptionArg)*
+}
+
+ExceptionArgConcrete = {ConcreteType ~ Whitespace? ~ Value}
+ExceptionArgMetadata = {MetadataType ~ Whitespace? ~ Metadata}
+ExceptionArg = { 
+    ExceptionArgConcrete
+	| ExceptionArgMetadata
+}
+
 OperandBundles = {"[" ~ Whitespace? ~ OperandBundle ~ (Whitespace? ~ OperandBundle)* ~ Whitespace? ~ "]"}
 OperandBundle = { StringLit ~ Whitespace? ~ "(" ~ Whitespace? ~ TypeValues ~ Whitespace? ~ ")"}
-OverflowFlags = {OverflowFlag ~ (Whitespace? ~ OverflowFlag)*}
-OverflowFlag = { 
-    Nsw
-	| Nuw
-}
-ParamAttrs = { ParamAttr ~ (Whitespace? ~ ParamAttr)*}
-ParamAttr = { 
-    Alignment
-	| Dereferenceable
-	| StringLit
-	| Byval
-	| Inalloca
-	| Inreg
-	| Nest
-	| Noalias
-	| Nocapture
-	| Nonnull
-	| Readnone
-	| Readonly
-	| Returned
-	| Signext
-	| Sret
-	| Swifterror
-	| Swiftself
-	| Writeonly
-	| Zeroext
-    | Noundef
-    | DeadOnUnwind
-    | Writable
-    | Immarg
-    | Allocalign
-    | Allocptr
-    | Range
-}
 Params = { 
     ParamList ~ Whitespace? ~ Comma ~ Whitespace? ~ DotDotDot
 	| ParamList
     | DotDotDot
 }
 ParamList = { Param ~ Whitespace? ~ (Comma ~ Whitespace? ~ Param)*}
-Param = { 
-	Type ~ Whitespace? ~ ParamAttrs? ~ Whitespace? ~ LocalIdent
-    | Type ~ Whitespace? ~ ParamAttrs?
-}
+Param = { Type ~ Whitespace? ~ ParamAttrs? ~ Whitespace? ~ LocalIdent?}
 PreemptionSpecifier = { 
     DsoLocal
 	| DsoPreemptable
@@ -1577,27 +866,32 @@ ReturnAttr = {
     | Noundef
     | Range
 }
-Section = { "section" ~ Whitespace? ~ StringLit}
+
 StackAlignment = { "alignstack" ~ Whitespace? ~ "(" ~ Whitespace? ~ IntLit ~ Whitespace? ~ ")"}
 SyncScope = { "syncscope" ~ Whitespace? ~ "(" ~ Whitespace? ~ StringLit ~ Whitespace? ~ ")"}
 ThreadLocal = { 
 	"thread_local" ~ Whitespace? ~ "(" ~ Whitespace? ~ TLSModel ~ Whitespace? ~ ")"
     | "thread_local"
 }
-TLSModel = { 
-    InitialExec
-	| LocalDynamic
-	| LocalExec
+
+
+TopLevelEntity = { 
+    SourceFilename
+	| TargetDefinition
+	| ModuleAsm
+	| TypeDef
+	| ComdatDef
+	| GlobalDecl
+	| GlobalDef
+	| IndirectSymbolDef
+	| FunctionDecl
+	| FunctionDef
+	| AttrGroupDef
+	| NamedMetadataDef
+	| MetadataDef
+	| UseListOrder
+	| UseListOrderBB
 }
-UnnamedAddr = { 
-    LocalUnnamedAddr
-	| NoLocalUnnamedAddr
-}
-Visibility = { 
-    Default
-	| Hidden
-	| Protected
-}
-OptVolatile = { "volatile"}
+
 Item = { (Comment ~ Whitespace?)* ~ Whitespace? ~ TopLevelEntity ~ Whitespace*}
 Module = _{ SOI ~ Item* ~ EOI }
