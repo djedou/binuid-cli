@@ -1,6 +1,7 @@
 use super::TypeConst;
 
 
+#[derive(Debug)]
 pub enum StructConst {
     GrOrLessParath {
         type_list: Vec<TypeConst>

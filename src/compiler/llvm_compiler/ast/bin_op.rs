@@ -1,4 +1,6 @@
 
+
+#[derive(Debug)]
 pub enum BinOp {
     Add,
     And,

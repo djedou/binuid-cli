@@ -1,6 +1,7 @@
 use super::{FastMathFlag, CallingConv, ReturnAttr, Type, Value, Arg, FuncAttr, OperandBundle, MetadataAttachment};
 
 
+#[derive(Debug)]
 pub struct CallInst { 
     pub tail: bool,
     pub flags: Vec<FastMathFlag>,

@@ -1,5 +1,7 @@
 use super::{BitwiseOp, OpFlag, Type, Value, MetadataAttachment};
 
+
+#[derive(Debug)]
 pub struct BitwiseInst { 
     pub op: BitwiseOp,
     pub flag: Option<OpFlag>,

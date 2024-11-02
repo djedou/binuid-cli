@@ -1,6 +1,6 @@
 use super::{Type, InstructionItem, AtomicOrdering, Alignment, MetadataAttachment};
 
-
+#[derive(Debug)]
 pub enum LoadInst {
 	// Load.
 	Atomic1 {

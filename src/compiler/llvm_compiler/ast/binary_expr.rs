@@ -1,5 +1,7 @@
 use super::{OpFlag, TypeConst};
 
+
+#[derive(Debug)]
 pub enum BinaryOp {
     Add,
     FAdd,
@@ -14,6 +16,8 @@ pub enum BinaryOp {
     SRem,
     FRem
 }
+
+#[derive(Debug)]
 pub struct BinaryExpr { 
     pub op: BinaryOp,
     pub op_flag: Option<OpFlag>,

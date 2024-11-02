@@ -3,6 +3,8 @@ use super::{
     Immutable, Type, Constant, GlobalAttr, FuncAttr
 };
 
+
+#[derive(Debug)]
 pub struct GlobalDef {
     pub ident: Ident,
     pub linkage: Option<Linkage>,

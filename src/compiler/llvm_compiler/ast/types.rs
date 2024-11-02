@@ -1,5 +1,7 @@
 use super::Param;
 
+
+#[derive(Debug)]
 pub enum Type {
     Void,
     Func {
@@ -10,11 +12,14 @@ pub enum Type {
     }
 }
 
+
+#[derive(Debug)]
 pub struct FuncType {
     return_type: Box<Type>,
     params: Vec<Param>
 }
 
+#[derive(Debug)]
 pub enum FirstClassType { 
     Concrete {
         concrete_type: Box<ConcreteType>
@@ -22,6 +27,7 @@ pub enum FirstClassType {
 	Metadata
 }
 
+#[derive(Debug)]
 pub enum ConcreteType { 
     Int {
         decimals: u16
@@ -48,6 +54,8 @@ pub enum ConcreteType {
     Void
 }
 
+
+#[derive(Debug)]
 pub enum FloatType { 
     Half,
 	Float,
@@ -57,16 +65,19 @@ pub enum FloatType {
 	PpcFp128
 }
 
+#[derive(Debug)]
 pub struct VectorType {
     pub size: u32,
     pub type_: Type
 }
 
+#[derive(Debug)]
 pub struct ArrayType {
     pub size: u32,
     pub type_: Type
 }
 
+#[derive(Debug)]
 pub enum StructType {
     GrOrLessParath {
         type_list: Vec<Type>

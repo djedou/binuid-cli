@@ -116,6 +116,7 @@ mod case;
 mod item;
 mod top_level_entity;
 mod global_decl;
+mod comment;
 
 
 pub use aggregate_expr::*; 
@@ -235,6 +236,7 @@ pub use case::*;
 pub use item::*;
 pub use top_level_entity::*;
 pub use global_decl::*;
+pub use comment::*;
 
 
 

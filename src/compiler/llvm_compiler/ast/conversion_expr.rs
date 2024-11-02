@@ -1,6 +1,7 @@
 use super::{Type, TypeConst};
 
 
+#[derive(Debug)]
 pub enum ConversionOp  {
     Trunc,
     ZExt,
@@ -16,6 +17,8 @@ pub enum ConversionOp  {
     BitCast,
     AddrSpaceCast
 }
+
+#[derive(Debug)]
 pub struct ConversionExpr {
     pub op: ConversionOp,
     pub lhs: TypeConst, 

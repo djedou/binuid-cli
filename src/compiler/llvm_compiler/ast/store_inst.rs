@@ -1,5 +1,6 @@
 use super::{TypeValue, AtomicOrdering, Alignment, MetadataAttachment};
 
+#[derive(Debug)]
 pub enum StoreInst { 
     Atomic1 {
         value: AtomicStore1
@@ -15,6 +16,8 @@ pub enum StoreInst {
     }
 }
 
+
+#[derive(Debug)]
 pub struct AtomicStore1 {
     pub volatile: bool,
     pub lhs: TypeValue,
@@ -24,6 +27,7 @@ pub struct AtomicStore1 {
     pub metadata_attachments: Vec<MetadataAttachment>
 }
 
+#[derive(Debug)]
 pub struct AtomicStore2 {
     pub volatile: bool,
     pub lhs: TypeValue,
@@ -32,6 +36,7 @@ pub struct AtomicStore2 {
     pub metadata_attachments: Vec<MetadataAttachment>
 }
 
+#[derive(Debug)]
 pub struct VolatileStore1 {
     pub volatile: bool,
     pub lhs: TypeValue,
@@ -41,6 +46,7 @@ pub struct VolatileStore1 {
     pub metadata_attachments: Vec<MetadataAttachment>
 }
 
+#[derive(Debug)]
 pub struct VolatileStore2 {
     pub volatile: bool,
     pub lhs: TypeValue,

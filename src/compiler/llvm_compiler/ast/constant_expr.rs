@@ -1,5 +1,7 @@
 use super::{BinaryExpr, BitwiseExpr, VectorExpr, AggregateExpr, MemoryExpr, ConversionExpr, OtherExp};
 
+
+#[derive(Debug)]
 pub enum ConstantExpr {
     Binary {
         expr: BinaryExpr

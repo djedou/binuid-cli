@@ -1,3 +1,5 @@
+
+#[derive(Debug)]
 pub struct InlineAsm { 
     pub side_effect: bool,
     pub align_stack: bool,

@@ -8,7 +8,7 @@ use std::{
     io::Read
 };
 use crate::{get_duid_bin_build, get_duid_bin_lib_build, Result};
-use llvm_compiler::LlvmCompiler;
+use llvm_compiler::{LlvmCompiler, BuildFrom};
 
 
 pub struct Compiler {

@@ -5,6 +5,7 @@ use super::{
 };
 
 
+#[derive(Debug)]
 pub enum Terminator { 
     RetTerm {
         concrete_type: ConcreteType,

@@ -1,6 +1,7 @@
 use super::{IPred, Type, Value, MetadataAttachment};
 
 
+#[derive(Debug)]
 pub struct ICmpInst { 
     pub i_pred: IPred,
     pub type_: Type,

@@ -1,5 +1,6 @@
 use super::{FloatLit, StructConst, ArrayConst, VectorConst, Ident, BlockAddressConst, ConstantExpr};
 
+#[derive(Debug)]
 pub enum Constant { 
     Bool {
         value: bool

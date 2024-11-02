@@ -3,6 +3,8 @@ use super::{
     Alias, Type, TypeConst
 };
 
+
+#[derive(Debug)]
 pub struct IndirectSymbolDef {
     pub global_ident: Ident,
     pub linkage_kind: LinkageKind,
@@ -16,6 +18,8 @@ pub struct IndirectSymbolDef {
     pub type_const: TypeConst
 }
 
+
+#[derive(Debug)]
 pub enum LinkageKind { 
     ExternLinkage,
     Linkage

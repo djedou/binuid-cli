@@ -1,5 +1,6 @@
 
 
+#[derive(Debug)]
 pub enum IPred { 
     Eq,
 	Ne,

@@ -1,5 +1,7 @@
 use super::{VectorOp, TypeValue, MetadataAttachment};
 
+
+#[derive(Debug)]
 pub struct VectorInst { 
     pub op: VectorOp,
     pub lhs_type_value: TypeValue,

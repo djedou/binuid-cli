@@ -2,6 +2,8 @@ use super::{ Type, Ident, ExternLinkage, PreemptionSpecifier, Visibility, DLLSto
     ThreadLocal, UnnamedAddr, Immutable, GlobalAttr, FuncAttr
 };
 
+
+#[derive(Debug)]
 pub struct GlobalDecl {
     pub ident: Ident,
     pub extern_linkage: ExternLinkage,

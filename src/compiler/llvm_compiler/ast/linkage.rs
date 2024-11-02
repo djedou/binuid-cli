@@ -1,5 +1,5 @@
 
-
+#[derive(Debug)]
 pub enum Linkage {
     Appending,
 	AvailableExternally,
@@ -12,6 +12,7 @@ pub enum Linkage {
 	WeakOdr,
 }
 
+#[derive(Debug)]
 pub enum ExternLinkage { 
     ExternWeak,
 	External

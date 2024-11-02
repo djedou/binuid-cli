@@ -1,6 +1,6 @@
 use super::{FastMathFlag, FPred, Type, Value, MetadataAttachment};
 
-
+#[derive(Debug)]
 pub struct FCmpInst { 
     pub flags: Vec<FastMathFlag>,
     pub f_pred: FPred,

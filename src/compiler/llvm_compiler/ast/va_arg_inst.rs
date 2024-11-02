@@ -1,5 +1,7 @@
 use super::{Type, Value, MetadataAttachment};
 
+
+#[derive(Debug)]
 pub struct VAArgInst { 
     pub lhs_type:Type,
     pub value: Value,

@@ -4,6 +4,7 @@ use super::{
 };
 
 
+#[derive(Debug)]
 pub struct FunctionHeader {
     preemption_specifier: Option<PreemptionSpecifier>,
     visibility: Option<Visibility>,

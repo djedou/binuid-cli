@@ -1,11 +1,13 @@
 use super::{UseListOrder, InstructionItem, Terminator};
 
-
+#[derive(Debug)]
 pub struct FunctionBody { 
     basic_block_list: Vec<BasicBlock>,
     use_list_orders: Vec<UseListOrder>
 }
 
+
+#[derive(Debug)]
 pub struct BasicBlock { 
     label_ident: String,
     comments: Vec<String>,

@@ -19,7 +19,8 @@ HexDigit = {
 	| 'A'..'F'
 	| 'a'..'f'
 }
-Comment = { Semi ~ (!NEWLINE ~ ANY)* ~ NEWLINE }
+CommentValue = {(!NEWLINE ~ ANY)*}
+Comment = { Semi ~ CommentValue ~ NEWLINE }
 Whitespace = _{"\x00" | " " | "\t" | "\r" | "\n"}
 Name = @{Letter ~ (Letter | DecimalDigit)* }
 EscapeName = @{EscapeLetter ~ (EscapeLetter | DecimalDigit)*}

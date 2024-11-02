@@ -1,5 +1,6 @@
 use super::{BinaryOp, OpFlag, Type, Value, MetadataAttachment};
 
+#[derive(Debug)]
 pub struct BinaryInst { 
     pub op: BinaryOp,
     pub flag: Option<OpFlag>,

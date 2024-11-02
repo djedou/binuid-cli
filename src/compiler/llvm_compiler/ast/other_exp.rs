@@ -1,37 +1,6 @@
 use super::{IPred, FPred, TypeConst};
-/*
-pub enum IPred { 
-    Eq,
-	Ne,
-	Sge,
-	Sgt,
-	Sle,
-	Slt,
-	Uge,
-	Ugt,
-	Ule,
-	Ult
-}
 
-pub enum FPred { 
-    False,
-	True,
-    Oeq,
-    Oge,
-    Ogt,
-    Ole,
-    Olt,
-    One,
-    Ord,
-    Ueq,
-    Uge,
-    Ugt,
-    Ule,
-    Ult,
-    Une,
-    Uno
-}
-*/
+#[derive(Debug)]
 pub enum PredFlag {
     IPred {
         pred: IPred
@@ -41,11 +10,14 @@ pub enum PredFlag {
     }
 }
 
+#[derive(Debug)]
 pub enum OtherOp {
     ICmp,
     FCmp,
     Select
 }
+
+#[derive(Debug)]
 pub struct OtherExp {
     pub op: OtherOp,
     pub flag: Option<PredFlag>,

@@ -1,5 +1,7 @@
 use super::{OpFlag, TypeConst};
 
+
+#[derive(Debug)]
 pub enum BitwiseOp {
     Shl,
     LShr,
@@ -9,6 +11,7 @@ pub enum BitwiseOp {
     Xor
 }
 
+#[derive(Debug)]
 pub struct BitwiseExpr { 
     pub op: BitwiseOp,
     pub op_flag: Option<OpFlag>,

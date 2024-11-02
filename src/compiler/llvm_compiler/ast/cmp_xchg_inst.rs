@@ -1,5 +1,7 @@
 use super::{TypeValue, AtomicOrdering, MetadataAttachment};
 
+
+#[derive(Debug)]
 pub struct CmpXchgInst { 
     pub weak: bool,
     pub volatile: bool,

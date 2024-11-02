@@ -1,3 +1,6 @@
+
+
+#[derive(Debug)]
 pub enum SelectionKind { 
     Any,
 	ExactMatch,

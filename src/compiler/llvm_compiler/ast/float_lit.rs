@@ -1,5 +1,7 @@
 use super::{Sign};
 
+
+#[derive(Debug)]
 pub enum FloatLit { 
     Frac {
         sign: Sign,
@@ -19,6 +21,8 @@ pub enum FloatLit {
     }
 }
 
+
+#[derive(Debug)]
 pub enum FloatHexLit {
     HexFP,
     HexFP80,

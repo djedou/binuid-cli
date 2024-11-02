@@ -4,6 +4,8 @@ use super::{
     VAArgInst, LandingPadInst, CatchPadInst, CleanupPadInst, Terminator
 };
 
+
+#[derive(Debug)]
 pub enum ValueInst {
     Binary {
         inst: BinaryInst

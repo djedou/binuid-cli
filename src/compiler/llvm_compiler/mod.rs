@@ -25,3 +25,7 @@ impl LlvmCompiler {
         // if lib_name = None then save the output in /dist/release/
     }
 }
+
+pub trait BuildFrom {
+    fn build_from(pair: &pest::iterators::Pair<Rule>) -> Self;
+}

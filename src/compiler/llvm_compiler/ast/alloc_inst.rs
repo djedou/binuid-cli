@@ -1,6 +1,7 @@
 use super::{Type, InstructionItem, Alignment, MetadataAttachment};
 
 
+#[derive(Debug)]
 pub enum AllocaInst { 
     AllocaInst1 {
         in_alloca: bool,

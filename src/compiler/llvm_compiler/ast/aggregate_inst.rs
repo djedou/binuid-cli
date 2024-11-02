@@ -1,5 +1,6 @@
 use super::{AggregateOp, TypeValue, Index, MetadataAttachment};
 
+#[derive(Debug)]
 pub struct AggregateInst {
     pub op: AggregateOp,
     pub lhs_type_value: TypeValue,

@@ -1,5 +1,6 @@
 use super::{ConcreteType, ParamAttr, Metadata, Value};
 
+#[derive(Debug)]
 pub enum Arg {
     Concret {
         type_: ConcreteType,

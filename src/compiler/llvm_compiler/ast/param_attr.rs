@@ -1,6 +1,6 @@
 use super::{Alignment, Dereferenceable, Sret, Range};
 
-
+#[derive(Debug)]
 pub enum ParamAttr { 
     Alignment {
         align: Alignment

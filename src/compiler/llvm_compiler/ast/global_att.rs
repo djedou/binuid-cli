@@ -1,5 +1,7 @@
 use super::{MetadataAttachment, Comdat};
 
+
+#[derive(Debug)]
 pub enum GlobalAttr {
     Section {
         section: String

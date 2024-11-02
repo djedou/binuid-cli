@@ -1,7 +1,7 @@
 use super::{MemoryOp, Type, Value, TypeValue, MetadataAttachment};
 
 
-
+#[derive(Debug)]
 pub struct GetElementPtrInst {
     pub op: MemoryOp,
     pub in_bounds: bool,

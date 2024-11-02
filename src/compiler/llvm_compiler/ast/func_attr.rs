@@ -1,5 +1,5 @@
 
-
+#[derive(Debug)]
 pub enum FuncAttr {
     AttrGroupId {
         id: u32

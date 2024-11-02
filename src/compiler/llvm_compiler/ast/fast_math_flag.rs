@@ -1,5 +1,5 @@
 
-
+#[derive(Debug)]
 pub enum FastMathFlag { 
     Afn,
     Arcp,

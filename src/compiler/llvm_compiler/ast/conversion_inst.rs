@@ -1,5 +1,6 @@
 use super::{OverflowFlag, ConversionOp, Type, Value, MetadataAttachment};
 
+#[derive(Debug)]
 pub enum ConversionInstFlag {
     OverflowFlags {
         flags: Vec<OverflowFlag>
@@ -7,6 +8,8 @@ pub enum ConversionInstFlag {
     Nneg
 }
 
+
+#[derive(Debug)]
 pub struct ConversionInst {
     pub op: ConversionOp,
     pub flag: Option<ConversionInstFlag>,

@@ -1,6 +1,8 @@
 
 use super::{Alignment, Dereferenceable, Range};
 
+
+#[derive(Debug)]
 pub enum ReturnAttr { 
     Align {
         align: Alignment
