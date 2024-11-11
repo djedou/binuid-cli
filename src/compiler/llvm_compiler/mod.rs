@@ -29,3 +29,9 @@ impl LlvmCompiler {
 pub trait BuildFrom {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> Self;
 }
+
+impl BuildFrom for String {
+    fn build_from(pair: &pest::iterators::Pair<Rule>) -> String {
+        pair.as_str().trim().trim_matches('\"').to_string()
+    }
+}

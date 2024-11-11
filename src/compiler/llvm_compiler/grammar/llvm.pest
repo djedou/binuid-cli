@@ -30,14 +30,14 @@ GlobalIdent = {
     GlobalName
 	| GglobalId
 }
-GlobalName = {At ~ (Name | QuotedName)}
-GglobalId = {At ~ Id}
+GlobalName = _{At ~ (Name | QuotedName)}
+GglobalId = _{At ~ Id}
 LocalIdent = { 
     LocalName
 	| LocalId
 }
-LocalName = { Percent ~ (Name | QuotedName)}
-LocalId = { Percent ~ Id}
+LocalName = _{ Percent ~ (Name | QuotedName)}
+LocalId = _{Percent ~ Id}
 LabelIdent = { 
     (Letter | DecimalDigit)+ ~ Colon
 	| QuotedString ~ Colon
@@ -52,11 +52,11 @@ FloatLit = {
 	| SciLit
 	| FloatHexLit
 }
-DecimalPart = { Decimals ~ Dot ~ DecimalDigit* }
-FracLit = { Sign? ~ DecimalPart }
+DecimalPart = @{ DecimalDigit* }
+FracLit = { Sign? ~ Decimals ~ Dot ~ DecimalPart }
 Sign = { 
-    Plus
-	| Minus
+    SignPlus
+	| SignMinus
 }
 SciLit = { FracLit ~ ("e" | "E") ~ Sign? ~ Decimals}
 FloatHexLitType = {
@@ -66,7 +66,8 @@ FloatHexLitType = {
     | HexHalfConstant
     | HexFPConstant
 }
-FloatHexLit = { FloatHexLitType ~ HexDigit+}
+HexDigits = {HexDigit+}
+FloatHexLit = { FloatHexLitType ~ HexDigits}
 StringLit = @{QuotedString}
 QuotedString = { "\"" ~ (!"\"" ~ ANY)* ~ "\""}
 IntType = {"i" ~ Decimals}
@@ -93,11 +94,8 @@ LhsType = {Type}
 RhsType = {Type}
 TypeValues = {TypeValue ~ (Whitespace? ~ TypeValue)*}
 MDTuple = { "!" ~ Whitespace? ~ MDFields}
-MDFields = { 
-	"{" ~ Whitespace? ~ MDFieldList ~ Whitespace? ~ "}"
-    | "{" ~ Whitespace? ~ "}"
-}
-MDFieldList = {MDField ~ Whitespace? ~ (Comma ~ Whitespace? ~ MDField)*}
+MDFields = _{ "{" ~ Whitespace? ~ MDFieldList? ~ Whitespace? ~ "}"}
+MDFieldList = _{MDField ~ Whitespace? ~ (Comma ~ Whitespace? ~ MDField)*}
 MDField = {
     NullConst
 	| Metadata
@@ -118,7 +116,7 @@ MetadataNode = {
     MetadataId
 	//| DIExpression
 }
-MetadataAttachments = { 
+MetadataAttachments = _{ 
     MetadataAttachment ~ (Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachment)*
 }
 LhsTypeValue = {TypeValue}
@@ -228,7 +226,7 @@ ParamAttr = {
 Range = {RangeKey ~ Whitespace? ~ "(" ~ Whitespace? ~ Type ~ Whitespace? ~ IntLit ~ Whitespace? ~ Comma ~ Whitespace? ~ IntConst ~ Whitespace? ~")" }
 Sret = {SretKey ~ "(" ~ Whitespace? ~ Type ~ Whitespace? ~ ")" | SretKey}
 Alignment = { "align" ~ Whitespace? ~ IntLit}
-DereferenceableItem = { 
+DereferenceableItem = _{ 
 	DereferenceableNullable
     | DereferenceableNonNullable
 }
@@ -238,7 +236,7 @@ ExceptionScope = {
 	| LocalIdent
 }
 Indices = {Index ~ Whitespace? ~ (Comma ~ Whitespace? ~ Index)*}
-Index = { IntLit}
+Index = {IntLit}
 Section = { "section" ~ Whitespace? ~ StringLit}
 TLSModel = { 
     InitialExec
@@ -271,7 +269,7 @@ AtomicOrdering = {
     | SeqCst
     | Unordered
 }
-
+CcIntLit = {Cc ~ Whitespace? ~ IntLit}
 CallingConv = { 
     AmdgpuCs
     | AmdgpuEs
@@ -312,15 +310,19 @@ CallingConv = {
     | X86Thiscallcc
     | X86Vectorcallcc
     | Ccc
-	| Cc ~ Whitespace? ~ IntLit
+	| CcIntLit
 }
+
+AlignIntLit = {Align ~ Whitespace? ~ Eq ~ Whitespace? ~ IntLit}
+AlignstackIntLit = {Alignstack ~ Whitespace? ~ Eq ~ Whitespace? ~ IntLit}
+BinStringLit = {LhsStringLit ~ Whitespace? ~ Eq ~ Whitespace? ~ RhsStringLit}
 FuncAttr = {
 	// not used in attribute groups.
     AttrGroupId
 	// used in attribute groups.
-	| Align ~ Whitespace? ~ Eq ~ Whitespace? ~ IntLit
-	| Alignstack ~ Whitespace? ~ Eq ~ Whitespace? ~ IntLit
-	| StringLit ~ Whitespace? ~ Eq ~ Whitespace? ~ StringLit
+	| AlignIntLit
+	| AlignstackIntLit
+	| BinStringLit
 	// used in functions.
 	| Alignment
 	| AllocSize
@@ -394,7 +396,7 @@ SelectionKind = {
 	| Noduplicates
 	| Samesize
 }
-TypeConsts = {
+TypeConsts = _{
     TypeConst ~ (Comma ~ Whitespace? ~ TypeConst)*
 }
 TypeConst = { Type ~ Whitespace? ~ Constant}
@@ -420,11 +422,16 @@ BoolConst = {
 }
 IntConst = {IntLit}
 FloatConst = {FloatLit}
+
+GrOrLessParath = {"<" ~ Whitespace? ~ "{" ~ Whitespace? ~ TypeConsts ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"}
+GrOrLessParathEmpty = {"<" ~ Whitespace? ~ "{" ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"}
+OnlyParath = {"{" ~ Whitespace? ~ TypeConsts ~ Whitespace? ~ "}"}
+OnlyParathEmpty = {"{" ~ Whitespace? ~ "}"}
 StructConst = { 
-    "<" ~ Whitespace? ~ "{" ~ Whitespace? ~ TypeConsts ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"
-	| "<" ~ Whitespace? ~ "{" ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"
-	| "{" ~ Whitespace? ~ TypeConsts ~ Whitespace? ~ "}"
-    | "{" ~ Whitespace? ~ "}"
+    GrOrLessParath
+	| GrOrLessParathEmpty
+	| OnlyParath
+    | OnlyParathEmpty
 }
 ArrayConst = { "[" ~ Whitespace? ~ TypeConsts? ~ Whitespace? ~ "]"}
 CharArrayConst = { "c" ~ Whitespace? ~ StringLit}
@@ -563,15 +570,22 @@ PointerType = { Type ~ Whitespace? ~ AddrSpace? ~ Whitespace? ~ "*"}
 AddrSpace = { AddrSp ~ Whitespace? ~ "(" ~ Whitespace? ~ IntLit ~ Whitespace? ~ ")"}
 VectorType = { "<" ~ Whitespace? ~ IntLit ~ Whitespace? ~ "x" ~ Whitespace? ~ Type ~ Whitespace? ~ ">"}
 ArrayType = { "[" ~ Whitespace? ~ IntLit ~ Whitespace? ~ "x" ~ Whitespace? ~ Type ~ Whitespace? ~ "]"}
+
+GrOrLessParathType = {"<" ~ Whitespace? ~ "{" ~ Whitespace? ~ TypeList ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"}
+GrOrLessParathEmptyType = {"<" ~ Whitespace? ~ "{" ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"}
+OnlyParathType = {"{" ~ Whitespace? ~ TypeList ~ Whitespace? ~ "}"}
+OnlyParathEmptyType = {"{" ~ Whitespace? ~ "}"}
 StructType = { 
-	"<" ~ Whitespace? ~ "{" ~ Whitespace? ~ TypeList ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"
-	| "<" ~ Whitespace? ~ "{" ~ Whitespace? ~ "}" ~ Whitespace? ~ ">"
-	| "{" ~ Whitespace? ~ TypeList ~ Whitespace? ~ "}"
-    | "{" ~ Whitespace? ~ "}"
+	GrOrLessParathType
+	| GrOrLessParathEmptyType
+	| OnlyParathType
+    | OnlyParathEmptyType
 }
-TypeList = {Type ~ Whitespace? ~ (Comma ~ Whitespace? ~ Type)*}
+TypeList = _{Type ~ Whitespace? ~ (Comma ~ Whitespace? ~ Type)*}
 NamedType = { LocalIdent}
-InlineAsm = { Asm ~ Whitespace? ~ SideEffect? ~ Whitespace? ~ AlignStack? ~ Whitespace? ~ IntelDialect? ~ Whitespace? ~ StringLit ~ Whitespace? ~ Comma ~ Whitespace? ~ StringLit}
+LhsStringLit = {StringLit}
+RhsStringLit = {StringLit}
+InlineAsm = { Asm ~ Whitespace? ~ SideEffect? ~ Whitespace? ~ AlignStack? ~ Whitespace? ~ IntelDialect? ~ Whitespace? ~ LhsStringLit ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsStringLit}
 Value = { 
     Constant
 	| LocalIdent
@@ -587,8 +601,12 @@ DLLStorageClass = {
 
 
 
-Instructions = {InstructionItem ~ (Whitespace* ~ InstructionItem)*}
-InstructionItem = {Comment? ~ Whitespace* ~ Instruction ~ Whitespace* ~ Comment?}
+Instructions = _{InstructionItem ~ (Whitespace* ~ InstructionItem)*}
+StartComment = {Comment}
+EndComment = {Comment}
+InstructionItem = {StartComment? ~ Whitespace* ~ Instruction ~ Whitespace* ~ EndComment?}
+
+LocalInst = {LocalIdent ~ Whitespace? ~ Eq ~ Whitespace? ~ ValueInstruction}
 Instruction = {
 	// Instructions? not producing values.
     StoreInst
@@ -596,7 +614,7 @@ Instruction = {
 	| CmpXchgInst
 	| AtomicRMWInst
 	// Instructions? producing values.
-	| LocalIdent ~ Whitespace? ~ Eq ~ Whitespace? ~ ValueInstruction
+	| LocalInst
 	| ValueInstruction
 }
 ValueInstruction = {
@@ -625,18 +643,20 @@ ValueInstruction = {
     | Terminator
 }
 
-StoreInst1 = {"store" ~ Whitespace? ~ "atomic" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
-StoreInst2 = {"store" ~ Whitespace? ~ "atomic" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
-StoreInst3 = {"store" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
-StoreInst4 = {"store" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
+AtomicStore1 = {"store" ~ Whitespace? ~ "atomic" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
+AtomicStore2 = {"store" ~ Whitespace? ~ "atomic" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
+VolatileStore1 = {"store" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ Alignment ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
+VolatileStore2 = {"store" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
 StoreInst = { 
-    StoreInst1
-	| StoreInst2
-	| StoreInst3
-	| StoreInst4
+    AtomicStore1
+	| AtomicStore2
+	| VolatileStore1
+	| VolatileStore2
 }
 FenceInst = { "fence" ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ MetadataAttachments?}
-CmpXchgInst = { "cmpxchg" ~ Whitespace? ~ Weak? ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ TypeValue /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ MetadataAttachments?}
+LhsAtomicOrdering = {AtomicOrdering}
+RhsAtomicOrdering = {AtomicOrdering}
+CmpXchgInst = { "cmpxchg" ~ Whitespace? ~ Weak? ~ Whitespace? ~ Volatile? ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ TypeValue /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ LhsAtomicOrdering ~ Whitespace? ~ RhsAtomicOrdering ~ Whitespace? ~ MetadataAttachments?}
 AtomicRMWInst = { "atomicrmw" ~ Whitespace? ~ Volatile? ~ Whitespace? ~ BinOp ~ Whitespace? ~ LhsTypeValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsTypeValue /*~ Whitespace? ~ OptSyncScope*/ ~ Whitespace? ~ AtomicOrdering ~ Whitespace? ~ MetadataAttachments?}
 BinaryInst = { BinaryOp ~ Whitespace? ~ OpFlag? ~ Whitespace? ~ Type ~ Whitespace? ~ LhsValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsValue ~ Whitespace? ~ MetadataAttachments?}
 BitwiseInst = { BitwiseOp ~ Whitespace? ~ OpFlag? ~ Whitespace? ~ Type ~ Whitespace? ~ LhsValue ~ Whitespace? ~ Comma ~ Whitespace? ~ RhsValue ~ Whitespace? ~ MetadataAttachments?}
@@ -699,7 +719,7 @@ CleanupPadInst = { "cleanuppad" ~ Whitespace? ~ "within" ~ Whitespace? ~ Excepti
 
 
 SourceFilename = { SrcFile ~ Whitespace? ~ Eq ~ Whitespace? ~ StringLit}
-TargetKind = {
+TargetKind = _{
     Datalayout
     | Triple
 }
@@ -734,15 +754,15 @@ OptPersonality = {Personality ~ Whitespace? ~ TypeConst}
 FunctionBody = { "{" ~ Whitespace* ~ BasicBlockList ~ Whitespace* ~ UseListOrders? ~ Whitespace* ~ "}"}
 AttrGroupDef = { Attributes ~ Whitespace? ~ AttrGroupId ~ Whitespace? ~ Eq ~ Whitespace? ~ "{" ~ Whitespace? ~ FuncAttrs? ~ Whitespace? ~ "}"}
 NamedMetadataDef = { MetadataName ~ Whitespace? ~ Eq ~ Whitespace? ~ Not ~ Whitespace? ~ "{" ~ Whitespace? ~ MetadataNodes? ~ Whitespace? ~ "}"}
-MetadataNodes = {MetadataNode~ Whitespace? ~ (Comma~ Whitespace? ~ MetadataNode)*}
+MetadataNodes = _{MetadataNode~ Whitespace? ~ (Comma~ Whitespace? ~ MetadataNode)*}
 
 
-UseListOrders = {UseListOrder ~ Whitespace? ~ (Whitespace? ~ UseListOrder)*}
+UseListOrders = _{UseListOrder ~ Whitespace? ~ (Whitespace? ~ UseListOrder)*}
 UseListOrder = { UseLO ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ "{" ~ Whitespace? ~ Indices? ~ Whitespace? ~ "}"}
 UseListOrderBB = { UseLODB ~ Whitespace? ~ GlobalIdent ~ Whitespace? ~ Comma ~ Whitespace? ~ LocalIdent ~ Whitespace? ~ Comma ~ Whitespace? ~ "{" ~ Whitespace? ~ Indices? ~ Whitespace? ~ "}"}
 
 
-BasicBlockList = {BasicBlock ~ (Whitespace | BasicBlock)*}
+BasicBlockList = _{BasicBlock ~ (Whitespace | BasicBlock)*}
 BasicBlock = { LabelIdent ~ (Whitespace | Comment)* ~ Instructions? ~ Whitespace* ~ Terminator?}
 
 // here
@@ -789,7 +809,7 @@ Cases = {Case ~ Whitespace* ~ (Whitespace* ~ Case)*}
 Case = { Type ~ Whitespace? ~ IntConst ~ Whitespace? ~ Comma ~ Whitespace? ~ LabelType ~ Whitespace? ~ LocalIdent}
 IndirectBrTerm = { "indirectbr" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ Comma ~ Whitespace? ~ "[" ~ Whitespace* ~ LabelList ~ Whitespace* ~ "]" ~ Whitespace? ~ MetadataAttachments?}
 LabelList = {Label ~ Whitespace? ~ (Comma ~ Whitespace? ~ Label)*}
-Label = { LabelType ~ Whitespace? ~ LocalIdent}
+Label = _{ LabelType ~ Whitespace? ~ LocalIdent}
 InvokeTerm = { "invoke" ~ Whitespace? ~ CallingConv? ~ Whitespace? ~ ReturnAttrs? ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ "(" ~ Whitespace? ~ Args? ~ Whitespace? ~ ")" ~ Whitespace? ~ FuncAttrs? ~ Whitespace? ~ OperandBundles? ~ Whitespace* ~ "to" ~ Whitespace? ~ LabelType ~ Whitespace? ~ LhsLocalIdent ~ Whitespace? ~ "unwind" ~ Whitespace? ~ LabelType ~ Whitespace? ~ RhsLocalIdent ~ Whitespace? ~ Comma? ~ Whitespace? ~ MetadataAttachments?}
 ResumeTerm = { "resume" ~ Whitespace? ~ Type ~ Whitespace? ~ Value ~ Whitespace? ~ MetadataAttachments?}
 CatchSwitchTerm = { "catchswitch" ~ Whitespace? ~ "within" ~ Whitespace? ~ ExceptionScope ~ Whitespace? ~ "[" ~ Whitespace* ~ LabelList ~ Whitespace* ~ "]" ~ Whitespace? ~ "unwind" ~ Whitespace? ~ UnwindTarget ~ Whitespace? ~ MetadataAttachments?}
@@ -802,19 +822,16 @@ CommaSepTypeValueList = {
 }
 
 // ref: parseAllocSizeArguments
-AllocSize1 = {"allocsize" ~ Whitespace? ~ "(" ~ Whitespace? ~ IntLit ~ Whitespace? ~ ")"}
-AllocSize2 = {"allocsize" ~ Whitespace? ~ "(" ~ Whitespace? ~ IntLit ~ Whitespace? ~ Comma ~ Whitespace? ~ IntLit ~ Whitespace? ~ ")"}
-AllocSize = { 
-    AllocSize1
-	| AllocSize2
-}
+LhsIntLit = {IntLit}
+RhsIntLit = {IntLit}
+AllocSize = {"allocsize" ~ Whitespace? ~ "(" ~ Whitespace? ~ LhsIntLit ~ Whitespace? ~ Comma? ~ Whitespace? ~ RhsIntLit? ~ Whitespace? ~ ")"}
 
 Args = { 
 	| ArgList ~ Whitespace? ~ Comma? ~ Whitespace? ~ DotDotDot?
 	| DotDotDot
 }
 
-ArgList = {Arg ~ (Comma ~ Whitespace? ~ Arg)*}
+ArgList = _{Arg ~ (Comma ~ Whitespace? ~ Arg)*}
 
 ArgConcret = {ConcreteType ~ Whitespace? ~ ParamAttrs? ~ Whitespace? ~ Value}
 ArgMetadata = {MetadataType ~ Whitespace? ~ Metadata}
@@ -842,12 +859,13 @@ ExceptionArg = {
 
 OperandBundles = {"[" ~ Whitespace? ~ OperandBundle ~ (Whitespace? ~ OperandBundle)* ~ Whitespace? ~ "]"}
 OperandBundle = { StringLit ~ Whitespace? ~ "(" ~ Whitespace? ~ TypeValues ~ Whitespace? ~ ")"}
+
 Params = { 
     ParamList ~ Whitespace? ~ Comma ~ Whitespace? ~ DotDotDot
 	| ParamList
     | DotDotDot
 }
-ParamList = { Param ~ Whitespace? ~ (Comma ~ Whitespace? ~ Param)*}
+ParamList = _{ Param ~ Whitespace? ~ (Comma ~ Whitespace? ~ Param)*}
 Param = { Type ~ Whitespace? ~ ParamAttrs? ~ Whitespace? ~ LocalIdent?}
 PreemptionSpecifier = { 
     DsoLocal

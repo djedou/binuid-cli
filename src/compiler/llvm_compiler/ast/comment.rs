@@ -11,7 +11,7 @@ impl BuildFrom for Comment {
         match pair.clone().into_inner().next() {
             Some(p) => {
                 Comment {
-                    value: p.as_str().trim().to_string()
+                    value: String::build_from(&p)
                 }
             },
             None => {

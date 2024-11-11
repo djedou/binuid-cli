@@ -32,7 +32,7 @@ pub fn parse_ll(source: &str) -> LlvmAst {
         Err(e) => {
             println!("Err: {:#?}", e);
             let LineColLocation::Pos((line, col)) = e.line_col else {
-                return LlvmAst::new();;
+                return LlvmAst::new();
             };
 
             println!("Parsing Error: line: {:?} and column: {:?}", line, col);

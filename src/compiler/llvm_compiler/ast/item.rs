@@ -25,17 +25,6 @@ impl BuildFrom for Item {
                 _ => {}
             }
         }
-        /*match pair.into_inner().next() {
-            Some(p) => {
-                let (name, vis, item) = build_item_ast(p);
-                ast.extend_module_content((name, ModuleContent::Item(vis, item)));
-            }
-            None => {}
-        }*/
-        /*
-            match pair.as_rule() {
-                    Rule::Item => {
-        */
 
         println!("item output: {item:#?}");
         item
