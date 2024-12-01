@@ -244,7 +244,7 @@ pub use comment::*;
 pub use memory_arg_item::*;
 
 
-
+#[derive(Debug)]
 pub struct LlvmAst {
     pub items: Vec<Item>
 }

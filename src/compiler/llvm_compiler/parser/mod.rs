@@ -17,13 +17,6 @@ pub fn parse_ll(source: &str) -> LlvmAst {
                 match pair.as_rule() {
                     Rule::Item => {
                         ast.items.push(Item::build_from(&pair));
-                        /*match pair.clone().into_inner().next() {
-                            Some(p) => {
-                                let (name, vis, item) = build_item_ast(p);
-                                ast.extend_module_content((name, ModuleContent::Item(vis, item)));
-                            }
-                            None => {}
-                        }*/
                     },
                     _ => {}
                 }

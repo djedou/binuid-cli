@@ -7,7 +7,7 @@ use std::{
     fs::File,
     io::Read
 };
-use crate::{get_duid_bin_build, get_duid_bin_lib_build, Result};
+use crate::{get_duid_bin_build, get_duid_bin_lib_build, Result, gather_ll_files};
 use llvm_compiler::{LlvmCompiler, BuildFrom};
 
 
@@ -34,7 +34,6 @@ impl Compiler {
     pub fn compile(&self) -> Result<()> {
         info!("compiling...");
         self.compile_lib_bin()?;
-        let mut errors_count = 0;
         let libs_ids = self.get_libs_paths();
         for file in &self.files {
             match (
@@ -53,20 +52,29 @@ impl Compiler {
             }
         }
 
+        self.compile_bin_ll();
+
         Ok(())
     }
 
     fn compile_file(&self, path: &PathBuf, _libs_ids: &[(String, String)]) -> Result<()> {
         let agrs = get_duid_bin_build(path.to_str(), &self.lib_dependencies);
         Command::new("rustc").args(&agrs).stdout(Stdio::inherit()).status()?;
-        
-        /*
-        let mut file = File::open(path)?;
-        let mut content = String::new();
-        file.read_to_string(&mut content)?;
-        */
-
         Ok(())
+    }
+
+    fn compile_bin_ll(&self) {
+        let Ok(mut current_dir) = env::current_dir() else {
+            return;
+        };
+        current_dir.push("dist");
+        current_dir.push("libs");
+
+        let mut files = vec![];
+        gather_ll_files(current_dir.as_path(), &mut files);
+        files.iter().for_each(|file| {
+            self.compile_llvm(file.as_path(), false);
+        });
     }
 
     fn compile_lib_bin(&self) -> Result<()> {
@@ -103,10 +111,10 @@ impl Compiler {
         match is_lib {
             true => {
                 let name = format!("{}_v_{}", self.name, self.version);
-                llvm_compiler.compile(Some(&name));
+                llvm_compiler.compile(&path, Some(&name));
             },
             false => {
-                llvm_compiler.compile(None);
+                llvm_compiler.compile(&path, None);
             }
         }
     }

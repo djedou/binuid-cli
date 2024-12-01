@@ -25,8 +25,7 @@ impl BuildFrom for Item {
                 _ => {}
             }
         }
-
-        println!("item output: {item:#?}");
+        
         item
     }
 }

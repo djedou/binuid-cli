@@ -527,14 +527,14 @@ OtherExp = {OtherOp ~ Whitespace? ~ PredFlag? ~ Whitespace? ~ "(" ~ Whitespace? 
 
 ///////
 Type = { 
-    VoidType
-	| FuncType
+    FuncType
 	| FirstClassType
+    | VoidType
 }
 NoFuncType = { 
-    VoidType
-	//| FuncType
-	| FirstClassType
+    //| FuncType
+	FirstClassType
+    | VoidType
 }
 FirstClassType = { 
     ConcreteType
@@ -900,9 +900,9 @@ TopLevelEntity = {
 	| ModuleAsm
 	| TypeDef
 	| ComdatDef
+	| IndirectSymbolDef
 	| GlobalDecl
 	| GlobalDef
-	| IndirectSymbolDef
 	| FunctionDecl
 	| FunctionDef
 	| AttrGroupDef
