@@ -1,5 +1,7 @@
 use super::{TopLevelEntity, Comment};
-use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use crate::compiler::{llvm_compiler::{IntoFrame, Rule, LlvmAst}, BuildFrom};
+use binuid_shared_wasm::vm::Frame;
+
 
 #[derive(Debug)]
 pub struct Item {
@@ -27,5 +29,11 @@ impl BuildFrom for Item {
         }
         
         item
+    }
+}
+
+impl IntoFrame for Item {
+    fn into_frame(&self, ast: &LlvmAst, frame: &mut Frame) {
+        self.top_level_entity.into_frame(&ast, frame);
     }
 }

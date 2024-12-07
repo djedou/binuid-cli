@@ -2,7 +2,8 @@ use super::{ Type, TypeDef, GlobalDecl,
     GlobalDef, IndirectSymbolDef, AttrGroupDef, MetadataNode, MetadataName, 
     MetadataDef, UseListOrderBB, FunctionDef, FunctionDecl, UseListOrder, TargetDefinition
 };
-use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use crate::compiler::{llvm_compiler::{Rule, IntoFrame, LlvmAst}, BuildFrom};
+use binuid_shared_wasm::vm::Frame;
 
 
 #[derive(Debug)]
@@ -171,6 +172,60 @@ impl BuildFrom for TopLevelEntity {
                 }
             }
             None => TopLevelEntity::None
+        }
+    }
+}
+
+
+impl IntoFrame for TopLevelEntity {
+    fn into_frame(&self, ast: &LlvmAst, frame: &mut Frame) {
+        match &self {
+            TopLevelEntity::None => {},
+            TopLevelEntity::SourceFilename  {
+                value: _
+            } => {},
+            TopLevelEntity::TargetDefinition {
+                target: _
+            } => {},
+            TopLevelEntity::ModuleAsm {
+                value: _
+            } => {},
+            TopLevelEntity::TypeDef {
+                def: _
+            } => {},
+            TopLevelEntity::GlobalDecl {
+                decl: _
+            } => {},
+            TopLevelEntity::GlobalDef {
+                def: _,
+            } => {},
+            TopLevelEntity::IndirectSymbolDef {
+                def: _
+            } => {},
+            TopLevelEntity::FunctionDecl {
+                decl: _
+            } => {},
+            TopLevelEntity::FunctionDef {
+                def: _
+            } => {
+                println!("we are here : {self:#?}");
+            },
+            TopLevelEntity::AttrGroupDef {
+                def: _
+            } => {},
+            TopLevelEntity::NamedMetadataDef {
+                metadata_name: _,
+                metadata_nodes: _
+            } => {},
+            TopLevelEntity::MetadataDef {
+                def: _
+            } => {},
+            TopLevelEntity::UseListOrder {
+                order: _
+            } => {},
+            TopLevelEntity::UseListOrderBB {
+                order: _
+            } => {}
         }
     }
 }

@@ -19,5 +19,5 @@ pest_derive = "2.7"
 
 
 [build-dependencies]
-tonic-build = { version = "0.10", default-features = false, features = ["prost",]} #0.8
+tonic-build = { version = "0.12", default-features = false, features = ["prost",]} #0.10; 0.8
 #tonic-build = { version = "0.8", default-features = false, features = ["prost",]} #0.8
