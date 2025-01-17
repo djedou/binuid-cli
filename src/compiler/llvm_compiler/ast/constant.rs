@@ -4,7 +4,7 @@ use binuid_shared_wasm::ast_bits::exprs::ConstantExpr;
 use binuid_shared_wasm::ast_bits::values::{StructConst, ArrayConst, VectorConst, BlockAddressConst, Constant};
 
 /*
-#[derive(Debug)]
+#[derive(Debug, Clone, Default)]
 pub enum Constant {
     Bool {
         value: bool

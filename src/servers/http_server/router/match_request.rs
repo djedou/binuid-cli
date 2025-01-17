@@ -7,8 +7,9 @@ use std::collections::BTreeMap;
 
 /// Possible failures for the `match_request` and
 /// `match_request_regex` macros.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Default)]
 pub enum Error {
+    #[default]
     /// The path did not match any patterns.
     NotFound,
     /// The path matched a pattern, but the pattern had no matching

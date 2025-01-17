@@ -1,5 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-use binuid_shared_wasm::ast_bits::composes::{FunctionHeader, FunctionDef, FunctionBody, MetadataAttachment};
+use binuid_shared_wasm::ast_bits::composes::{FunctionHeader, FunctionDef, FunctionBody, FunctionDecl, MetadataAttachment};
 
 
 impl BuildFrom for FunctionDef {
@@ -14,14 +14,12 @@ impl BuildFrom for FunctionDef {
                 Rule::FunctionHeader => {
                     function_def.function_header = FunctionHeader::build_from(&inner_pair);
                 },
-                /*
                 Rule::MetadataAttachment => {
                     function_def.metadata_attachments.push(MetadataAttachment::build_from(&inner_pair));
                 },
                 Rule::FunctionBody => {
                     function_def.function_body = FunctionBody::build_from(&inner_pair);
                 },
-                */
                 _ => {}
             }
         }

@@ -1,8 +1,8 @@
-use crate::compiler::{llvm_compiler::{IntoFrame, Rule, LlvmAst}, BuildFrom};
+use crate::compiler::{llvm_compiler::{Rule, IntoFrame, LlvmAst}, BuildFrom};
 use binuid_shared_wasm::vm::Frame;
-use binuid_shared_wasm::ast_bits::composes::{Comment, TopLevelEntity};
+use binuid_shared_wasm::ast_bits::composes::{Comment, TopLevelEntity, FunctionDef};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Default)]
 pub struct Item {
     pub comments: Vec<Comment>,
     pub top_level_entity: TopLevelEntity

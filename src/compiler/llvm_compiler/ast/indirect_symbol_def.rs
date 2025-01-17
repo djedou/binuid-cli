@@ -1,34 +1,9 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
 use binuid_shared_wasm::ast_bits::{
     simples::{Alias, Visibility, UnnamedAddr, PreemptionSpecifier, DLLStorageClass},
-    composes::{ThreadLocal, Ident},
+    composes::{ThreadLocal, Ident, IndirectSymbolDef, LinkageKind},
     types::{Type, TypeConst}
 };
-
-
-
-#[derive(Debug)]
-pub struct IndirectSymbolDef {
-    pub global_ident: Ident,
-    pub linkage_kind: LinkageKind,
-    pub preemption_specifier: PreemptionSpecifier,
-    pub visibility: Visibility,
-    pub dll_storage_class: DLLStorageClass,
-    pub thread_local: ThreadLocal,
-    pub unnamed_addr: UnnamedAddr,
-    pub alias: Alias,
-    pub type_: Type,
-    pub type_const: TypeConst
-}
-
-
-#[derive(Debug)]
-pub enum LinkageKind {
-    None,
-    ExternLinkage,
-    Linkage
-}
-
 
 
 impl BuildFrom for IndirectSymbolDef {

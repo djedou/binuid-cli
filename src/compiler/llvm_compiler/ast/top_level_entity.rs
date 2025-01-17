@@ -133,7 +133,7 @@ impl IntoFrame for TopLevelEntity {
             TopLevelEntity::SourceFilename  {
                 value: _
             } => {},
-            /*TopLevelEntity::TargetDefinition {
+            TopLevelEntity::TargetDefinition {
                 target: _
             } => {},
             TopLevelEntity::ModuleAsm {
@@ -153,12 +153,12 @@ impl IntoFrame for TopLevelEntity {
             } => {},
             TopLevelEntity::FunctionDecl {
                 decl: _
-            } => {},*/
+            } => {},
             TopLevelEntity::FunctionDef {
                 def: _
             } => {
                 println!("we are here : {self:#?}");
-            },/*
+            },
             TopLevelEntity::AttrGroupDef {
                 def: _
             } => {},
@@ -175,7 +175,6 @@ impl IntoFrame for TopLevelEntity {
             TopLevelEntity::UseListOrderBB {
                 order: _
             } => {}
-             */
         }
     }
 }

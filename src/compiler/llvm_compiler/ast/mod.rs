@@ -242,7 +242,7 @@ pub use comment::*;
 pub use top_level_entity::*;
 pub use item::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Default)]
 pub struct LlvmAst {
     pub items: Vec<Item>
 }

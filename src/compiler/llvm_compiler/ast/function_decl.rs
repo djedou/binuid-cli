@@ -1,13 +1,6 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-use binuid_shared_wasm::ast_bits::composes::{MetadataAttachment, FunctionHeader};
+use binuid_shared_wasm::ast_bits::composes::{MetadataAttachment, FunctionHeader, FunctionDecl};
 
-
-#[derive(Debug)]
-pub struct FunctionDecl {
-    pub metadata_attachments: Vec<MetadataAttachment>,
-    pub extern_linkage: bool,
-    pub function_header: FunctionHeader
-}
 
 impl BuildFrom for FunctionDecl {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> FunctionDecl {
