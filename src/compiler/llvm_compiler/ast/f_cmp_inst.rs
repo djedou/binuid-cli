@@ -1,30 +1,12 @@
-use super::{FastMathFlag, FPred, Type, Value, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::types::Type;
+use binuid_shared_wasm::ast_bits::instructions::FCmpInst;
+use binuid_shared_wasm::ast_bits::simples::{FPred, FastMathFlag};
+use binuid_shared_wasm::ast_bits::values::Value;
+use binuid_shared_wasm::ast_bits::composes::MetadataAttachment;
 
 
-#[derive(Debug)]
-pub struct FCmpInst { 
-    pub flags: Vec<FastMathFlag>,
-    pub f_pred: FPred,
-    pub type_: Type,
-    pub lhs_value: Value,
-    pub rhs_value: Value,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
 
-
-impl FCmpInst {
-    pub fn new() -> FCmpInst {
-        FCmpInst {
-            flags: vec![],
-            f_pred: FPred::None,
-            type_: Type::None,
-            lhs_value: Value::None,
-            rhs_value: Value::None,
-            metadata_attachments: vec![]
-        }
-    }
-}
 
 
 impl BuildFrom for FCmpInst {

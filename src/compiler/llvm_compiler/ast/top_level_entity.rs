@@ -1,58 +1,7 @@
-use super::{ Type, TypeDef, GlobalDecl,
-    GlobalDef, IndirectSymbolDef, AttrGroupDef, MetadataNode, MetadataName, 
-    MetadataDef, UseListOrderBB, FunctionDef, FunctionDecl, UseListOrder, TargetDefinition
-};
 use crate::compiler::{llvm_compiler::{Rule, IntoFrame, LlvmAst}, BuildFrom};
 use binuid_shared_wasm::vm::Frame;
+use binuid_shared_wasm::ast_bits::composes::{FunctionDef, TopLevelEntity};
 
-
-#[derive(Debug)]
-pub enum TopLevelEntity {
-    None,
-    SourceFilename  {
-        value: String
-    },
-	TargetDefinition {
-        target: TargetDefinition
-    },
-	ModuleAsm {
-        value: String
-    },
-    TypeDef {
-        def: TypeDef
-    },
-    GlobalDecl {
-        decl: GlobalDecl
-    },
-    GlobalDef {
-        def: GlobalDef,
-    },
-	IndirectSymbolDef {
-        def: IndirectSymbolDef
-    },
-	FunctionDecl {
-        decl: FunctionDecl
-    },
-	FunctionDef {
-        def: FunctionDef
-    },
-	AttrGroupDef {
-        def: AttrGroupDef
-    },
-	NamedMetadataDef {
-        metadata_name: MetadataName,
-        metadata_nodes: Vec<MetadataNode>
-    },
-    MetadataDef {
-        def: MetadataDef
-    },
-    UseListOrder {
-        order: UseListOrder
-    },
-	UseListOrderBB {
-        order: UseListOrderBB
-    }
-}
 
 
 impl BuildFrom for TopLevelEntity {
@@ -75,7 +24,7 @@ impl BuildFrom for TopLevelEntity {
                             None => TopLevelEntity::None
                         }
                     },
-                    Rule::TargetDefinition => {
+                    /*Rule::TargetDefinition => {
                         TopLevelEntity::TargetDefinition {
                             target: TargetDefinition::build_from(&inner_pair)
                         }
@@ -119,13 +68,13 @@ impl BuildFrom for TopLevelEntity {
                         TopLevelEntity::FunctionDecl {
                             decl: FunctionDecl::build_from(&inner_pair)
                         }
-                    },
+                    },*/
                     Rule::FunctionDef => {
                         TopLevelEntity::FunctionDef {
                             def: FunctionDef::build_from(&inner_pair)
                         }
                     },
-                    Rule::AttrGroupDef => {
+                    /*Rule::AttrGroupDef => {
                         TopLevelEntity::AttrGroupDef {
                             def: AttrGroupDef::build_from(&inner_pair)
                         }
@@ -164,7 +113,7 @@ impl BuildFrom for TopLevelEntity {
                             metadata_name: name,
                             metadata_nodes: nodes
                         }
-                    },
+                    },*/
                     /*
                         | ComdatDef
                     */
@@ -184,7 +133,7 @@ impl IntoFrame for TopLevelEntity {
             TopLevelEntity::SourceFilename  {
                 value: _
             } => {},
-            TopLevelEntity::TargetDefinition {
+            /*TopLevelEntity::TargetDefinition {
                 target: _
             } => {},
             TopLevelEntity::ModuleAsm {
@@ -204,12 +153,12 @@ impl IntoFrame for TopLevelEntity {
             } => {},
             TopLevelEntity::FunctionDecl {
                 decl: _
-            } => {},
+            } => {},*/
             TopLevelEntity::FunctionDef {
                 def: _
             } => {
                 println!("we are here : {self:#?}");
-            },
+            },/*
             TopLevelEntity::AttrGroupDef {
                 def: _
             } => {},
@@ -226,6 +175,7 @@ impl IntoFrame for TopLevelEntity {
             TopLevelEntity::UseListOrderBB {
                 order: _
             } => {}
+             */
         }
     }
 }

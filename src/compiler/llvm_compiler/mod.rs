@@ -7,7 +7,7 @@ use std::{env, fs::{create_dir_all, File}, path::Path};
 use std::collections::HashMap;
 use std::io::Write;
 use binuid_shared_wasm::vm::{Component, Frame};
-
+use binuid_shared_wasm::ast_bits::composes::TopLevelEntity;
 
 
 pub struct LlvmCompiler {

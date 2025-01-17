@@ -1,25 +1,5 @@
-use super::{MetadataId, MDTuple};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-
-#[derive(Debug)]
-pub struct MetadataDef {
-    pub id: MetadataId,
-    pub distinct: bool,
-    pub md_tuple: MDTuple
-}
-
-
-impl MetadataDef {
-    pub fn new() -> MetadataDef {
-        MetadataDef {
-            id: MetadataId::new(),
-            distinct: false,
-            md_tuple: MDTuple::new()
-        }
-    }
-}
+use binuid_shared_wasm::ast_bits::composes::{MDTuple, MetadataId, MetadataDef};
 
 
 impl BuildFrom for MetadataDef {

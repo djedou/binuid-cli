@@ -1,24 +1,7 @@
-use super::{OpFlag, TypeConst};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum BitwiseOp {
-    None,
-    Shl,
-    LShr,
-    AShr,
-    And,
-    Or,
-    Xor
-}
-
-#[derive(Debug)]
-pub struct BitwiseExpr { 
-    pub op: BitwiseOp,
-    pub op_flag:OpFlag,
-    pub lhs: Box<TypeConst>,
-    pub rhs: Box<TypeConst>
-}
+use binuid_shared_wasm::ast_bits::ops::{BitwiseOp, OpFlag};
+use binuid_shared_wasm::ast_bits::exprs::BitwiseExpr;
+use binuid_shared_wasm::ast_bits::types::TypeConst;
 
 
 impl BuildFrom for BitwiseExpr {

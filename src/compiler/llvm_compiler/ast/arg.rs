@@ -1,48 +1,7 @@
-use super::{ConcreteType, ParamAttr, Metadata, Value};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub enum Arg {
-    None,
-    Concret {
-        concret: ArgConcret
-    },
-    Metadata {
-        meta: ArgMetadata
-    }
-}
-
-#[derive(Debug)]
-pub struct ArgConcret {
-    type_: ConcreteType,
-    param_attrs: Vec<ParamAttr>,
-    value: Value
-}
-
-#[derive(Debug)]
-pub struct ArgMetadata {
-    meta: Metadata
-}
-
-impl ArgMetadata {
-    pub fn new() -> ArgMetadata {
-        ArgMetadata {
-            meta: Metadata::None
-        }
-    }
-}
-
-
-impl ArgConcret {
-    pub fn new() -> ArgConcret {
-        ArgConcret {
-            type_: ConcreteType::None,
-            param_attrs: vec![],
-            value: Value::None
-        }
-    }
-}
+use binuid_shared_wasm::ast_bits::composes::{Metadata, ArgMetadata, ArgConcret, ParamAttr, Arg};
+use binuid_shared_wasm::ast_bits::types::ConcreteType;
+use binuid_shared_wasm::ast_bits::values::Value;
 
 
 impl BuildFrom for ArgMetadata {

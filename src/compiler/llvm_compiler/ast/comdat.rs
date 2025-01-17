@@ -1,13 +1,6 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::composes::Comdat;
 
-
-#[derive(Debug)]
-pub enum Comdat {
-    None,
-    Name {
-        name: String
-    }
-}
 
 
 impl BuildFrom for Comdat {

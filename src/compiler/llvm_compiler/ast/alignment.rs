@@ -1,17 +1,8 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::Alignment;
 
-#[derive(Debug)]
-pub struct Alignment {
-    pub int: u32
-}
 
-impl Alignment {
-    pub fn new() -> Alignment {
-        Alignment {
-            int: 0
-        }
-    }
-}
+
 
 impl BuildFrom for Alignment {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> Alignment {
@@ -20,7 +11,7 @@ impl BuildFrom for Alignment {
                 match inner_pair.as_rule() {
                     Rule::IntLit => {
                         Alignment {
-                            int: inner_pair.as_str().parse::<u32>().map_or(1, |d| d.clone())
+                            int: inner_pair.as_str().parse::<u32>().map_or(0, |d| d.clone())
                         }
                     },
                     _ => Alignment {

@@ -1,28 +1,10 @@
-use super::{AggregateOp, TypeValue, Index, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub struct AggregateInst {
-    pub op: AggregateOp,
-    pub lhs_type_value: TypeValue,
-    pub rhs_type_value: TypeValue,
-    pub indices: Vec<Index>,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
-
-
-impl AggregateInst {
-    pub fn new() -> AggregateInst {
-        AggregateInst {
-            op: AggregateOp::None,
-            lhs_type_value: TypeValue::new(),
-            rhs_type_value: TypeValue::new(),
-            indices: vec![],
-            metadata_attachments: vec![]
-        }
-    }
-}
+use binuid_shared_wasm::ast_bits::{
+    ops::AggregateOp,
+    composes::{MetadataAttachment, Index},
+    instructions::AggregateInst,
+    types::TypeValue
+};
 
 impl BuildFrom for AggregateInst {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> AggregateInst {

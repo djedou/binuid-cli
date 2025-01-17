@@ -1,15 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum Ident {
-    None,
-    Name {
-        value: String
-    },
-    Id {
-        value: u32
-    }
-}
+use binuid_shared_wasm::ast_bits::composes::Ident;
 
 impl BuildFrom for Ident {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> Ident {

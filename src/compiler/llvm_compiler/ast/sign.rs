@@ -1,11 +1,6 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::Sign;
 
-#[derive(Debug)]
-pub enum Sign {
-    None,
-    Plus,
-	Minus
-}
 
 impl BuildFrom for Sign {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> Sign {

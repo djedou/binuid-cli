@@ -1,48 +1,9 @@
-use super::{ConcreteType, Value, Metadata};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub enum ExceptionArg {
-    None,
-    Concrete {
-        concrete: ExceptionArgConcret
-    },
-    Metadata {
-        meta: ExceptionArgMetadata
-    }
-}
-
-
-
-#[derive(Debug)]
-pub struct ExceptionArgConcret {
-    type_: ConcreteType,
-    value: Value
-}
-
-#[derive(Debug)]
-pub struct ExceptionArgMetadata {
-    meta: Metadata
-}
-
-impl ExceptionArgMetadata {
-    pub fn new() -> ExceptionArgMetadata {
-        ExceptionArgMetadata {
-            meta: Metadata::None
-        }
-    }
-}
-
-
-impl ExceptionArgConcret {
-    pub fn new() -> ExceptionArgConcret {
-        ExceptionArgConcret {
-            type_: ConcreteType::None,
-            value: Value::None
-        }
-    }
-}
+use binuid_shared_wasm::ast_bits::composes::{Metadata, ExceptionArgMetadata, ExceptionArgConcret,
+    ExceptionArg
+};
+use binuid_shared_wasm::ast_bits::types::ConcreteType;
+use binuid_shared_wasm::ast_bits::values::Value;
 
 
 impl BuildFrom for ExceptionArgMetadata {

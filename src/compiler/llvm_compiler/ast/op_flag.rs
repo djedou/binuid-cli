@@ -1,14 +1,10 @@
-use super::OverflowFlag;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::{
+    ops::OpFlag,
+    simples::OverflowFlag
+};
 
-#[derive(Debug)]
-pub enum OpFlag {
-    None,
-    Overflows {
-        flags: Vec<OverflowFlag>
-    },
-    Exact
-}
+
 
 impl BuildFrom for OpFlag {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> OpFlag {

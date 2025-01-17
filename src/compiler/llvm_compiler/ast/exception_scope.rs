@@ -1,13 +1,6 @@
-use super::Ident;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::composes::{Ident, ExceptionScope};
 
-#[derive(Debug)]
-pub enum ExceptionScope {
-    None,
-    Local {
-        ident: Ident
-    }
-}
 
 
 impl BuildFrom for ExceptionScope {

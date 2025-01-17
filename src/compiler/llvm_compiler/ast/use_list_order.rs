@@ -1,23 +1,11 @@
-use super::{Type, Value, Index};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct UseListOrder { 
-    pub type_: Type,
-    pub value: Value,
-    pub index: Vec<Index> 
-}
+use binuid_shared_wasm::ast_bits::composes::UseListOrder;
+use binuid_shared_wasm::ast_bits::types::Type;
+use binuid_shared_wasm::ast_bits::values::Value;
+use binuid_shared_wasm::ast_bits::composes::Index;
 
 
-impl UseListOrder {
-    pub fn new() -> UseListOrder {
-        UseListOrder { 
-            type_: Type::None,
-            value: Value::None,
-            index: vec![]
-        } 
-    }
-}
+
 
 impl BuildFrom for UseListOrder {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> UseListOrder {

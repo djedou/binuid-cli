@@ -1,26 +1,6 @@
-use super::{FunctionBody, MetadataAttachment, FunctionHeader};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::composes::{FunctionHeader, FunctionDef, FunctionBody, MetadataAttachment};
 
-
-#[derive(Debug)]
-pub struct FunctionDef {
-    pub linkage: bool,
-    pub function_header: FunctionHeader,
-    pub metadata_attachments: Vec<MetadataAttachment>,
-    pub function_body: FunctionBody
-}
-
-
-impl FunctionDef {
-    pub fn new() -> FunctionDef {
-        FunctionDef {
-            linkage: false,
-            function_header: FunctionHeader::new(),
-            metadata_attachments: vec![],
-            function_body: FunctionBody::new()
-        }
-    }
-}
 
 impl BuildFrom for FunctionDef {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> FunctionDef {
@@ -34,12 +14,14 @@ impl BuildFrom for FunctionDef {
                 Rule::FunctionHeader => {
                     function_def.function_header = FunctionHeader::build_from(&inner_pair);
                 },
+                /*
                 Rule::MetadataAttachment => {
                     function_def.metadata_attachments.push(MetadataAttachment::build_from(&inner_pair));
                 },
                 Rule::FunctionBody => {
                     function_def.function_body = FunctionBody::build_from(&inner_pair);
                 },
+                */
                 _ => {}
             }
         }

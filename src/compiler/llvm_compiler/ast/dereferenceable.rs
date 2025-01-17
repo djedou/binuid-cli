@@ -1,19 +1,9 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::{
+    simples::DereferenceableItem,
+    composes::Dereferenceable
+};
 
-
-#[derive(Debug)]
-pub struct Dereferenceable {
-    pub item: DereferenceableItem,
-    pub value: u32
-}
-
-
-#[derive(Debug)]
-pub enum DereferenceableItem { 
-    None,
-    Nullable,
-    NonNullable
-}
 
 
 impl BuildFrom for Dereferenceable {

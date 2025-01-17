@@ -1,19 +1,5 @@
-use super::MDField;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct MDTuple {
-    pub fields: Vec<MDField>
-}
-
-
-impl MDTuple {
-    pub fn new() -> MDTuple {
-        MDTuple {
-            fields: Vec::with_capacity(0)
-        }
-    }
-}
+use binuid_shared_wasm::ast_bits::composes::{MDField, MDTuple};
 
 
 impl BuildFrom for MDTuple {

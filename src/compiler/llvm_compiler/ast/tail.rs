@@ -1,15 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub enum Tail {
-    None,
-    Must,
-	No,
-	Key
-}
-
-
+use binuid_shared_wasm::ast_bits::simples::Tail;
 
 impl BuildFrom for Tail {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> Tail {

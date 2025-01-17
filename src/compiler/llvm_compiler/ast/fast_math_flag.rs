@@ -1,18 +1,6 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::FastMathFlag;
 
-
-#[derive(Debug)]
-pub enum FastMathFlag {
-    None,
-    Afn,
-    Arcp,
-    Contract,
-    Fast,
-    Ninf,
-    Nnan,
-    Nsz,
-    Reassoc
-}
 
 
 impl BuildFrom for FastMathFlag {

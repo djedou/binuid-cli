@@ -1,11 +1,9 @@
-use super::Ident;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::values::BlockAddressConst;
+use binuid_shared_wasm::ast_bits::composes::Ident;
 
-#[derive(Debug)]
-pub struct BlockAddressConst {
-    pub global_ident: Ident,
-    pub local_ident: Ident
-}
+
+
 
 impl BuildFrom for BlockAddressConst {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> BlockAddressConst {

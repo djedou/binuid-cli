@@ -1,18 +1,9 @@
-use super::TLSModel;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::{
+    simples::TLSModel,
+    composes::ThreadLocal
+};
 
-#[derive(Debug)]
-pub struct ThreadLocal {
-    pub model: TLSModel
-}
-
-impl ThreadLocal {
-    pub fn new() -> ThreadLocal {
-        ThreadLocal {
-            model: TLSModel::None
-        }
-    }
-}
 
 impl BuildFrom for ThreadLocal {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> ThreadLocal {

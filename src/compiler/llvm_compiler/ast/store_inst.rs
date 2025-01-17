@@ -1,60 +1,10 @@
-use super::{TypeValue, AtomicOrdering, Alignment, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::{Alignment, AtomicOrdering};
+use binuid_shared_wasm::ast_bits::instructions::{VolatileStore1, AtomicStore1, VolatileStore2, AtomicStore2, StoreInst};
+use binuid_shared_wasm::ast_bits::types::TypeValue;
+use binuid_shared_wasm::ast_bits::composes::MetadataAttachment;
 
 
-#[derive(Debug)]
-pub enum StoreInst {
-    None,
-    Atomic1 {
-        value: AtomicStore1
-    },
-	Atomic2 {
-        value: AtomicStore2
-    },
-	Volatile1 {
-        value: VolatileStore1
-    },
-	Volatile2 {
-        value: VolatileStore2
-    }
-}
-
-
-#[derive(Debug)]
-pub struct AtomicStore1 {
-    pub volatile: bool,
-    pub lhs: TypeValue,
-    pub rhs: TypeValue,
-    pub order: AtomicOrdering,
-    pub align: Alignment,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
-
-#[derive(Debug)]
-pub struct AtomicStore2 {
-    pub volatile: bool,
-    pub lhs: TypeValue,
-    pub rhs: TypeValue,
-    pub order: AtomicOrdering,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
-
-#[derive(Debug)]
-pub struct VolatileStore1 {
-    pub volatile: bool,
-    pub lhs: TypeValue,
-    pub rhs: TypeValue,
-    pub align: Alignment,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
-
-#[derive(Debug)]
-pub struct VolatileStore2 {
-    pub volatile: bool,
-    pub lhs: TypeValue,
-    pub rhs: TypeValue,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
 
 impl BuildFrom for AtomicStore1 {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> AtomicStore1 {

@@ -1,20 +1,5 @@
-use super::Metadata;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-/*
-#[derive(Debug)]
-pub struct MDFields {
-    pub list: Vec<MDField>
-}
-*/
-
-#[derive(Debug)]
-pub enum MDField {
-    None,
-    Null,
-    Metadata {
-        data: Metadata
-    }
-}
+use binuid_shared_wasm::ast_bits::composes::{Metadata, MDField};
 
 
 impl BuildFrom for MDField {

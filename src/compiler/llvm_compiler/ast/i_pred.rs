@@ -1,19 +1,7 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::IPred;
 
-#[derive(Debug)]
-pub enum IPred {
-    None,
-    Eq,
-	Ne,
-	Sge,
-	Sgt,
-	Sle,
-	Slt,
-	Uge,
-	Ugt,
-	Ule,
-	Ult
-}
+
 
 impl BuildFrom for IPred {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> IPred {

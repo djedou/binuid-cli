@@ -1,11 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum DLLStorageClass {
-    None,
-    Export,
-	Import
-}
+use binuid_shared_wasm::ast_bits::simples::DLLStorageClass;
 
 impl BuildFrom for DLLStorageClass {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> DLLStorageClass {

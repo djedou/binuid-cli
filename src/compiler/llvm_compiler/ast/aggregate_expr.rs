@@ -1,20 +1,10 @@
-use super::{TypeConst, Index};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum AggregateOp {
-    None,
-    ExtractValue,
-    InsertValue
-}
-
-#[derive(Debug)]
-pub struct AggregateExpr {
-    pub op: AggregateOp,
-    pub lhs: TypeConst,
-    pub rhs: TypeConst,
-    pub indices: Vec<Index>
-}
+use binuid_shared_wasm::ast_bits::{
+    ops::AggregateOp,
+    exprs::AggregateExpr,
+    types::TypeConst,
+    composes::Index
+};
 
 
 impl BuildFrom for AggregateExpr {

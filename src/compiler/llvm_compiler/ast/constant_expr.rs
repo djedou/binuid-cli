@@ -1,31 +1,5 @@
-use super::{BinaryExpr, BitwiseExpr, VectorExpr, AggregateExpr, MemoryExpr, ConversionExpr, OtherExp};
+use binuid_shared_wasm::ast_bits::exprs::{ConstantExpr, BinaryExpr, BitwiseExpr, VectorExpr, AggregateExpr, MemoryExpr, ConversionExpr, OtherExp};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum ConstantExpr {
-    None,
-    Binary {
-        expr: BinaryExpr
-    },
-	Bitwise {
-        expr: BitwiseExpr
-    },
-	Vector {
-        expr: VectorExpr
-    },
-	Aggregate {
-        expr: AggregateExpr
-    },
-	Memory {
-        expr: MemoryExpr
-    },
-	Conversion {
-        expr: ConversionExpr
-    },
-	Other {
-        expr: OtherExp
-    }
-}
 
 
 impl BuildFrom for ConstantExpr {

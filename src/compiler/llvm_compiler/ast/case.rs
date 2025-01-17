@@ -1,24 +1,7 @@
-use super::{Type, Ident};
+use binuid_shared_wasm::ast_bits::composes::Ident;
+use binuid_shared_wasm::ast_bits::types::Type;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub struct Case { 
-    pub type_: Type,
-    pub int_const: u32,
-    pub local_ident: Ident,
-}
-
-
-impl Case {
-    pub fn new() -> Case {
-        Case {
-            type_: Type::None,
-            int_const: 0,
-            local_ident: Ident::None
-        }
-    }
-}
+use binuid_shared_wasm::ast_bits::composes::Case;
 
 impl BuildFrom for Case {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> Case {

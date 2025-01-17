@@ -1,21 +1,10 @@
-use super::{Type, Ident};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::types::TypeKind;
+use binuid_shared_wasm::ast_bits::types::Type;
+use binuid_shared_wasm::ast_bits::composes::Ident;
+use binuid_shared_wasm::ast_bits::types::TypeDef;
 
 
-#[derive(Debug)]
-pub enum TypeKind {
-    None,
-    Opaque,
-    Type {
-        type_: Type
-    }
-}
-
-#[derive(Debug)]
-pub struct TypeDef {
-    pub local_ident: Ident,
-    pub kind: TypeKind
-}
 
 impl BuildFrom for TypeDef {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> TypeDef {

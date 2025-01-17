@@ -1,28 +1,9 @@
-use super::{VectorOp, TypeValue, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::ops::VectorOp;
+use binuid_shared_wasm::ast_bits::instructions::VectorInst;
+use binuid_shared_wasm::ast_bits::types::TypeValue;
+use binuid_shared_wasm::ast_bits::composes::MetadataAttachment;
 
-#[derive(Debug)]
-pub struct VectorInst { 
-    pub op: VectorOp,
-    pub lhs_type_value: TypeValue,
-    pub rhs_type_value: TypeValue,
-    pub type_value: TypeValue,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
-
-
-
-impl VectorInst {
-    pub fn new() -> VectorInst {
-        VectorInst {
-            op: VectorOp::None,
-            lhs_type_value: TypeValue::new(),
-            rhs_type_value: TypeValue::new(),
-            type_value: TypeValue::new(),
-            metadata_attachments: vec![]
-        }
-    }
-}
 
 
 impl BuildFrom for VectorInst {

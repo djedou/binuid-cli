@@ -1,23 +1,7 @@
-use super::{TypeValue, MDString, MDTuple, MetadataId};
+
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub enum Metadata {
-    None,
-    TypeValue {
-        type_value: TypeValue
-    },
-    MDString {
-        data: MDString
-    },
-    MDTuple {
-        tuple: MDTuple
-    },
-    MetadataId {
-        id: MetadataId
-    }
-}
+use binuid_shared_wasm::ast_bits::composes::{Metadata, MetadataId, MDString, MDTuple};
+use binuid_shared_wasm::ast_bits::types::TypeValue;
 
 impl BuildFrom for Metadata {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> Metadata {

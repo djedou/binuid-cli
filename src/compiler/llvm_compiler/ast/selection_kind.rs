@@ -1,14 +1,6 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::SelectionKind;
 
-#[derive(Debug)]
-pub enum SelectionKind {
-    None,
-    Any,
-	ExactMatch,
-	Largest,
-	Noduplicates,
-	Samesize,
-}
 
 
 impl BuildFrom for SelectionKind {

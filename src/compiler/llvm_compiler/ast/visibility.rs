@@ -1,12 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum Visibility {
-    None,
-    Default,
-	Hidden,
-	Protected
-}
+use binuid_shared_wasm::ast_bits::simples::Visibility;
 
 
 impl BuildFrom for Visibility {

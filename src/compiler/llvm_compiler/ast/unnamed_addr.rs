@@ -1,12 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub enum UnnamedAddr { 
-    None,
-    Local,
-	NoLocal
-}
+use binuid_shared_wasm::ast_bits::simples::UnnamedAddr;
 
 
 impl BuildFrom for UnnamedAddr {

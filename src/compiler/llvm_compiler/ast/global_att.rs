@@ -1,22 +1,10 @@
-use super::{MetadataAttachment, Comdat, Alignment, Section};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::{
+    simples::Alignment,
+    composes::{Section, MetadataAttachment, Comdat, GlobalAttr}
+};
 
-#[derive(Debug)]
-pub enum GlobalAttr {
-    None,
-    Section {
-        section: Section
-    },
-	Comdat {
-        comdat: Comdat
-    },
-	Align {
-        align: Alignment
-    },
-	MetadataAttachment {
-        attachment: MetadataAttachment
-    }
-}
+
 
 impl BuildFrom for GlobalAttr {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> GlobalAttr {

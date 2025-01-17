@@ -1,28 +1,11 @@
-use super::{
-    Ident, Linkage, PreemptionSpecifier, Visibility, DLLStorageClass, ThreadLocal, UnnamedAddr,
-    Immutable, Type, Constant, GlobalAttr, FuncAttr, AddrSpace
-};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::{
+    simples::{AddrSpace, Visibility, UnnamedAddr, Linkage, Immutable, PreemptionSpecifier, DLLStorageClass},
+    composes::{ThreadLocal, Ident, GlobalAttr, FuncAttr, GlobalDef},
+    types::Type,
+    values::Constant
+};
 
-
-
-#[derive(Debug)]
-pub struct GlobalDef {
-    pub ident: Ident,
-    pub linkage: Linkage,
-    pub preemption_specifier: PreemptionSpecifier,
-    pub visibility: Visibility,
-    pub dll_storage_class: DLLStorageClass,
-    pub thread_local: ThreadLocal,
-    pub unnamed_addr: UnnamedAddr,
-    pub addr_space: AddrSpace,
-    pub externally_initialized: bool,
-    pub immutable: Immutable,
-    pub type_: Type,
-    pub constant: Constant,
-    pub global_attrs: Vec<GlobalAttr>,
-    pub func_attrs: Vec<FuncAttr>
-}
 
 
 impl BuildFrom for GlobalDef {
@@ -35,7 +18,7 @@ impl BuildFrom for GlobalDef {
             dll_storage_class: DLLStorageClass::None,
             thread_local: ThreadLocal::new(),
             unnamed_addr: UnnamedAddr::None,
-            addr_space: AddrSpace::new(),
+            addr_space: AddrSpace::default(),
             externally_initialized: false,
             immutable: Immutable::None,
             type_: Type::None,

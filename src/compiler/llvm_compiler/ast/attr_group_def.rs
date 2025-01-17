@@ -1,21 +1,7 @@
-use super::{FuncAttr, Ident};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct AttrGroupDef {
-    pub attr_group_id: Ident,
-    pub func_attrs: Vec<FuncAttr>
-}
+use binuid_shared_wasm::ast_bits::composes::{Ident, AttrGroupDef, FuncAttr};
 
 
-impl AttrGroupDef {
-    pub fn new() -> AttrGroupDef {
-        AttrGroupDef {
-            attr_group_id: Ident::None,
-            func_attrs: vec![]
-        }
-    }
-}
 
 
 impl BuildFrom for AttrGroupDef {

@@ -1,30 +1,10 @@
-use super::{BinOp, TypeValue, AtomicOrdering, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::AtomicOrdering;
+use binuid_shared_wasm::ast_bits::ops::BinOp;
+use binuid_shared_wasm::ast_bits::instructions::AtomicRMWInst;
+use binuid_shared_wasm::ast_bits::types::TypeValue;
+use binuid_shared_wasm::ast_bits::composes::MetadataAttachment;
 
-
-#[derive(Debug)]
-pub struct AtomicRMWInst { 
-    pub volatile: bool,
-    pub bin_op: BinOp,
-    pub lhs: TypeValue,
-    pub rhs: TypeValue,
-    pub order: AtomicOrdering,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
-
-
-impl AtomicRMWInst {
-    pub fn new() -> AtomicRMWInst {
-        AtomicRMWInst {
-            volatile: false,
-            bin_op: BinOp::None,
-            lhs: TypeValue::new(),
-            rhs: TypeValue::new(),
-            order: AtomicOrdering::None,
-            metadata_attachments: vec![]
-        }
-    }
-}
 
 impl BuildFrom for AtomicRMWInst {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> AtomicRMWInst {

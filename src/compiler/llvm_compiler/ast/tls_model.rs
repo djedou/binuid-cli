@@ -1,13 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum TLSModel {
-    None,
-    InitialExec,
-	LocalDynamic,
-	LocalExec
-}
-
+use binuid_shared_wasm::ast_bits::simples::TLSModel;
 
 
 impl BuildFrom for TLSModel {

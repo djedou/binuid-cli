@@ -1,49 +1,9 @@
-use super::{Type, Value, ArrayConst};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-
-#[derive(Debug)]
-pub enum Clause {
-    None,
-    Catch {
-        catch: ClauseCatch,
-    },
-	Filter {
-        filter: ClauseFilter,
-    }
-}
-
-#[derive(Debug)]
-pub struct ClauseCatch {
-    type_: Type,
-    value: Value
-}
-
-#[derive(Debug)]
-pub struct ClauseFilter {
-    type_: Type,
-    array_const: ArrayConst
-}
-
-impl ClauseCatch {
-    pub fn new() -> ClauseCatch {
-        ClauseCatch {
-            type_: Type::None,
-            value: Value::None
-        }
-    }
-}
-
-impl ClauseFilter {
-    pub fn new() -> ClauseFilter {
-        ClauseFilter {
-            type_: Type::None,
-            array_const: ArrayConst::new()
-        }
-    }
-}
-
+use binuid_shared_wasm::ast_bits::{
+    types::Type,
+    values::{ArrayConst, Value}
+};
+use binuid_shared_wasm::ast_bits::composes::{ClauseCatch, ClauseFilter, Clause};
 
 
 impl BuildFrom for ClauseCatch {

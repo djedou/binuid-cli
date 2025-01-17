@@ -1,12 +1,6 @@
 
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum OverflowFlag {
-    None,
-    Nsw,
-	Nuw 
-}
+use binuid_shared_wasm::ast_bits::simples::OverflowFlag;
 
 
 impl BuildFrom for OverflowFlag {

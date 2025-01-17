@@ -1,38 +1,14 @@
-use super::{FastMathFlag, CallingConv, Tail, ReturnAttr, Type, Value, Arg, FuncAttr, OperandBundle, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::{CallingConv, Tail, FastMathFlag};
+use binuid_shared_wasm::ast_bits::instructions::CallInst;
+use binuid_shared_wasm::ast_bits::composes::{Arg, ReturnAttr, FuncAttr, OperandBundle, MetadataAttachment};
+use binuid_shared_wasm::ast_bits::types::Type;
+use binuid_shared_wasm::ast_bits::values::Value;
 
 
-#[derive(Debug)]
-pub struct CallInst { 
-    pub tail: Tail,
-    pub flags: Vec<FastMathFlag>,
-    pub calling_conv: CallingConv,
-    pub return_attrs: Vec<ReturnAttr>,
-    pub type_: Type,
-    pub value: Value,
-    pub args: Vec<Arg>,
-    pub func_attrs: Vec<FuncAttr>,
-    pub operand_bundles: Vec<OperandBundle>,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
 
 
-impl CallInst {
-    pub fn new() -> CallInst {
-        CallInst {
-            tail: Tail::None,
-            flags: vec![],
-            calling_conv: CallingConv::None,
-            return_attrs: vec![],
-            type_: Type::None,
-            value: Value::None,
-            args: vec![],
-            func_attrs: vec![],
-            operand_bundles: vec![],
-            metadata_attachments: vec![]
-        }
-    }
-}
+
 
 impl BuildFrom for CallInst {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> CallInst {

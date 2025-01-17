@@ -1,9 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct Comment {
-    pub value: String
-}
+use binuid_shared_wasm::ast_bits::composes::Comment;
 
 
 impl BuildFrom for Comment {

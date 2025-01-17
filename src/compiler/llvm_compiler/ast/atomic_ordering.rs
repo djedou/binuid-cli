@@ -1,16 +1,7 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::AtomicOrdering;
 
 
-#[derive(Debug)]
-pub enum AtomicOrdering {
-    None,
-    AcqRel,
-    Acquire,
-    Monotonic,
-    Release,
-    SeqCst,
-    Unordered
-}
 
 impl BuildFrom for AtomicOrdering {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> AtomicOrdering {

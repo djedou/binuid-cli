@@ -1,46 +1,9 @@
-use super::{Alignment, Dereferenceable, Sret, Range};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::{
+    simples::Alignment,
+    composes::{Dereferenceable, Sret, Range, ParamAttr}
+};
 
-#[derive(Debug)]
-pub enum ParamAttr { 
-    None,
-    Align {
-        align: Alignment
-    },
-	Dereferenceable {
-        der: Dereferenceable
-    },
-	String {
-        value: String
-    },
-	Byval,
-	Inalloca,
-	Inreg,
-	Nest,
-	Noalias,
-	Nocapture,
-	Nonnull,
-	Readnone,
-	Readonly,
-	Returned,
-	Signext,
-	Sret {
-        sret: Sret
-    },
-	Swifterror,
-	Swiftself,
-	Writeonly,
-	Zeroext,
-    Noundef,
-    DeadOnUnwind,
-    Writable,
-    Immarg,
-    Allocalign,
-    Allocptr,
-    Range {
-        range: Range
-    }
-}
 
 
 impl BuildFrom for ParamAttr {

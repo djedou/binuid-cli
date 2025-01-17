@@ -1,32 +1,13 @@
-use super::{MemoryOp, Type, Value, TypeValue, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::instructions::GetElementPtrInst;
+use binuid_shared_wasm::ast_bits::ops::MemoryOp;
+use binuid_shared_wasm::ast_bits::types::{TypeValue, Type};
+use binuid_shared_wasm::ast_bits::values::Value;
+use binuid_shared_wasm::ast_bits::composes::MetadataAttachment;
 
 
-#[derive(Debug)]
-pub struct GetElementPtrInst {
-    pub op: MemoryOp,
-    pub in_bounds: bool,
-    pub lhs_type: Type,
-    pub rhs_type: Type,
-    pub value: Value,
-    pub type_values: Vec<TypeValue>,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
 
 
-impl GetElementPtrInst {
-    pub fn new() -> GetElementPtrInst {
-        GetElementPtrInst {
-            op: MemoryOp::None,
-            in_bounds: false,
-            lhs_type: Type::None,
-            rhs_type: Type::None,
-            value: Value::None,
-            type_values: vec![],
-            metadata_attachments: vec![]
-        }
-    }
-}
 
 impl BuildFrom for GetElementPtrInst {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> GetElementPtrInst {

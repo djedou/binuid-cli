@@ -1,33 +1,9 @@
-use super::{TypeValue, AtomicOrdering, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::AtomicOrdering;
+use binuid_shared_wasm::ast_bits::instructions::CmpXchgInst;
+use binuid_shared_wasm::ast_bits::types::TypeValue;
+use binuid_shared_wasm::ast_bits::composes::MetadataAttachment;
 
-#[derive(Debug)]
-pub struct CmpXchgInst { 
-    pub weak: bool,
-    pub volatile: bool,
-    pub lhs: TypeValue,
-    pub rhs: TypeValue,
-    pub type_value: TypeValue,
-    pub lhs_order: AtomicOrdering,
-    pub rhs_order: AtomicOrdering,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
-
-
-impl CmpXchgInst {
-    pub fn new() -> CmpXchgInst {
-        CmpXchgInst {
-            weak: false,
-            volatile: false,
-            lhs: TypeValue::new(),
-            rhs: TypeValue::new(),
-            type_value: TypeValue::new(),
-            lhs_order: AtomicOrdering::None,
-            rhs_order: AtomicOrdering::None,
-            metadata_attachments: vec![]
-        }
-    }
-}
 
 
 impl BuildFrom for CmpXchgInst {

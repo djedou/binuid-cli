@@ -1,20 +1,6 @@
-use super::MetadataId;
+
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct MetadataNode { 
-    pub id: MetadataId
-}
-
-
-impl MetadataNode {
-    pub fn new() -> MetadataNode {
-        MetadataNode {
-            id: MetadataId::new()
-        }
-    }
-}
-
+use binuid_shared_wasm::ast_bits::composes::{MetadataNode, MetadataId};
 
 impl BuildFrom for MetadataNode {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> MetadataNode {

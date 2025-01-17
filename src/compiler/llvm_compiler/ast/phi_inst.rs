@@ -1,25 +1,7 @@
-use super::{Type, Inc, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub struct PhiInst {
-    pub type_: Type,
-    pub inc_list: Vec<Inc>,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
-
-
-
-impl PhiInst {
-    pub fn new() -> PhiInst {
-        PhiInst {
-            type_: Type::None,
-            inc_list: vec![],
-            metadata_attachments: vec![]
-        }
-    }
-}
+use binuid_shared_wasm::ast_bits::instructions::PhiInst;
+use binuid_shared_wasm::ast_bits::composes::{MetadataAttachment, Inc};
+use binuid_shared_wasm::ast_bits::types::Type;
 
 
 impl BuildFrom for PhiInst {

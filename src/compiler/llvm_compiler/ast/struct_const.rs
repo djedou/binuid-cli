@@ -1,18 +1,7 @@
-use super::TypeConst;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::values::StructConst;
+use binuid_shared_wasm::ast_bits::types::TypeConst;
 
-#[derive(Debug)]
-pub enum StructConst {
-    None,
-    GrOrLessParath {
-        type_list: Vec<TypeConst>
-    },
-    GrOrLessParathEmpty,
-    OnlyParath {
-        type_list: Vec<TypeConst>
-    },
-    OnlyParathEmpty
-}
 
 
 impl BuildFrom for StructConst {

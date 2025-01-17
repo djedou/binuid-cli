@@ -1,19 +1,6 @@
-use super::TypeConst;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct ArrayConst {
-    pub value: Vec<TypeConst>
-}
-
-
-impl ArrayConst {
-    pub fn new() -> ArrayConst {
-        ArrayConst {
-            value: vec![]
-        }
-    }
-}
+use binuid_shared_wasm::ast_bits::values::ArrayConst;
+use binuid_shared_wasm::ast_bits::types::TypeConst;
 
 
 impl BuildFrom for ArrayConst {

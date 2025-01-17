@@ -1,41 +1,11 @@
-use super::{OverflowFlag, ConversionOp, Type, Value, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::OverflowFlag;
+use binuid_shared_wasm::ast_bits::types::Type;
+use binuid_shared_wasm::ast_bits::instructions::{ConversionInst, ConversionInstFlag};
+use binuid_shared_wasm::ast_bits::ops::ConversionOp;
+use binuid_shared_wasm::ast_bits::values::Value;
+use binuid_shared_wasm::ast_bits::composes::MetadataAttachment;
 
-
-#[derive(Debug)]
-pub enum ConversionInstFlag {
-    None,
-    OverflowFlags {
-        flags: Vec<OverflowFlag>
-    },
-    Nneg
-}
-
-
-#[derive(Debug)]
-pub struct ConversionInst {
-    pub op: ConversionOp,
-    pub flag: ConversionInstFlag,
-    pub lhs_type: Type,
-    pub value: Value,
-    pub rhs_type: Type,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
-
-
-
-impl ConversionInst {
-    pub fn new() -> ConversionInst {
-        ConversionInst {
-            op: ConversionOp::None,
-            flag: ConversionInstFlag::None,
-            lhs_type: Type::None,
-            value: Value::None,
-            rhs_type: Type::None,
-            metadata_attachments: vec![]
-        }
-    }
-}
 
 
 impl BuildFrom for ConversionInstFlag {

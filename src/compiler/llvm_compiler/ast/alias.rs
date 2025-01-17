@@ -1,11 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum Alias {
-    None,
-    Alias,
-	Ifunc
-}
+use binuid_shared_wasm::ast_bits::simples::Alias;
 
 
 impl BuildFrom for Alias {

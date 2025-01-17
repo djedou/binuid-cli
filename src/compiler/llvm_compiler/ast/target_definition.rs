@@ -1,18 +1,9 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::{
+    simples::TargetKind,
+    composes::TargetDefinition
+};
 
-
-#[derive(Debug)]
-pub struct TargetDefinition {
-    pub kind: TargetKind,
-    pub data: String
-}
-
-#[derive(Debug)]
-pub enum TargetKind {
-    None,
-    Datalayout,
-    Triple
-}
 
 impl BuildFrom for TargetDefinition {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> TargetDefinition {

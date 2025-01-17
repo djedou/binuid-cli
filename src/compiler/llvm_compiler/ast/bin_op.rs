@@ -1,21 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum BinOp {
-    None,
-    Add,
-    And,
-    Max,
-    Min,
-    Nand,
-    Or,
-    Sub,
-    Umax,
-    Umin,
-    Xchg,
-    Xor
-}
-
+use binuid_shared_wasm::ast_bits::ops::BinOp;
 
 
 impl BuildFrom for BinOp {

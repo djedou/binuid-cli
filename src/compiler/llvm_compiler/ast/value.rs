@@ -1,20 +1,9 @@
-use super::{Constant, Ident, InlineAsm};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::values::Value;
+use binuid_shared_wasm::ast_bits::composes::InlineAsm;
+use binuid_shared_wasm::ast_bits::composes::Ident;
+use binuid_shared_wasm::ast_bits::values::Constant;
 
-#[derive(Debug)]
-pub enum Value { 
-    None,
-    Constant {
-        const_: Constant
-    },
-	LocalIdent {
-        ident: Ident
-    },
-	InlineAsm {
-        asm: InlineAsm
-    },
-    Poison
-}
 
 
 impl BuildFrom for Value {

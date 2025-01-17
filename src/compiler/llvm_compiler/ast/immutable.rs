@@ -1,11 +1,6 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::Immutable;
 
-#[derive(Debug)]
-pub enum Immutable {
-    None,
-    Const,
-	Glob
-}
 
 
 impl BuildFrom for Immutable {

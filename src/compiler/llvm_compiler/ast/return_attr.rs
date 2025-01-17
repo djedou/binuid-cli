@@ -1,29 +1,8 @@
-
-use super::{Alignment, Dereferenceable, Range};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum ReturnAttr {
-    None,
-    Align {
-        align: Alignment
-    },
-	Dereferenceable {
-        deref: Dereferenceable
-    },
-	String {
-        data: String
-    },
-	Inreg,
-	Noalias,
-	Nonnull,
-	Signext,
-	Zeroext,
-    Noundef,
-    Range {
-        range: Range
-    },
-}
+use binuid_shared_wasm::ast_bits::{
+    simples::Alignment,
+    composes::{ReturnAttr, Range, Dereferenceable}
+};
 
 
 impl BuildFrom for ReturnAttr {

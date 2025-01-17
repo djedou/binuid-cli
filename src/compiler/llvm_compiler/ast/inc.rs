@@ -1,21 +1,7 @@
-use super::{Value, Ident};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::composes::{Inc, Ident};
+use binuid_shared_wasm::ast_bits::values::Value;
 
-#[derive(Debug)]
-pub struct Inc { 
-    pub value: Value,
-    pub local_ident: Ident,
-}
-
-
-impl Inc {
-    pub fn new() -> Inc {
-        Inc {
-            value: Value::None,
-            local_ident: Ident::None
-        }
-    }
-}
 
 
 impl BuildFrom for Inc {

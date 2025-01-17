@@ -1,11 +1,7 @@
-use super::{MetadataName, MDNode};
-use crate::compiler::{llvm_compiler::Rule, BuildFrom};
 
-#[derive(Debug)]
-pub struct MetadataAttachment {
-    pub metadata_name: MetadataName,
-    pub md_node: MDNode
-}
+use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::composes::{MetadataName, MDNode, MetadataAttachment};
+
 
 
 impl BuildFrom for MetadataAttachment {

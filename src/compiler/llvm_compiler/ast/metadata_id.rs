@@ -1,19 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct MetadataId {
-    value: u32
-}
-
-
-impl MetadataId {
-    pub fn new() -> MetadataId {
-        MetadataId {
-            value: 0
-        }
-    }
-}
-
+use binuid_shared_wasm::ast_bits::composes::MetadataId;
 
 impl BuildFrom for MetadataId {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> MetadataId {

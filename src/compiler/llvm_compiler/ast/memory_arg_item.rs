@@ -1,20 +1,8 @@
-use super::{Ident, Auth};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct MemoryArg {
-    pub label_ident: Ident,
-    pub auth: Auth
-}
-
-#[derive(Debug)]
-pub enum MemoryArgItem {
-    None,
-    Args {
-        args: Vec<MemoryArg>
-    }
-}
-
+use binuid_shared_wasm::ast_bits::{
+    simples::Auth,
+    composes::{MemoryArg, Ident, MemoryArgItem}
+};
 
 impl BuildFrom for MemoryArgItem {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> MemoryArgItem {
@@ -43,16 +31,6 @@ impl BuildFrom for MemoryArgItem {
         }
     }
 }
-
-impl MemoryArg {
-    pub fn new() -> MemoryArg {
-        MemoryArg {
-            label_ident: Ident::None,
-            auth: Auth::None
-        }
-    }
-}
-
 
 impl BuildFrom for MemoryArg {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> MemoryArg {

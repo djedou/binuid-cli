@@ -1,10 +1,8 @@
-use super::TypeConst;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::values::VectorConst;
+use binuid_shared_wasm::ast_bits::types::TypeConst;
 
-#[derive(Debug)]
-pub struct VectorConst {
-    pub value: Vec<TypeConst>
-}
+
 
 impl BuildFrom for VectorConst {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> VectorConst {

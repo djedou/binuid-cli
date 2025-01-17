@@ -1,26 +1,9 @@
-use super::{Type, Value, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::instructions::VAArgInst;
+use binuid_shared_wasm::ast_bits::values::Value;
+use binuid_shared_wasm::ast_bits::types::Type;
+use binuid_shared_wasm::ast_bits::composes::MetadataAttachment;
 
-
-#[derive(Debug)]
-pub struct VAArgInst { 
-    pub lhs_type:Type,
-    pub value: Value,
-    pub rhs_type: Type,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
-
-
-impl VAArgInst {
-    pub fn new() -> VAArgInst {
-        VAArgInst {
-            lhs_type: Type::None,
-            value: Value::None,
-            rhs_type: Type::None,
-            metadata_attachments: vec![]
-        }
-    }
-}
 
 
 impl BuildFrom for VAArgInst {

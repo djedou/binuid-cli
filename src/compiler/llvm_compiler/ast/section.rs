@@ -1,18 +1,6 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::composes::Section;
 
-#[derive(Debug)]
-pub struct Section { 
-    pub name: String
-}
-
-
-impl Section {
-    pub fn new() -> Section {
-        Section {
-            name: String::with_capacity(0)
-        }
-    }
-}
 
 impl BuildFrom for Section {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> Section {

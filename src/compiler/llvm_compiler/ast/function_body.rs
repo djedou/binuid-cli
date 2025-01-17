@@ -1,39 +1,8 @@
-use super::{UseListOrder, InstructionItem, Terminator, Comment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct FunctionBody { 
-    basic_block_list: Vec<BasicBlock>,
-    use_list_orders: Vec<UseListOrder>
-}
-
-#[derive(Debug)]
-pub struct BasicBlock { 
-    label_ident: String,
-    comments: Vec<Comment>,
-    instructions: Vec<InstructionItem>,
-    terminator: Terminator
-}
-
-impl FunctionBody {
-    pub fn new() -> FunctionBody {
-        FunctionBody { 
-            basic_block_list: vec![],
-            use_list_orders: vec![]
-        }
-    }
-}
-
-impl BasicBlock {
-    pub fn new() -> BasicBlock {
-        BasicBlock { 
-            label_ident: String::with_capacity(0),
-            comments: vec![],
-            instructions: vec![],
-            terminator: Terminator::None
-        }
-    }
-}
+use binuid_shared_wasm::ast_bits::composes::{BasicBlock, FunctionBody, UseListOrder, Comment,
+    Terminator
+};
+use binuid_shared_wasm::ast_bits::instructions::InstructionItem;
 
 
 impl BuildFrom for FunctionBody {

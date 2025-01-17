@@ -1,6 +1,9 @@
-use super::{FloatLit, StructConst, ArrayConst, VectorConst, Ident, BlockAddressConst, ConstantExpr};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::composes::{Ident, FloatLit};
+use binuid_shared_wasm::ast_bits::exprs::ConstantExpr;
+use binuid_shared_wasm::ast_bits::values::{StructConst, ArrayConst, VectorConst, BlockAddressConst, Constant};
 
+/*
 #[derive(Debug)]
 pub enum Constant {
     Bool {
@@ -38,7 +41,7 @@ pub enum Constant {
         expr: Box<ConstantExpr>
     }
 }
-
+*/
 
 impl BuildFrom for Constant {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> Constant {

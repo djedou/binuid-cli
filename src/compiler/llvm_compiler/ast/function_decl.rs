@@ -1,5 +1,6 @@
-use super::{FunctionHeader, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::composes::{MetadataAttachment, FunctionHeader};
+
 
 #[derive(Debug)]
 pub struct FunctionDecl {

@@ -1,50 +1,7 @@
-use super::Sign;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::Sign;
+use binuid_shared_wasm::ast_bits::composes::{FloatHexLit, FloatHexLitType, FracLit, SciLit, FloatLit};
 
-#[derive(Debug)]
-pub enum FloatLit {
-    None,
-    Frac {
-        value: FracLit
-    },
-	Sci {
-        value: SciLit
-    },
-	FloatHex {
-        value: FloatHexLit
-    }
-}
-
-#[derive(Debug)]
-pub struct FracLit {
-    pub sign: Sign,
-    pub decimals: u32,
-    pub after_dot: u32
-}
-
-#[derive(Debug)]
-pub struct SciLit {
-    pub frac: FracLit,
-    pub exp_sign: Sign,
-    pub exp_decimals: u32
-}
-
-#[derive(Debug)]
-pub struct FloatHexLit {
-    pub type_: FloatHexLitType,
-    pub value: Vec<u8>
-}
-
-
-#[derive(Debug)]
-pub enum FloatHexLitType {
-    None,
-    HexFP,
-    HexFP80,
-    HexFP128,
-    HexPPC12,
-    HexHal
-}
 
 
 impl BuildFrom for FloatLit {
@@ -69,15 +26,7 @@ impl BuildFrom for FloatLit {
     }
 }
 
-impl FracLit {
-    fn new() -> FracLit {
-        FracLit {
-            sign: Sign::None,
-            decimals: 0,
-            after_dot: 0
-        }
-    }
-}
+
 
 impl BuildFrom for FracLit {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> FracLit {

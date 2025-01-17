@@ -1,27 +1,10 @@
-use super::{TypeValue, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::{
+    composes::MetadataAttachment,
+    types::TypeValue
+};
+use binuid_shared_wasm::ast_bits::instructions::SelectInst;
 
-
-#[derive(Debug)]
-pub struct SelectInst { 
-    pub lhs_type_value: TypeValue,
-    pub rhs_type_value: TypeValue,
-    pub type_value: TypeValue,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
-
-
-
-impl SelectInst {
-    pub fn new() -> SelectInst {
-        SelectInst {
-            lhs_type_value: TypeValue::new(),
-            rhs_type_value: TypeValue::new(),
-            type_value: TypeValue::new(),
-            metadata_attachments: vec![]
-        }
-    }
-}
 
 
 impl BuildFrom for SelectInst {

@@ -1,22 +1,7 @@
-use super::TypeValue;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::composes::OperandBundle;
+use binuid_shared_wasm::ast_bits::types::TypeValue;
 
-
-#[derive(Debug)]
-pub struct OperandBundle { 
-    pub name: String,
-    pub type_values: Vec<TypeValue>
-}
-
-
-impl OperandBundle {
-    pub fn new() -> OperandBundle {
-        OperandBundle {
-            name: String::with_capacity(0),
-            type_values: vec![]
-        }
-    }
-}
 
 
 impl BuildFrom for OperandBundle {

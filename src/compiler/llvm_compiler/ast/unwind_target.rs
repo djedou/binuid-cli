@@ -1,15 +1,5 @@
-use super::Ident;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub enum UnwindTarget {
-    None,
-    ToCaller,
-	LocalLabel {
-        label: Ident
-    }
-}
+use binuid_shared_wasm::ast_bits::composes::{Ident, UnwindTarget};
 
 
 impl BuildFrom for UnwindTarget {

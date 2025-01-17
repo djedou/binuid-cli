@@ -1,19 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct MDString {
-    value: String
-}
-
-
-impl MDString {
-    pub fn new() -> MDString {
-        MDString {
-            value: String::with_capacity(0)
-        }
-    }
-}
-
+use binuid_shared_wasm::ast_bits::composes::MDString;
 
 impl BuildFrom for MDString {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> MDString {

@@ -1,14 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub struct InlineAsm { 
-    pub side_effect: bool,
-    pub align_stack: bool,
-    pub intel_dialect: bool, 
-    pub lhs_string: String,
-    pub rhs_string: String
-}
+use binuid_shared_wasm::ast_bits::composes::InlineAsm;
 
 
 impl BuildFrom for InlineAsm {

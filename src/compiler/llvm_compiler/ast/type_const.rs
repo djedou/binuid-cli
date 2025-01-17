@@ -1,20 +1,9 @@
-use super::{Type, Constant};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::values::Constant;
+use binuid_shared_wasm::ast_bits::types::Type;
+use binuid_shared_wasm::ast_bits::types::TypeConst;
 
-#[derive(Debug)]
-pub struct TypeConst { 
-    type_: Type,
-    constant: Constant
-}
 
-impl TypeConst {
-    pub fn new() -> TypeConst {
-        TypeConst { 
-            type_: Type::None,
-            constant: Constant::None
-        }
-    }
-}
 
 
 impl BuildFrom for TypeConst {

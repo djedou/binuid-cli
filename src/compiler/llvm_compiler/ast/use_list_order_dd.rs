@@ -1,24 +1,6 @@
-use super::{Ident, Index};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::composes::{UseListOrderBB, Ident, Index};
 
-
-#[derive(Debug)]
-pub struct UseListOrderBB { 
-    pub global_ident: Ident,
-    pub local_ident: Ident,
-    pub indexes: Vec<Index> 
-}
-
-
-impl UseListOrderBB {
-    pub fn new() -> UseListOrderBB {
-        UseListOrderBB { 
-            global_ident: Ident::None,
-            local_ident: Ident::None,
-            indexes: vec![]
-        } 
-    }
-}
 
 
 impl BuildFrom for UseListOrderBB {

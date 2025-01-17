@@ -1,34 +1,11 @@
-use super::{IPred, FPred, TypeConst};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub enum PredFlag {
-    None,
-    IPred {
-        pred: IPred
-    },
-    FPred {
-        pred: FPred
-    }
-}
-
-#[derive(Debug)]
-pub enum OtherOp {
-    None,
-    ICmp,
-    FCmp,
-    Select
-}
-
-#[derive(Debug)]
-pub struct OtherExp {
-    pub op: OtherOp,
-    pub flag: PredFlag,
-    pub lhs: TypeConst,
-    pub rhs: TypeConst,
-    pub type_const: TypeConst
-}
+use binuid_shared_wasm::ast_bits::{
+    simples::{FPred, IPred},
+    types::TypeConst
+};
+use binuid_shared_wasm::ast_bits::exprs::OtherExp;
+use binuid_shared_wasm::ast_bits::ops::OtherOp;
+use binuid_shared_wasm::ast_bits::composes::PredFlag;
 
 
 

@@ -1,27 +1,7 @@
-use super::{Type, Clause, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub struct LandingPadInst { 
-    pub type_: Type,
-    pub opt_cleanup: bool,
-    pub clauses: Vec<Clause>, 
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
-
-
-
-impl LandingPadInst {
-    pub fn new() -> LandingPadInst {
-        LandingPadInst {
-            type_: Type::None,
-            opt_cleanup: false,
-            clauses: vec![],
-            metadata_attachments: vec![]
-        }
-    }
-}
+use binuid_shared_wasm::ast_bits::instructions::LandingPadInst;
+use binuid_shared_wasm::ast_bits::composes::{MetadataAttachment, Clause};
+use binuid_shared_wasm::ast_bits::types::Type;
 
 
 impl BuildFrom for LandingPadInst {

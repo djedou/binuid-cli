@@ -1,9 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct Index {
-    pub value: u32
-}
+use binuid_shared_wasm::ast_bits::composes::Index;
 
 impl BuildFrom for Index {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> Index {

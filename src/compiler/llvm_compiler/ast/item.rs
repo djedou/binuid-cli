@@ -1,7 +1,6 @@
-use super::{TopLevelEntity, Comment};
 use crate::compiler::{llvm_compiler::{IntoFrame, Rule, LlvmAst}, BuildFrom};
 use binuid_shared_wasm::vm::Frame;
-
+use binuid_shared_wasm::ast_bits::composes::{Comment, TopLevelEntity};
 
 #[derive(Debug)]
 pub struct Item {

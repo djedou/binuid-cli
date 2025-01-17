@@ -1,52 +1,6 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::CallingConv;
 
-
-#[derive(Debug)]
-pub enum CallingConv {
-    None,
-    AmdgpuCs,
-    AmdgpuEs,
-    AmdgpuGs,
-    AmdgpuHs,
-    AmdgpuKernel,
-    AmdgpuLs,
-    AmdgpuPs,
-    AmdgpuVs,
-    AnyregCc,
-    ArmAapcsVfpcc,
-    ArmAapcscc,
-    ArmApcscc,
-    AvrIntrcc,
-    AvrSignalcc,
-    Coldcc,
-    CxxFastTlscc,
-    FastCc,
-    GhCcc,
-    HhvmCcc,
-    HhvmCc,
-    IntelOclBicc,
-    Msp430Intrcc,
-    PreserveAllcc,
-    PreserveMostcc,
-    PtxDevice,
-    PtxKernel,
-    SpirFunc,
-    SpirKernel,
-    Swiftcc,
-    WebkitJscc,
-    Win64cc,
-    X8664Sysvcc,
-    X86Fastcallcc,
-    X86Intrcc,
-    X86Regcallcc,
-    X86Stdcallcc,
-    X86Thiscallcc,
-    X86Vectorcallcc,
-    Ccc,
-	Cc {
-        int: u32
-    },
-}
 
 
 impl BuildFrom for CallingConv {

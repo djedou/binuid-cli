@@ -1,21 +1,7 @@
-use super::{MetadataAttachment, AtomicOrdering};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct FenceInst { 
-    pub order: AtomicOrdering,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
-
-
-impl FenceInst {
-    pub fn new() -> FenceInst {
-        FenceInst {
-            order: AtomicOrdering::None,
-            metadata_attachments: Vec::with_capacity(0)
-        }
-    }
-}
+use binuid_shared_wasm::ast_bits::simples::AtomicOrdering;
+use binuid_shared_wasm::ast_bits::instructions::FenceInst;
+use binuid_shared_wasm::ast_bits::composes::MetadataAttachment;
 
 
 

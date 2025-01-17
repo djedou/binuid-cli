@@ -1,30 +1,7 @@
-use super::{Type, TypeConst};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum ConversionOp  {
-    None,
-    Trunc,
-    ZExt,
-    SExt,
-    FPTrunc,
-    FPExt,
-    FPToUI,
-    FPToSI,
-    UIToFP,
-    SIToFP,
-    PtrToInt,
-    IntToPtr,
-    BitCast,
-    AddrSpaceCast
-}
-
-#[derive(Debug)]
-pub struct ConversionExpr {
-    pub op: ConversionOp,
-    pub lhs: TypeConst, 
-    pub type_: Type
-}
+use binuid_shared_wasm::ast_bits::types::{TypeConst, Type};
+use binuid_shared_wasm::ast_bits::exprs::ConversionExpr;
+use binuid_shared_wasm::ast_bits::ops::ConversionOp;
 
 
 

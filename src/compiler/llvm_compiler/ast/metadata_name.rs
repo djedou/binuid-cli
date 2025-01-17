@@ -1,19 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub struct MetadataName {
-    value: String
-}
-
-impl MetadataName {
-    pub fn new() -> MetadataName {
-        MetadataName {
-            value: String::with_capacity(0)
-        }
-    }
-}
-
+use binuid_shared_wasm::ast_bits::composes::MetadataName;
 
 impl BuildFrom for MetadataName {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> MetadataName {

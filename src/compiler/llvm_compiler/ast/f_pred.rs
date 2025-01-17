@@ -1,26 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub enum FPred {
-    None,
-    False,
-	True,
-    Oeq,
-    Oge,
-    Ogt,
-    Ole,
-    Olt,
-    One,
-    Ord,
-    Ueq,
-    Uge,
-    Ugt,
-    Ule,
-    Ult,
-    Une,
-    Uno
-}
+use binuid_shared_wasm::ast_bits::simples::FPred;
 
 
 impl BuildFrom for FPred {

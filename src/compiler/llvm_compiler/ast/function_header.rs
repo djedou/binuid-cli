@@ -1,53 +1,10 @@
-use super::{
-    PreemptionSpecifier, Visibility, DLLStorageClass, CallingConv, ReturnAttr, Type, Ident, Param, UnnamedAddr,
-    FuncAttr, TypeConst, Section, Comdat
-};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct FunctionHeader {
-    pub preemption_specifier: PreemptionSpecifier,
-    pub visibility: Visibility,
-    pub dll_storage_class: DLLStorageClass,
-    pub calling_conv: CallingConv,
-    pub return_attrs: Vec<ReturnAttr>,
-    pub type_: Type,
-    pub global_ident: Ident,
-    pub params: Vec<Param>,
-    pub unnamed_addr: UnnamedAddr,
-    pub func_attrs: Vec<FuncAttr>,
-    pub section: Section,
-    pub comdat: Comdat,
-    pub g: String,
-    pub prefix: TypeConst,
-    pub prologue: TypeConst,
-    pub personality: TypeConst
-}
-
-
-impl FunctionHeader {
-    pub fn new() -> FunctionHeader {
-        FunctionHeader {
-            preemption_specifier: PreemptionSpecifier::None,
-            visibility: Visibility::None,
-            dll_storage_class: DLLStorageClass::None,
-            calling_conv: CallingConv::None,
-            return_attrs: vec![],
-            type_: Type::None,
-            global_ident: Ident::None,
-            params: vec![],
-            unnamed_addr: UnnamedAddr::None,
-            func_attrs: vec![],
-            section: Section::new(),
-            comdat: Comdat::None,
-            g: String::with_capacity(0),
-            prefix: TypeConst::new(),
-            prologue: TypeConst::new(),
-            personality: TypeConst::new()
-        }
-    }
-}
-
+use binuid_shared_wasm::ast_bits::{
+    simples::{Visibility, UnnamedAddr, PreemptionSpecifier, DLLStorageClass, CallingConv},
+    composes::{FunctionHeader, Section, ReturnAttr, Ident, Param,
+    FuncAttr, Comdat},
+    types::{TypeConst, Type}
+};
 
 
 impl BuildFrom for FunctionHeader {
@@ -68,6 +25,7 @@ impl BuildFrom for FunctionHeader {
                 Rule::CallingConv => {
                     function_header.calling_conv = CallingConv::build_from(&inner_pair);
                 },
+                /*
                 Rule::ReturnAttrs => {
                     for p in inner_pair.clone().into_inner() {
                         match p.as_rule() {
@@ -148,7 +106,7 @@ impl BuildFrom for FunctionHeader {
                             _ => {}
                         }
                     }
-                },
+                },*/
                 _ => {}
             }
         }

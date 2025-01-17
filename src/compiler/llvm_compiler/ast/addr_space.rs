@@ -1,17 +1,7 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::simples::AddrSpace;
 
-#[derive(Debug)]
-pub struct AddrSpace {
-    pub addr: u32
-}
 
-impl AddrSpace {
-    pub fn new() -> AddrSpace {
-        AddrSpace {
-            addr: 0
-        }
-    }
-}
 
 impl BuildFrom for AddrSpace {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> AddrSpace {

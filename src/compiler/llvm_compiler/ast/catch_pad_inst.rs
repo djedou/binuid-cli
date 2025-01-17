@@ -1,24 +1,10 @@
-use super::{Ident, ExceptionArg, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::composes::{ExceptionArg, Ident, MetadataAttachment};
+use binuid_shared_wasm::ast_bits::instructions::CatchPadInst;
 
 
-#[derive(Debug)]
-pub struct CatchPadInst { 
-    pub local_ident: Ident,
-    pub exception_args: Vec<ExceptionArg>,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
 
 
-impl CatchPadInst {
-    pub fn new() -> CatchPadInst {
-        CatchPadInst {
-            local_ident: Ident::None,
-            exception_args: vec![],
-            metadata_attachments: vec![]
-        }
-    }
-}
 
 
 impl BuildFrom for CatchPadInst {

@@ -1,19 +1,5 @@
-use super::{AllocaInst, LoadInst, GetElementPtrInst};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum MemoryInst {
-    None,
-    Alloca {
-        inst: AllocaInst
-    },
-    Load {
-        inst: LoadInst
-    },
-    GetElementPtr {
-        inst: GetElementPtrInst
-    }
-}
+use binuid_shared_wasm::ast_bits::instructions::{AllocaInst, MemoryInst, LoadInst, GetElementPtrInst};
 
 
 impl BuildFrom for MemoryInst {

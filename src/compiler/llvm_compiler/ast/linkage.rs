@@ -1,26 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub enum Linkage {
-    None,
-    Appending,
-	AvailableExternally,
-	Common,
-	Internal,
-	Linkonce,
-	linkonceOdr,
-	Private,
-	Weak,
-	WeakOdr,
-}
-
-#[derive(Debug)]
-pub enum ExternLinkage {
-    None, 
-    ExternWeak,
-	External
-}
+use binuid_shared_wasm::ast_bits::simples::{ExternLinkage, Linkage};
 
 
 impl BuildFrom for Linkage {

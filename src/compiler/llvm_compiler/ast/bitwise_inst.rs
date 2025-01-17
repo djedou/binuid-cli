@@ -1,29 +1,13 @@
-use super::{BitwiseOp, OpFlag, Type, Value, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct BitwiseInst { 
-    pub op: BitwiseOp,
-    pub flag: OpFlag,
-    pub type_: Type,
-    pub lhs_value: Value,
-    pub rhs_value: Value,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
+use binuid_shared_wasm::ast_bits::{
+    ops::{BitwiseOp, OpFlag},
+    values::Value,
+    types::Type,
+    composes::MetadataAttachment,
+    instructions::BitwiseInst
+};
 
 
-impl BitwiseInst {
-    pub fn new() -> BitwiseInst {
-        BitwiseInst {
-            op: BitwiseOp::None,
-            flag: OpFlag::None,
-            type_: Type::None,
-            lhs_value: Value::None,
-            rhs_value: Value::None,
-            metadata_attachments: vec![]
-        }
-    }
-}
 
 
 impl BuildFrom for BitwiseInst {

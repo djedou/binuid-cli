@@ -1,29 +1,8 @@
-use super::TypeConst;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::exprs::{GEPConstIndex, MemoryExpr};
+use binuid_shared_wasm::ast_bits::ops::MemoryOp;
+use binuid_shared_wasm::ast_bits::types::TypeConst;
 
-
-#[derive(Debug)]
-pub enum MemoryOp {
-    None,
-    GetElementPtr
-}
-
-
-#[derive(Debug)]
-pub struct MemoryExpr { 
-    pub op: MemoryOp,
-    pub in_bounds: bool,
-    pub lhs: TypeConst,
-    pub rhs: TypeConst,
-    pub gep_const_indices: Vec<GEPConstIndex>
-}
-
-
-#[derive(Debug)]
-pub struct GEPConstIndex { 
-    pub inrange: bool,
-    pub type_const: TypeConst
-}
 
 
 impl BuildFrom for MemoryExpr {

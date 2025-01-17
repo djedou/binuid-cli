@@ -1,11 +1,7 @@
-use super::Type;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::types::Type;
+use binuid_shared_wasm::ast_bits::composes::Sret;
 
-
-#[derive(Debug)]
-pub struct Sret {
-    pub type_: Type
-}
 
 impl BuildFrom for Sret {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> Sret {

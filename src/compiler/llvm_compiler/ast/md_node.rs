@@ -1,20 +1,5 @@
-use super::{MDTuple, MetadataId, MDString};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum MDNode {
-    None,
-    Tuple {
-        value: MDTuple
-    },
-	Id {
-        id: MetadataId
-    },
-    String {
-        data: MDString
-    }
-}
-
+use binuid_shared_wasm::ast_bits::composes::{MetadataId, MDTuple, MDString, MDNode};
 
 
 impl BuildFrom for MDNode {

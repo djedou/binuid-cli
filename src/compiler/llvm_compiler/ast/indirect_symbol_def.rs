@@ -1,8 +1,9 @@
-use super::{
-    Ident, PreemptionSpecifier, Visibility, DLLStorageClass, ThreadLocal, UnnamedAddr,
-    Alias, Type, TypeConst
-};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::{
+    simples::{Alias, Visibility, UnnamedAddr, PreemptionSpecifier, DLLStorageClass},
+    composes::{ThreadLocal, Ident},
+    types::{Type, TypeConst}
+};
 
 
 

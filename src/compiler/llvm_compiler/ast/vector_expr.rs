@@ -1,21 +1,7 @@
-use super::TypeConst;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub enum VectorOp {
-    None,
-    ExtractElement,
-    InsertElement,
-    ShuffleVector
-}
-
-#[derive(Debug)]
-pub struct VectorExpr {
-    pub op: VectorOp,
-    pub lhs: TypeConst,
-    pub rhs: TypeConst,
-    pub type_: TypeConst
-}
+use binuid_shared_wasm::ast_bits::ops::VectorOp;
+use binuid_shared_wasm::ast_bits::exprs::VectorExpr;
+use binuid_shared_wasm::ast_bits::types::TypeConst;
 
 
 

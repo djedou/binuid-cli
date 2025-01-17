@@ -1,30 +1,10 @@
-use super::{OpFlag, TypeConst};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::ops::{OpFlag, BinaryOp};
+use binuid_shared_wasm::ast_bits::exprs::BinaryExpr;
+use binuid_shared_wasm::ast_bits::types::TypeConst;
 
-#[derive(Debug)]
-pub enum BinaryOp {
-    None,
-    Add,
-    FAdd,
-    Sub,
-    FSub,
-    Mul,
-    FMul,
-    UDiv,
-    SDiv,
-    FDiv,
-    URem,
-    SRem,
-    FRem
-}
 
-#[derive(Debug)]
-pub struct BinaryExpr { 
-    pub op: BinaryOp,
-    pub op_flag: OpFlag,
-    pub lhs: Box<TypeConst>,
-    pub rhs: Box<TypeConst>
-}
+
 
 
 impl BuildFrom for BinaryExpr {

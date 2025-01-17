@@ -1,27 +1,11 @@
-use super::{IPred, Type, Value, MetadataAttachment};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-#[derive(Debug)]
-pub struct ICmpInst { 
-    pub i_pred: IPred,
-    pub type_: Type,
-    pub lhs_value: Value,
-    pub rhs_value: Value,
-    pub metadata_attachments: Vec<MetadataAttachment>
-}
+use binuid_shared_wasm::ast_bits::instructions::ICmpInst;
+use binuid_shared_wasm::ast_bits::simples::IPred;
+use binuid_shared_wasm::ast_bits::types::Type;
+use binuid_shared_wasm::ast_bits::values::Value;
+use binuid_shared_wasm::ast_bits::composes::MetadataAttachment;
 
 
-impl ICmpInst {
-    pub fn new() -> ICmpInst {
-        ICmpInst {
-            i_pred: IPred::None,
-            type_: Type::None,
-            lhs_value: Value::None,
-            rhs_value: Value::None,
-            metadata_attachments: vec![]
-        }
-    }
-}
 
 
 impl BuildFrom for ICmpInst {

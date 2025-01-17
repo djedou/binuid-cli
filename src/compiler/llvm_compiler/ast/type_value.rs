@@ -1,21 +1,8 @@
-use super::{Type, Value};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::values::Value;
+use binuid_shared_wasm::ast_bits::types::Type;
+use binuid_shared_wasm::ast_bits::types::TypeValue;
 
-#[derive(Debug)]
-pub struct TypeValue {
-    pub type_: Type,
-    pub value: Value
-}
-
-
-impl TypeValue {
-    pub fn new() -> TypeValue {
-        TypeValue {
-            type_: Type::None,
-            value: Value::None,
-        }
-    }
-}
 
 
 impl BuildFrom for TypeValue {

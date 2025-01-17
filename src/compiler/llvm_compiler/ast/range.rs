@@ -1,14 +1,6 @@
-use super::Type;
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub struct Range {
-    pub type_: Type,
-    pub int: u32,
-    pub int_const: i64
-}
-
+use binuid_shared_wasm::ast_bits::composes::Range;
+use binuid_shared_wasm::ast_bits::types::Type;
 
 impl BuildFrom for Range {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> Range {

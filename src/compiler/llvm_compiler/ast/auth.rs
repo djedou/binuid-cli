@@ -1,15 +1,5 @@
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
-
-
-#[derive(Debug)]
-pub enum Auth {
-    None,
-    Readwrite,
-    Writeonly,
-    Readonly,
-    Read,
-    Write,
-}
+use binuid_shared_wasm::ast_bits::simples::Auth;
 
 impl BuildFrom for Auth {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> Auth {

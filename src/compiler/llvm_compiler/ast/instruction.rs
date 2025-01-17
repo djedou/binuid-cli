@@ -1,48 +1,9 @@
-use super::{StoreInst, FenceInst, CmpXchgInst, AtomicRMWInst, Ident, ValueInst};
 use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use binuid_shared_wasm::ast_bits::instructions::{Instruction, InstructionItem, StoreInst,
+    FenceInst, CmpXchgInst, AtomicRMWInst, ValueInst
+};
+use binuid_shared_wasm::ast_bits::composes::Ident;
 
-#[derive(Debug)]
-pub struct InstructionItem {
-    start_comment: String,
-    instruction: Box<Instruction>,
-    end_comment: String
-}
-
-
-#[derive(Debug)]
-pub enum Instruction {
-    None,
-    Store {
-        inst: StoreInst
-    },
-	Fence {
-        inst: FenceInst
-    },
-	CmpXchg {
-        inst: CmpXchgInst
-    },
-	AtomicRMW {
-        inst: AtomicRMWInst
-    },
-	LocalInst {
-        local_ident: Ident,
-        value_inst: ValueInst
-    },
-	Value {
-        value_inst: ValueInst
-    }
-}
-
-
-impl InstructionItem {
-    pub fn new() -> InstructionItem {
-        InstructionItem {
-            start_comment: String::with_capacity(0),
-            instruction: Box::new(Instruction::None),
-            end_comment: String::with_capacity(0)
-        }
-    }
-}
 
 impl BuildFrom for InstructionItem {
     fn build_from(pair: &pest::iterators::Pair<Rule>) -> InstructionItem {
