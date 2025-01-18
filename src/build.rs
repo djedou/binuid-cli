@@ -116,6 +116,7 @@ pub(crate) fn build() -> Result<()> {
                     };
                     let name = binary.name.replace("-", "_");
                     deps_cmds.extend_from_slice(&["--extern".to_owned(), format!("{}=dist/lib{name}_v_{}.rlib", name, version)]);
+                    println!("files: {files:#?}");
                     let compiler = Compiler::new(&name, &version, &files, &deps_cmds, &deps_files);
                     let _ = compiler.compile()?;
                 },

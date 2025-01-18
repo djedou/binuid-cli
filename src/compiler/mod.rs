@@ -34,6 +34,7 @@ impl Compiler {
     pub fn compile(&self) -> Result<()> {
         info!("compiling...");
         self.compile_lib_bin()?;
+        /*
         let libs_ids = self.get_libs_paths();
         for file in &self.files {
             match (
@@ -53,7 +54,7 @@ impl Compiler {
         }
 
         self.compile_bin_ll();
-
+*/
         Ok(())
     }
 
@@ -79,6 +80,8 @@ impl Compiler {
 
     fn compile_lib_bin(&self) -> Result<()> {
         let agrs = get_duid_bin_lib_build(&self.name, &self.version, &self.lib_dependencies);
+        println!("args: {agrs:#?}");
+        /*
         Command::new("rustc").args(&agrs).stdout(Stdio::inherit()).status()?;
         let Ok(mut current_dir) = env::current_dir() else {
             return Ok(());
@@ -86,7 +89,7 @@ impl Compiler {
         current_dir.push("dist");
         current_dir.push(format!("{}_v_{}.ll", self.name, self.version));
         self.compile_llvm(current_dir.as_path(), true);
-        
+        */
         Ok(())
     }
 

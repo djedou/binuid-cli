@@ -1,5 +1,7 @@
-use crate::compiler::{llvm_compiler::Rule, BuildFrom};
+use crate::compiler::{llvm_compiler::{IntoFrame, Rule, LlvmAst}, BuildFrom};
 use binuid_shared_wasm::ast_bits::composes::{FunctionHeader, FunctionDef, FunctionBody, FunctionDecl, MetadataAttachment};
+use binuid_shared_wasm::vm::Frame;
+
 
 
 impl BuildFrom for FunctionDef {
@@ -26,4 +28,12 @@ impl BuildFrom for FunctionDef {
         
         function_def
     }
+}
+
+
+impl IntoFrame for FunctionDef {
+    fn into_frame(&self, ast: &LlvmAst, frame: &mut Frame) {
+
+    }
+
 }

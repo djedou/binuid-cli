@@ -25,7 +25,6 @@ impl BuildFrom for FunctionHeader {
                 Rule::CallingConv => {
                     function_header.calling_conv = CallingConv::build_from(&inner_pair);
                 },
-                /*
                 Rule::ReturnAttrs => {
                     for p in inner_pair.clone().into_inner() {
                         match p.as_rule() {
@@ -106,7 +105,7 @@ impl BuildFrom for FunctionHeader {
                             _ => {}
                         }
                     }
-                },*/
+                },
                 _ => {}
             }
         }
