@@ -7,8 +7,9 @@ edition = "2021"
 [dependencies]
 binuid-shared = {version = "0.1.0", path = "../binuid-shared"}
 binuid-shared-wasm = {version = "0.1.0", path = "../binuid-shared-wasm"}
-pest = "2.7"
-pest_derive = "2.7"
+binuid-compiler = {version = "0.1.0", path = "../binuid-compiler"}
+#pest = "2.7"
+#pest_derive = "2.7"
 #prost-types = "0.12"
 #prost = "0.12"
 #tonic = {version = "0.10", default-features = false, features = ["prost", "codegen", "tls", "tls-roots", "tls-webpki-roots"]} #0.8 features = ["prost", "codegen", "tls", "tls-roots", "tls-webpki-roots"]

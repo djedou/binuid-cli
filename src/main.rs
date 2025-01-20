@@ -1,23 +1,29 @@
-mod template;
-mod dev;
-mod build;
-mod deploy;
-mod serve;
 mod args;
-mod config;
-mod publish;
-mod servers;
-mod compiler;
+mod commands;
+mod file_ops;
+mod package;
+mod zip_ops;
+mod builder;
+
+//mod servers;
 
 use binuid_shared::{
     clap::Parser,
     tokio
 };
-use binuid_shared_wasm::tracing::Level;
-use binuid_shared::tracing_subscriber;
+use binuid_shared_wasm::{
+    tracing::Level,
+    tracing_subscriber
+};
 
 pub(crate) use self::{
     args::*,
+    commands::*,
+    file_ops::*,
+    package::*,
+    zip_ops::*,
+    builder::*
+    /*
     template::*,
     dev::*,
     build::*,
@@ -25,6 +31,7 @@ pub(crate) use self::{
     deploy::*,
     config::*,
     publish::*
+    */
 };
 pub(crate) type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
@@ -46,7 +53,7 @@ async fn main() -> Result<()> {
             
         },
         ArgSub::Serve {host, port} => {
-            serve(&host, port).await
+            //serve(&host, port).await
         },
         ArgSub::Deploy {host: _, port: _} => {
             //deploy(&host, port)
@@ -58,8 +65,8 @@ async fn main() -> Result<()> {
             let _ = build()?;
         },
         ArgSub::Publish => {
-            let res = publish().await;
-            println!("publis result: {res:#?}");
+            //let res = publish().await;
+            //println!("publis result: {res:#?}");
         }
     };
 
