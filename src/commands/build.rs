@@ -7,8 +7,10 @@ use binuid_shared::{
     proc_macro2::TokenTree
 };
 use binuid_compiler::Compiler;
+use binuid_shared::walkdir::DirEntry;
 
 use crate::{
+    Metadata,
     Result, read_binuid_config, read_dependencies_from_table, 
     get_dependency_path, gather_files, save_zip, extract_lib_from_zip, get_duid_lib_build,
     get_dependency_zip_path, get_duid_bin_lib_build
@@ -55,10 +57,8 @@ pub(crate) fn build() -> Result<()> {
                         deps_files.push(get_dependency_zip_path(&d.name, d.version.as_deref(), d.path.as_deref()));
                         deps_cmds.extend_from_slice(&vec!["--extern".to_owned(), format!("{}={}", &d.name, get_dependency_path(&d.name, d.version.as_deref(), d.path.as_deref()))]);
                     });
-
+                    
                     extend_code("./app", true);
-                    //let files = get_bin_skip_files();
-
                     let name = config.package.name.replace("-", "_");
                     let version = match &config.package.version {
                         Some(ver) => ver.replace(".", "_"),
@@ -71,6 +71,8 @@ pub(crate) fn build() -> Result<()> {
                         &deps_cmds
                     );
                     deps_cmds.extend_from_slice(&["--extern".to_owned(), format!("{name}=dist/lib{name}_v_{version}.rlib")]);
+                    // maybe compile ./dist/pages here before going inside the compiler.
+                    
                     let compiler = Compiler::new(&name, &version, &deps_cmds);
                     compiler.compile();
                 },
@@ -165,6 +167,8 @@ fn get_bin_skip_files() -> Vec<PathBuf> {
 }
 */
 fn extend_code(base: &str, is_bin: bool) {
+    let mut metadatas: Vec<Metadata> = vec![];
+
     for entry in WalkDir::new(base).into_iter().flatten() {
         if entry.clone().file_type().is_file() {
             let Ok(mut file) = fs::File::open(&entry.clone().into_path()) else {
@@ -203,6 +207,13 @@ fn extend_code(base: &str, is_bin: bool) {
                                             }
                                         })
                                         .collect();
+                                        let mut path_components = get_path_components(entry.clone(), is_bin);
+                                        path_components.retain(|d| d != ".");
+                                        metadatas.push(Metadata {
+                                            path: path_components,
+                                            component_struct: args[0].clone(),
+                                            component_function: args[1].clone()
+                                        });
                                         component_args.push(args);
                                     },
                                     false => {}
@@ -237,16 +248,39 @@ fn extend_code(base: &str, is_bin: bool) {
             
             let output = code_segments.join("\r");
 
-            let mut path_components: Vec<_> = entry.clone().into_path().clone().components().map(|comp| match format!("{:#?}", comp.as_os_str()).as_ref() {
-                "\"lib\"" => if is_bin {"lib".to_string()} else {"dist".to_string()},
-                "\"app\"" => if is_bin {"dist".to_string()} else {"app".to_string()},
-                a => a.replace("\"", "").to_string()
-            }).collect();
+            let mut path_components: Vec<_> = get_path_components(entry.clone(), is_bin);
             path_components.retain(|seg| seg != ".");
 
             write_new_page_code_config(&output, &path_components);
         }
     }
+    
+    write_metada(&format!("{metadatas:#?}"), !is_bin);
+}
+
+fn get_path_components(entry: DirEntry, is_bin: bool) -> Vec<String> {
+    entry.into_path().clone().components().map(|comp| match format!("{:#?}", comp.as_os_str()).as_ref() {
+        "\"lib\"" => if is_bin {"lib".to_string()} else {"dist".to_string()},
+        "\"app\"" => if is_bin {"dist".to_string()} else {"app".to_string()},
+        a => a.replace("\"", "").to_string()
+    }).collect::<Vec<String>>()
+}
+
+fn write_metada(content: &str, is_bin: bool) {
+    let Ok(mut current_dir) = env::current_dir() else {
+        return;
+    };
+
+    current_dir.push("dist");
+    if !is_bin {
+        current_dir.push("lib"); 
+    }
+    current_dir.push("metadata.json");
+
+    let Ok(mut file) = fs::File::create(&current_dir) else {
+        return;
+    };
+    let _ = file.write_all(&content.as_bytes());
 }
 
 fn write_new_page_code_config(content: &str, path_components: &[String]) {

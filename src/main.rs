@@ -1,6 +1,7 @@
 mod args;
 mod commands;
 mod file_ops;
+mod metadata;
 mod package;
 mod zip_ops;
 mod builder;
@@ -20,6 +21,7 @@ pub(crate) use self::{
     args::*,
     commands::*,
     file_ops::*,
+    metadata::*,
     package::*,
     zip_ops::*,
     builder::*
