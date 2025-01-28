@@ -71,7 +71,6 @@ pub(crate) fn build() -> Result<()> {
                         &deps_cmds
                     );
                     deps_cmds.extend_from_slice(&["--extern".to_owned(), format!("{name}=dist/lib{name}_v_{version}.rlib")]);
-                    // maybe compile ./dist/pages here before going inside the compiler.
                     
                     let compiler = Compiler::new(&name, &version, &deps_cmds);
                     compiler.compile();
