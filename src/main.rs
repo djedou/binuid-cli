@@ -25,15 +25,6 @@ pub(crate) use self::{
     package::*,
     zip_ops::*,
     builder::*
-    /*
-    template::*,
-    dev::*,
-    build::*,
-    serve::*,
-    deploy::*,
-    config::*,
-    publish::*
-    */
 };
 pub(crate) type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 

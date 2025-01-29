@@ -1,14 +1,3 @@
-/*
-mod builders;
-mod dependencies;
-mod files;
-mod zip_files;
-
-pub(crate) use builders::*;
-pub(crate) use dependencies::*;
-pub(crate) use files::*;
-pub(crate) use zip_files::*;
-*/
 use binuid_shared_wasm::{
     serde::{self, Deserialize, Serialize},
     toml::{Table, de::Error, from_str, to_string_pretty}
@@ -19,9 +8,6 @@ use std::{
     fs::File
 };
 use std::io::{Read, Write};
-/*
-use binuid_shared::zip;
-*/
 
 #[derive(Debug, Deserialize, Serialize, Clone, Default)]
 #[serde(crate = "self::serde")]
@@ -39,15 +25,6 @@ pub(crate) struct Package {
     pub(crate) authors: Option<Vec<String>>,
     pub(crate) members: Option<Vec<String>>
 }
-
-/*
-#[derive(Debug, Deserialize, Serialize, Default)]
-#[serde(crate = "self::serde")]
-pub(crate) struct Workspace {
-    pub(crate) name: String,
-    pub(crate) authors: Vec<String>,
-}
-*/
 
 #[derive(Debug, Deserialize, Serialize, Clone, Default)]
 #[serde(crate = "self::serde")]

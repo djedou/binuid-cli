@@ -25,28 +25,3 @@ pub(crate) fn gather_files<'a, T: Into<&'a Path>>(kip: Option<&[String]>, path: 
         }
     }
 }
-
-/*
-pub(crate) fn gather_ll_files<'a, T: Into<&'a Path>>(path: T, files: &mut Vec<PathBuf>) {
-    let path: &Path = path.into();
-
-    for entry in path.read_dir().unwrap() {
-        match entry {
-            Ok(e) => {
-                if e.path().is_dir() {
-                    gather_ll_files(e.path().as_ref(), files);
-                } 
-                else {
-                    match e.path().extension().map_or(None, |d| d.to_str()) {
-                        Some("ll") => {
-                            files.push(e.path());
-                        },
-                        _ => {}
-                    }
-                }
-            }
-            Err(_) => todo!(),
-        }
-    }
-}
-*/
