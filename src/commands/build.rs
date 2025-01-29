@@ -1,5 +1,5 @@
 use std::{env, fs, path::PathBuf, process::{Command, Stdio}, io::{Read, Write}};
-use binuid_shared_wasm::console::info;
+use binuid_shared_wasm::{serde_json::json, console::info};
 use binuid_shared::{
     walkdir::WalkDir,
     quote::{quote, ToTokens},
@@ -254,7 +254,7 @@ fn extend_code(base: &str, is_bin: bool) {
         }
     }
     
-    write_metada(&format!("{metadatas:#?}"), !is_bin);
+    write_metada(&metadatas, !is_bin);
 }
 
 fn get_path_components(entry: DirEntry, is_bin: bool) -> Vec<String> {
@@ -265,7 +265,9 @@ fn get_path_components(entry: DirEntry, is_bin: bool) -> Vec<String> {
     }).collect::<Vec<String>>()
 }
 
-fn write_metada(content: &str, is_bin: bool) {
+fn write_metada(metadatas: &[Metadata], is_bin: bool) {
+    let content = json!(metadatas);
+    
     let Ok(mut current_dir) = env::current_dir() else {
         return;
     };
@@ -279,7 +281,7 @@ fn write_metada(content: &str, is_bin: bool) {
     let Ok(mut file) = fs::File::create(&current_dir) else {
         return;
     };
-    let _ = file.write_all(&content.as_bytes());
+    let _ = file.write_all(&content.to_string().as_bytes());
 }
 
 fn write_new_page_code_config(content: &str, path_components: &[String]) {
