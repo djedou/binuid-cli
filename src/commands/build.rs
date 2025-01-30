@@ -321,33 +321,18 @@ pub struct {comp};
 
 impl {comp} {{
     pub fn view(
-        model: &{model},
-        props: &[(&'static str, binuid_std::components::PropValue::<{msg}>)],
-        children: &[binuid_std::components::Node<{model}, {msg}>]
+        model: &{model}
     ) -> binuid_std::components::Node<{model}, {msg}> {{
         let new_view: Option<fn(
-            model: &{model}, 
-            props: &[(&'static str, binuid_std::components::PropValue::<{msg}>)],
-            children: &[binuid_std::components::Node<{model}, {msg}>]
+            model: &{model}
         ) -> binuid_std::components::Node<{model}, {msg}>> = {view};
         
         match new_view {{
-            Some(v) => v(model, props, children),
+            Some(v) => v(model),
             None => {{
-                let mut new_props = std::collections::HashMap::new();
-                for (key, value) in props {{
-                    new_props.insert(key.to_string(), value.clone());
-                }}
-                let mut new_children = vec![];
-                let len = children.len();
-                for i in 0..len {{
-                    new_children.push(children[i].clone());
-                }}
                 let mut node = binuid_std::components::Node::<{model}, {msg}>::default();
                 node.tag = "{name}".to_string();
                 node.model = <{model}>::default();
-                node.props = new_props;
-                node.children = new_children;
 
                 node
             }}
@@ -356,64 +341,45 @@ impl {comp} {{
 
     pub fn update(
         model: &mut {model}, 
-        props: &mut binuid_std::components::Props<{msg}>, 
         msg: &{msg}
     ) -> binuid_std::components::Cmd<{msg}> {{
         let new_update: Option<fn(
             model: &mut {model}, 
-            props: &mut binuid_std::components::Props<{msg}>, 
             msg: &{msg}
         ) -> binuid_std::components::Cmd<{msg}>> = {update};
         
         match new_update {{
-            Some(u) => u(model, props, msg),
+            Some(u) => u(model, msg),
             None => binuid_std::components::Cmd::<{msg}>::None
         }}
     }}
 
     pub fn subscribe(
-        model: &{model}, 
-        props: &binuid_std::components::Props<{msg}>
+        model: &{model}
     ) -> binuid_std::components::Sub<{msg}> {{
         let new_subscribe: Option<fn(
-            model: &{model}, 
-            props: &binuid_std::components::Props<{msg}>
+            model: &{model}
         ) -> binuid_std::components::Sub<{msg}>> = {subscribe};
         
         match new_subscribe {{
-            Some(s) => s(model, props),
+            Some(s) => s(model),
             None => binuid_std::components::Sub::<{msg}>::None
         }}
     }}
 
     pub fn toast(
-        model: &{model},
-        props: &[(&'static str, binuid_std::components::PropValue::<{msg}>)],
-        children: &[binuid_std::components::Node<{model}, {msg}>]
+        model: &{model}
     ) -> binuid_std::components::Node<{model}, {msg}> {{
         let new_toast: Option<fn(
-            model: &{model}, 
-            props: &[(&'static str, binuid_std::components::PropValue::<{msg}>)],
-            children: &[binuid_std::components::Node<{model}, {msg}>]
+            model: &{model}
         ) -> binuid_std::components::Node<{model}, {msg}>> = {toast};
         
         match new_toast {{
-            Some(t) => t(model, props, children),
+            Some(t) => t(model),
             None => {{
-                let mut new_props = std::collections::HashMap::new();
-                for (key, value) in props {{
-                    new_props.insert(key.to_string(), value.clone());
-                }}
-                let mut new_children = vec![];
-                let len = children.len();
-                for i in 0..len {{
-                    new_children.push(children[i].clone());
-                }}
                 let mut node = binuid_std::components::Node::<{model}, {msg}>::default();
                 node.tag = "toast-{name}".to_string();
                 node.model = <{model}>::default();
-                node.props = new_props;
-                node.children = new_children;
 
                 node
             }}
