@@ -430,7 +430,23 @@ pub fn {name}(
 where {model}: std::fmt::Debug + Default + Clone,
         {msg}: std::fmt::Debug + Default + Clone
 {{
-    {comp}::view(model, props, children)
+    let mut new_props = std::collections::HashMap::new();
+    for (key, value) in props {{
+        new_props.insert(key.to_string(), value.clone());
+    }}
+    let mut new_children = vec![];
+    let len = children.len();
+    for i in 0..len {{
+        new_children.push(children[i].clone());
+    }}
+
+    binuid_std::components::Node {{
+        tag: "{name}".to_string(),
+        model: model.to_owned(),
+        text: None,
+        props: new_props,
+        children: new_children
+    }}
 }}
 "#)
 }
