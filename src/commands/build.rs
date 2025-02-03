@@ -1,5 +1,5 @@
 use std::{env, fs, path::Path, process::{Command, Stdio}, io::{Read, Write}};
-use binuid_shared_wasm::{serde_json::json, console::info};
+use binuid_shared_wasm::{serde_json::json, console::{error, info}};
 use binuid_shared::{
     walkdir::WalkDir,
     quote::{quote, ToTokens},
@@ -8,6 +8,7 @@ use binuid_shared::{
 };
 use binuid_compiler::Compiler;
 use binuid_shared::walkdir::DirEntry;
+
 
 use crate::{
     Metadata,
@@ -131,43 +132,9 @@ fn compile_lib(name: &str, version: &str, deps_cmds: &[String]) -> Result<()> {
     Ok(())
 }
 
-/*
-fn get_bin_skip_files() -> Vec<PathBuf> {
-    
-    let Ok(current_dir) = env::current_dir() else {
-        return vec![];
-    };
-    
-    let mut current_dir_doc = current_dir.clone();
-    current_dir_doc.push("doc");
-    let mut current_dir_git = current_dir.clone();
-    current_dir_git.push(".git");
-    let mut current_dir_deps = current_dir.clone();
-    current_dir_deps.push("deps");
-    let mut current_dir_pkg = current_dir.clone();
-    current_dir_pkg.push("pkg");
-    let mut current_dir_dist = current_dir.clone();
-    current_dir_dist.push("dist");
-    let mut current_dir_app_lib = current_dir.clone();
-    current_dir_app_lib.push("app");
-    current_dir_app_lib.push("lib");
-    let skips = vec![
-        format!("{}", current_dir_doc.display()),
-        format!("{}", current_dir_git.display()),
-        format!("{}", current_dir_deps.display()),
-        format!("{}", current_dir_pkg.display()),
-        format!("{}", current_dir_app_lib.display()),
-        format!("{}", current_dir_dist.display())
-    ];
-    let mut files = vec![];
-    gather_files(Some(skips.as_slice()), current_dir.as_path(), &mut files);
-
-    files
-}
-*/
 fn extend_code(base: &str, is_bin: bool) {
     let mut metadatas: Vec<Metadata> = vec![];
-
+    
     for entry in WalkDir::new(base).into_iter().flatten() {
         if entry.clone().file_type().is_file() {
             let Ok(mut file) = fs::File::open(&entry.clone().into_path()) else {
@@ -213,7 +180,14 @@ fn extend_code(base: &str, is_bin: bool) {
                                             component_struct: args[0].clone(),
                                             component_function: args[1].clone()
                                         });
-                                        component_args.push(args);
+                                        match args.len() == 9 {
+                                            true => {
+                                                component_args.push(args);
+                                            },
+                                            false => {
+                                                error!("macros component in file {:#?} is missing some arguments", entry.clone().into_path());
+                                            }
+                                        }
                                     },
                                     false => {}
                                 }
@@ -314,12 +288,16 @@ fn format_output_file(path: &str) -> Result<()> {
 fn component_template(args: &[String]) -> String {
     let comp = &args[0];
     let name = &args[1];
-    let model = &args[2];  
-    let msg = &args[3];
-    let view = &args[4];
-    let update = &args[5];
-    let subscribe = &args[6];
-    let toast = &args[7];
+    let tag = match &args[2] == "None" {
+        true => &args[1],
+        false =>  &args[2].replace("Some(", "").replace(")", "")
+    };
+    let model = &args[3];  
+    let msg = &args[4];
+    let view = &args[5];
+    let update = &args[6];
+    let subscribe = &args[7];
+    let toast = &args[8];
     /*
     #################################################################################################################
     // the content of this must be exactly the same as the component macros in binuid-libs/lib/binuid_std.rs
@@ -341,8 +319,9 @@ impl {comp} {{
             Some(v) => v(model),
             None => {{
                 let mut node = binuid_std::components::Node::<{model}, {msg}>::default();
-                node.tag = "{name}".to_string();
-                node.model = <{model}>::default();
+                node.name = "{name}".to_string();
+                node.tag = "{tag}".to_string();
+                node.model = {model}::default();
 
                 node
             }}
@@ -388,8 +367,9 @@ impl {comp} {{
             Some(t) => t(model),
             None => {{
                 let mut node = binuid_std::components::Node::<{model}, {msg}>::default();
-                node.tag = "toast-{name}".to_string();
-                node.model = <{model}>::default();
+                node.name = "toast-{name}".to_string();
+                node.tag = "toast-{tag}".to_string();
+                node.model = {model}::default();
 
                 node
             }}
@@ -417,7 +397,8 @@ where {model}: std::fmt::Debug + Default + Clone,
     }}
 
     binuid_std::components::Node {{
-        tag: "{name}".to_string(),
+        name: "{name}".to_string(),
+        tag: "{tag}".to_string(),
         model: model.to_owned(),
         text: None,
         props: new_props,
