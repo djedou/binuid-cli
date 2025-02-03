@@ -1,4 +1,4 @@
-use std::{env, fs, path::PathBuf, process::{Command, Stdio}, io::{Read, Write}};
+use std::{env, fs, path::Path, process::{Command, Stdio}, io::{Read, Write}};
 use binuid_shared_wasm::{serde_json::json, console::info};
 use binuid_shared::{
     walkdir::WalkDir,
@@ -248,13 +248,13 @@ fn extend_code(base: &str, is_bin: bool) {
             let output = code_segments.join("\r");
 
             let mut path_components: Vec<_> = get_path_components(entry.clone(), is_bin);
+            
             path_components.retain(|seg| seg != ".");
-
             write_new_page_code_config(&output, &path_components);
         }
     }
     
-    write_metada(&metadatas, !is_bin);
+    write_metadata(&metadatas, !is_bin);
 }
 
 fn get_path_components(entry: DirEntry, is_bin: bool) -> Vec<String> {
@@ -265,7 +265,7 @@ fn get_path_components(entry: DirEntry, is_bin: bool) -> Vec<String> {
     }).collect::<Vec<String>>()
 }
 
-fn write_metada(metadatas: &[Metadata], is_bin: bool) {
+fn write_metadata(metadatas: &[Metadata], is_bin: bool) {
     let content = json!(metadatas);
     
     let Ok(mut current_dir) = env::current_dir() else {
@@ -300,6 +300,15 @@ fn write_new_page_code_config(content: &str, path_components: &[String]) {
         return;
     };
     let _ = file.write_all(&content.as_bytes());
+    let _ = format_output_file(&path_components.join("/"));
+}
+
+fn format_output_file(path: &str) -> Result<()> {
+    Command::new("rustfmt")
+        .args([path])
+        .stdout(Stdio::inherit())
+        .status()?;
+    Ok(())
 }
 
 fn component_template(args: &[String]) -> String {
@@ -317,6 +326,7 @@ fn component_template(args: &[String]) -> String {
     #################################################################################################################
     */
     format!(r#"
+
 pub struct {comp};
 
 impl {comp} {{
