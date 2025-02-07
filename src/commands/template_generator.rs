@@ -39,17 +39,6 @@ pub(crate) fn generate_template(mode: &Mode, name: &str) {
         }
     }
 
-    match Command::new("rustup")
-        .args(["component", "add", "rustfmt"])
-        .stdout(Stdio::inherit())
-        .status() 
-    {
-        Ok(_) => {},
-        Err(err) => {
-            error!("Err: {:#?}", err);
-        }
-    }
-
     match Command::new("cargo")
         .args(["install", "watchexec-cli"])
         .stdout(Stdio::inherit())

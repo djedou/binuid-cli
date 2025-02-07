@@ -1,12 +1,15 @@
-use std::env;
+use std::{env, fs};
 
 pub(crate) fn get_duid_lib_build(name: &str, version: &str, deps: &[String]) -> Vec<String> {
     let new_name = name.replace("-", "_");
     let Ok(mut current_dir) = env::current_dir() else {
         return vec![];
     };
-    current_dir.push("dist");
-    let output_directory = current_dir.clone();
+    let mut output_directory = current_dir.clone();
+    output_directory.push("dist");
+    let _ = fs::create_dir_all(&output_directory);
+
+    current_dir.push("lib");
     current_dir.push(format!("{new_name}.rs"));
     let mut args = vec![
         "-O".to_string(),
@@ -27,7 +30,7 @@ pub(crate) fn get_duid_bin_lib_build(name: &str, version: &str, deps: &[String])
     };
     let mut output_directory = current_dir.clone();
     output_directory.push("dist");
-    current_dir.push("dist");
+    current_dir.push("app");
     current_dir.push("lib");
     current_dir.push("mod.rs");
     let mut args = vec![
