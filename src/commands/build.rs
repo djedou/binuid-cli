@@ -145,10 +145,13 @@ fn compile_lib(name: &str, version: &str, deps_cmds: &[String]) -> Result<()> {
             current_dir_git.push(".git");
             let mut current_dir_deps = current_dir.clone();
             current_dir_deps.push("deps");
+            let mut current_dir_target = current_dir.clone();
+            current_dir_target.push("target");
             let skips = vec![
                 format!("{}", current_dir_doc.display()),
                 format!("{}", current_dir_git.display()),
-                format!("{}", current_dir_deps.display())
+                format!("{}", current_dir_deps.display()),
+                format!("{}", current_dir_target.display()),
             ];
             let root = format!("{}", current_dir.display());
             let mut files = vec![];
