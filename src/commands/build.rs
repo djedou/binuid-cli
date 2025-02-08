@@ -8,10 +8,11 @@ use binuid_shared::{
 };
 use binuid_compiler::Compiler;
 use binuid_shared::walkdir::DirEntry;
+use binuid_compiler::model::{PageFile, FileMetadata};
+use std::ffi::OsStr;
 
 
 use crate::{
-    Metadata,
     Result, read_binuid_config, read_dependencies_from_table, 
     get_dependency_path, gather_files, save_zip, extract_lib_from_zip, get_duid_lib_build,
     get_dependency_zip_path, get_duid_bin_lib_build
@@ -32,11 +33,14 @@ pub(crate) fn build() -> Result<()> {
                     })
                     .flatten()
                     .collect::<Vec<String>>();
+                    let name = config.package.name.replace("-", "_");
+                    let version = config.package.version.as_deref().map_or("0_0_0".to_owned(), |ver| ver.replace(".", "_"));
                     let _ = compile_lib(
-                        &config.package.name.replace("-", "_"), 
-                        &config.package.version.as_deref().map_or("0_0_0".to_owned(), |ver| ver.replace(".", "_")),
+                        &name, 
+                        &version,
                         &deps_cmds
                     );
+                    get_metadata("./lib", &format!("{}_v_{}.json", name, version));
                 },
                 None => {}
             }
@@ -69,6 +73,8 @@ pub(crate) fn build() -> Result<()> {
                         &version,
                         &deps_cmds
                     );
+                    get_metadata("./app/lib", &format!("{}_v_{}.json", name, version));
+
                     deps_cmds.extend_from_slice(&["--extern".to_owned(), format!("{name}=dist/lib{name}_v_{version}.rlib")]);
                     
                     let mut compiler = Compiler::new(&name, &version, &deps_cmds);
@@ -85,6 +91,34 @@ pub(crate) fn build() -> Result<()> {
             Ok(())
         }
     }
+}
+
+fn get_metadata(base: &str, name: &str) {
+    let mut file_metadatas: Vec<FileMetadata> = vec![];
+    
+    for entry in WalkDir::new(base).into_iter().flatten() {
+        if entry.clone().file_type().is_file() 
+        &&  entry.clone().into_path().extension().and_then(OsStr::to_str).map_or(false, |d| d == "rs") {
+            let mut page = PageFile::load(&entry);
+            let file_metadata = page.get_file_metadatas();
+            file_metadatas.push(file_metadata);
+        }
+    }
+
+    write_metadata(&file_metadatas, &name)
+}
+
+fn write_metadata(metadatas: &[FileMetadata], name: &str) {
+    let content = json!(metadatas);
+    let Ok(mut current_dir) = env::current_dir() else {
+        return;
+    };
+    current_dir.push("dist");
+    current_dir.push(name);
+    let Ok(mut file) = fs::File::create(&current_dir) else {
+        return;
+    };
+    let _ = file.write_all(&content.to_string().as_bytes());
 }
 
 fn compile_lib_bin(name: &str, version: &str, deps_cmds: &[String]) -> Result<()> {
