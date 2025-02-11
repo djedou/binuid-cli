@@ -43,7 +43,7 @@ async fn main() -> Result<()> {
         ArgSub::Remove {name: _} => {
             
         },
-        ArgSub::Serve {host, port} => {
+        ArgSub::Serve {host: _, port: _} => {
             //serve(&host, port).await
         },
         ArgSub::Deploy {host: _, port: _} => {

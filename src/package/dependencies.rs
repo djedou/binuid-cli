@@ -1,4 +1,4 @@
-use binuid_shared_wasm::toml::{Table, de::Error, from_str, to_string_pretty, Value};
+use binuid_shared_wasm::toml::{Table, Value};
 use super::Dependency;
 
 pub(crate) fn read_dependencies_from_table(table: &Table) -> Vec<Dependency> {

@@ -1,13 +1,7 @@
-use std::{env, fs, path::Path, process::{Command, Stdio}, io::{Read, Write}};
-use binuid_shared_wasm::{serde_json::json, console::{error, info}};
-use binuid_shared::{
-    walkdir::WalkDir,
-    quote::{quote, ToTokens},
-    syn,
-    proc_macro2::TokenTree
-};
+use std::{env, fs, process::{Command, Stdio}, io::Write};
+use binuid_shared_wasm::serde_json::json;
+use binuid_shared::walkdir::WalkDir;
 use binuid_compiler::Compiler;
-use binuid_shared::walkdir::DirEntry;
 use binuid_compiler::model::{PageFile, FileMetadata};
 use std::ffi::OsStr;
 

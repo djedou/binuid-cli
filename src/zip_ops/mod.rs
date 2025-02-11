@@ -13,7 +13,6 @@ pub(crate) fn save_zip(root: &str, filename: &str, files: &[PathBuf]) -> zip::re
     current_dir.push("target");
     let _ = fs::create_dir_all(&current_dir);
     current_dir.push(filename);
-    let path = Path::new(filename);
     let file = File::create(current_dir.as_path()).unwrap();
     let mut zip = zip::ZipWriter::new(file);
     let options = zip::write::SimpleFileOptions::default()

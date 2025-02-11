@@ -1,7 +1,6 @@
 use std::process::{Command, Stdio};
 use std::{fs, env};
 use crate::{Mode, read_binuid_config, write_binuid_config};
-use std::mem::swap;
 use binuid_shared_wasm::console::error;
 
 

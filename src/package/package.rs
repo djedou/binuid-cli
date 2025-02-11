@@ -2,11 +2,7 @@ use binuid_shared_wasm::{
     serde::{self, Deserialize, Serialize},
     toml::{Table, de::Error, from_str, to_string_pretty}
 };
-use std::{
-    fs, env,
-    path::{Path, PathBuf},
-    fs::File
-};
+use std::{fs, env};
 use std::io::{Read, Write};
 
 #[derive(Debug, Deserialize, Serialize, Clone, Default)]
