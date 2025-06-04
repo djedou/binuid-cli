@@ -1,5 +1,5 @@
 use std::{env, fs, process::{Command, Stdio}, io::Write};
-use binuid_shared_wasm::serde_json::json;
+use binuid_shared_wasm::serde_json::to_string_pretty;
 use binuid_shared::walkdir::WalkDir;
 use binuid_compiler::Compiler;
 use binuid_compiler::model::{PageFile, FileMetadata};
@@ -103,7 +103,6 @@ fn get_metadata(base: &str, name: &str) {
 }
 
 fn write_metadata(metadatas: &[FileMetadata], name: &str) {
-    let content = json!(metadatas);
     let Ok(mut current_dir) = env::current_dir() else {
         return;
     };
@@ -112,7 +111,14 @@ fn write_metadata(metadatas: &[FileMetadata], name: &str) {
     let Ok(mut file) = fs::File::create(&current_dir) else {
         return;
     };
-    let _ = file.write_all(&content.to_string().as_bytes());
+    match to_string_pretty(&metadatas){
+        Ok(content) => {
+            let _ = file.write_all(&content.as_bytes());
+        }
+        Err(e) => {
+            eprintln!("{e:#?}");
+        }
+    }
 }
 
 fn compile_bin_lib(name: &str, version: &str, deps_cmds: &[String]) -> Result<()> {
