@@ -62,7 +62,7 @@ pub(crate) fn build() -> Result<()> {
                         None => "0_0_0".to_string()
                     };
                     
-                    let _ = compile_lib_bin(
+                    let _ = compile_bin_lib(
                         &name, 
                         &version,
                         &deps_cmds
@@ -115,7 +115,7 @@ fn write_metadata(metadatas: &[FileMetadata], name: &str) {
     let _ = file.write_all(&content.to_string().as_bytes());
 }
 
-fn compile_lib_bin(name: &str, version: &str, deps_cmds: &[String]) -> Result<()> {
+fn compile_bin_lib(name: &str, version: &str, deps_cmds: &[String]) -> Result<()> {
     Command::new("rustc")
         .args(&get_duid_bin_lib_build(&name, &version, &deps_cmds))
         .stdout(Stdio::inherit())
