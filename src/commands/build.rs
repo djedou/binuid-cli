@@ -2,7 +2,7 @@ use std::{env, fs, process::{Command, Stdio}, io::Write};
 use binuid_shared_wasm::serde_json::to_string_pretty;
 use binuid_shared::walkdir::WalkDir;
 use binuid_compiler::Compiler;
-use binuid_compiler::model::{PageFile, FileMetadata};
+use binuid_compiler::model::PageFile;
 use std::ffi::OsStr;
 
 
@@ -88,21 +88,19 @@ pub(crate) fn build() -> Result<()> {
 }
 
 fn get_metadata(base: &str, name: &str) {
-    let mut file_metadatas: Vec<FileMetadata> = vec![];
+    let mut page_files: Vec<PageFile> = vec![];
     
     for entry in WalkDir::new(base).into_iter().flatten() {
         if entry.clone().file_type().is_file() 
         &&  entry.clone().into_path().extension().and_then(OsStr::to_str).map_or(false, |d| d == "rs") {
-            let mut page = PageFile::load(&entry);
-            let file_metadata = page.get_file_metadatas();
-            file_metadatas.push(file_metadata);
+            page_files.push(PageFile::load(&entry));
         }
     }
 
-    write_metadata(&file_metadatas, &name)
+    write_metadata(&page_files, &name)
 }
 
-fn write_metadata(metadatas: &[FileMetadata], name: &str) {
+fn write_metadata(metadatas: &[PageFile], name: &str) {
     let Ok(mut current_dir) = env::current_dir() else {
         return;
     };
